@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+\usepackage[
+  backend=biber,
+  style=numeric,      % plain numbers: [1]
+  sorting=none,       % keep refs in citation order
+  maxbibnames=99      % show all authors in bib
+]{biblatex}
+\usepackage{booktabs}
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{310 Quals Strategy Compendium}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+
+\begin{document}
+\maketitle
+% ------------------------------------------------------------------
+%  Discrete distributions
+% ------------------------------------------------------------------
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{@{}l l l l@{}}
+\toprule
+\textbf{Distribution} & \textbf{Support} & \textbf{p.m.f.\ $P(X=x)$} & \textbf{c.d.f.\ $F(x)$} \\
+\midrule
+Bernoulli$(p)$            & $\{0,1\}$ &
+$ p^{x}(1-p)^{1-x}$ &
+$ \mathbf 1_{x\ge 1}p + \mathbf 1_{0\le x<1}(1-p)$ \\[3pt]
+
+Binomial$(n,p)$           & $\{0,\dots,n\}$ &
+$ \displaystyle\binom{n}{x}p^{x}(1-p)^{n-x}$ &
+$ \displaystyle\sum_{k=0}^{\lfloor x\rfloor}\binom{n}{k}p^{k}(1-p)^{\,n-k}$ \\[6pt]
+
+Geometric\,$(p)$\,(shift-1) & $\{1,2,\dots\}$ &
+$ (1-p)^{x-1}p$ &
+$ 1-(1-p)^{\lfloor x\rfloor}$ \\[3pt]
+
+Negative Binomial$(r,p)$ &
+$\{0,1,\dots\}$ &
+$ \displaystyle\binom{r+x-1}{x}(1-p)^{r}\,p^{x}$ &
+$ \displaystyle 1-\mathrm{B}_{p}\!\!\bigl(\lfloor x\rfloor+1,r\bigr)$\quad($\mathrm{B}_{p}$ = regularized Beta) \\[6pt]
+
+Poisson$(\lambda)$        & $\{0,1,\dots\}$ &
+$ e^{-\lambda}\dfrac{\lambda^{x}}{x!}$ &
+$ e^{-\lambda}\displaystyle\sum_{k=0}^{\lfloor x\rfloor}\dfrac{\lambda^{k}}{k!}$ \\[6pt]
+
+Hypergeometric$(N,K,n)$   & $\{0,\dots,n\}$ &
+$ \displaystyle\frac{\binom{K}{x}\binom{N-K}{\,n-x\,}}{\binom{N}{n}}$ &
+$ \displaystyle\sum_{k=0}^{\lfloor x\rfloor}\frac{\binom{K}{k}\binom{N-K}{\,n-k\,}}{\binom{N}{n}}$ \\[6pt]
+
+Discrete Uniform$(a{:}b)$ & $\{a,a\!+\!1,\dots,b\}$ &
+$ \dfrac{1}{b-a+1}$ &
+$ \dfrac{\lfloor x\rfloor-a+1}{b-a+1}\,\,\mathbf 1_{x\ge a}$ \\ 
+\bottomrule
+\end{tabular}
+\caption{Common \emph{discrete} distributions.  Here $\mathbf 1_{A}$ is the indicator of event \(A\).}
+\end{table}
+
+% ------------------------------------------------------------------
+%  Continuous distributions
+% ------------------------------------------------------------------
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\small
+\begin{tabular}{@{}l l l l@{}}
+\toprule
+\textbf{Distribution} & \textbf{Support} & \textbf{p.d.f.\ $f(x)$} & \textbf{c.d.f.\ $F(x)$} \\
+\midrule
+Uniform$(a,b)$            & $(a,b)$ &
+$ \dfrac{1}{b-a}$ &
+$ \dfrac{x-a}{b-a}$,\ $a<x<b$ \\[6pt]
+
+Exponential$(\lambda)$    & $(0,\infty)$ &
+$ \lambda e^{-\lambda x}$ &
+$ 1-e^{-\lambda x}$ \\[6pt]
+
+Gamma$(\alpha,\theta)$    & $(0,\infty)$ &
+$ \dfrac{x^{\alpha-1}e^{-x/\theta}}{\Gamma(\alpha)\theta^{\alpha}}$ &
+$ \dfrac{\gamma(\alpha,x/\theta)}{\Gamma(\alpha)}$\quad
+($\gamma$ = lower incomplete $\Gamma$) \\[6pt]
+
+$\chi^{2}_{k}$            & $(0,\infty)$ &
+$ \dfrac{x^{k/2-1}e^{-x/2}}{2^{k/2}\Gamma(k/2)}$ &
+$ P\!\bigl(k/2,x/2\bigr)$ (regularized $\Gamma$) \\[6pt]
+
+Normal$(\mu,\sigma^{2})$  & $(-\infty,\infty)$ &
+$ \dfrac{1}{\sqrt{2\pi\sigma^{2}}}\exp\!\Bigl[-\dfrac{(x-\mu)^{2}}{2\sigma^{2}}\Bigr]$ &
+$ \Phi\!\Bigl(\dfrac{x-\mu}{\sigma}\Bigr)$\quad($\Phi$ = standard normal c.d.f.) \\[9pt]
+
+Lognormal$(\mu,\sigma)$   & $(0,\infty)$ &
+$ \dfrac{1}{x\sigma\sqrt{2\pi}}\exp\!\Bigl[-\dfrac{(\ln x-\mu)^{2}}{2\sigma^{2}}\Bigr]$ &
+$ \Phi\!\Bigl(\dfrac{\ln x-\mu}{\sigma}\Bigr)$ \\[9pt]
+
+Student-$t(\nu)$          & $(-\infty,\infty)$ &
+$ \dfrac{\Gamma\!\bigl(\tfrac{\nu+1}{2}\bigr)}
+         {\sqrt{\nu\pi}\,\Gamma\!\bigl(\tfrac{\nu}{2}\bigr)}
+         \bigl(1+\tfrac{x^{2}}{\nu}\bigr)^{-(\nu+1)/2}$ &
+$ \tfrac12 + x\,\dfrac{\,{}_2F_{1}\!\bigl(\tfrac12, \tfrac{\nu+1}{2}; \tfrac32; -\tfrac{x^{2}}{\nu}\bigr)}
+                            {\sqrt{\nu\pi}\,B\!\bigl(\tfrac{\nu}{2},\tfrac12\bigr)}$
+\quad(symmetric) \\[12pt]
+
+Cauchy$(x_{0},\gamma)$    & $(-\infty,\infty)$ &
+$ \dfrac{1}{\pi\gamma\,[1+((x-x_{0})/\gamma)^{2}]}$ &
+$ \dfrac{1}{\pi}\arctan\!\Bigl(\dfrac{x-x_{0}}{\gamma}\Bigr)+\dfrac12$ \\[9pt]
+
+Laplace$(\mu,b)$          & $(-\infty,\infty)$ &
+$ \dfrac{1}{2b}\exp\!\bigl(-\tfrac{|x-\mu|}{b}\bigr)$ &
+$ \begin{cases}
+  \tfrac12\exp\!\bigl(\tfrac{x-\mu}{b}\bigr), & x<\mu,\\[3pt]
+  1-\tfrac12\exp\!\bigl(-\tfrac{x-\mu}{b}\bigr), & x\ge\mu,
+  \end{cases}$ \\[12pt]
+
+Weibull$(k,\lambda)$      & $(0,\infty)$ &
+$ \dfrac{k}{\lambda}\Bigl(\dfrac{x}{\lambda}\Bigr)^{k-1}
+  e^{-(x/\lambda)^{k}}$ &
+$ 1-e^{-(x/\lambda)^{k}}$ \\[9pt]
+
+Pareto$(x_{m},\alpha)$    & $(x_{m},\infty)$ &
+$ \dfrac{\alpha x_{m}^{\alpha}}{x^{\alpha+1}}$ &
+$ 1-\Bigl(\dfrac{x_{m}}{x}\Bigr)^{\alpha}$ \\[9pt]
+
+Beta$(\alpha,\beta)$      & $(0,1)$ &
+$ \dfrac{x^{\alpha-1}(1-x)^{\beta-1}}{\mathrm B(\alpha,\beta)}$ &
+$ I_{x}(\alpha,\beta)$\quad($I_{x}$ = regularized Beta) \\[9pt]
+
+Rayleigh$(\sigma)$        & $(0,\infty)$ &
+$ \dfrac{x}{\sigma^{2}} \exp\!\bigl(-x^{2}/(2\sigma^{2})\bigr)$ &
+$ 1-\exp\!\bigl(-x^{2}/(2\sigma^{2})\bigr)$ \\[6pt]
+
+Triangular$(a,c,b)$       & $(a,b)$ &
+$ \dfrac{2(x-a)}{(b-a)(c-a)}\mathbf 1_{a\le x<c}
+ +\dfrac{2(b-x)}{(b-a)(b-c)}\mathbf 1_{c\le x<b}$ &
+piecewise quadratic (integral of pdf) \\[6pt]
+\bottomrule
+\end{tabular}
+\caption{Common \emph{continuous} distributions.  Special-function notation follows standard texts.}
+\end{table}
+
+
+
+\end{document}

@@ -1,0 +1,216 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+%\usepackage[
+%  backend=biber,
+%  style=numeric,      % plain numbers: [1]
+%  sorting=none,       % keep refs in citation order
+%  maxbibnames=99      % show all authors in bib
+%]{biblatex}
+\usepackage{booktabs}
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{310 Quals Strategy Compendium}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+
+\begin{document}
+\maketitle
+
+\section{Permutation and counting facts}
+\begin{fact}[Number derangements of $k$-element set]
+Derangements: $D_n$ is the number of permutations with no fixed points.\\
+
+Via inclusion exclusion.
+$$D_k = k! \sum_{j=0}^{k} \frac{(-1)^j}{j!}.$$
+Eg, if $T$ is number of fixed points:
+$$P(T=k) = \frac{1}{n!} \binom{n}{k} D_{n-k},$$
+since the remaining $n-k$ must \textbf{not} be fixed.
+
+    
+\end{fact}
+Apply the above to "Distribution of number of fixed points"- type questions. 
+
+\begin{fact}[Catalan Numbers]
+	Catalan Numbers: 
+	
+		Dyck Paths 
+\end{fact}
+
+\begin{definition}[Cycles]
+	Cycle of a permutations
+\end{definition}
+
+\begin{definition}[Descents]
+	
+\end{definition}
+
+Reference: check Persi and Susan's paper
+
+
+\section{Distribution Facts}
+\subsection{Gaussian Facts}
+\begin{fact}[Max of Gaussians and fluctuations]
+	Max of Gaussians $\sqrt{2\log n}$ with fluctuations $1/\sqrt{\log n} $
+\end{fact}
+\begin{fact}[Max of sub-gaussian] 
+	Expectation upper bound applies to correlated sub-gaussian reandom variables -- see Vershynin. 
+\end{fact}
+\begin{fact}[Mill's Ratio]
+	
+\end{fact}
+
+\begin{fact}[Normal Conditional Distributions]
+	$$(X,Y) \sim MVN(\mu, \Sigma \implies X|Y \sim \ldots $$
+\end{fact}
+
+\subsection{Poisson, Exponential Distribution}
+Superposition and thinning.
+
+\begin{fact}[Superposition]
+	See Poisson with integer mean? Try superposition:
+	
+	$$Pois(n) = \sum_{i=1}^n Pois(1)$$
+\end{fact}
+
+\begin{fact}[Renyi Representation of Exponential]
+	
+\end{fact}
+\begin{fact}[Maximum, minimum of Exponential]
+	
+\end{fact}
+
+
+\section{Stein's Method (Poisson)}
+
+
+\subsection{Method 1 - Dependency Graphs}
+
+\subsection{Method 2 - when dependency graph doesn't work (ie complete)}
+
+\begin{example}[Fixed Points - 310a HW8]
+    Let $\sigma$ be a uniformly chosen permutation in the symmetric group $S_n$. Let $W = \#\{i : \sigma(i) = i\}$ (the number of fixed points in $\sigma$). Show that $W$ has an approximate Poisson(1) distribution by using Stein's method to get an upper bound on $\|P_W - \text{Poisson}(1)\|$. (Hint: see section 4.5 of Arratia-Goldstein-Gordon.) Give details for this specific case.
+
+\answer{
+Let $I = [n]$. We choose $B_\alpha = \{\alpha\}$ and use Theorem 1 from Arratia-Goldstein-Gordon. 
+
+For each $i\in I$, let
+
+$$X_i = \begin{cases}
+    1 \text{ if } \sigma(i) = i\\
+    0 \text{ otherwise}
+\end{cases}.$$
+Naturally, $P(X_i =1) = \frac{1}{n}$. We let $W = \sum_{i\in I} X_i$ and $\lambda = E[W] = 1$. We now use Stein's method as given in Arratia-Goldstein-Gordon Theorem 1 to get an upper bound on $\lVert P_W - Pois(1)\rVert$.
+$$b_1 = \sum_{\alpha\in I} \sum_{\beta \in B_\alpha} p_\alpha p_\beta = \sum_{\alpha \in I} p_\alpha^2 = \frac{1}{n}.$$
+Next, because we let $B_\alpha = \{\alpha\}$, 
+$$b_2 = 0.$$
+Finally, for the third term, by Lemma 2 (p 418) in Arratia et al,
+$$b_3 \leq \min_{1<k<n} (\frac{2k}{n-k} + 2n 2^{-k} e^{e})\sim 2\frac{(2log_2 n + e/ln 2)}{n},$$
+due to the fact that $\lambda=1$ in our problem, so $\lambda = o(n)$
+
+Now note that as $n\to \infty$, $b_1\to 0$ and $b_3\to 0$, so, noting that the Arratia paper's definition of TV distance is twice our definition of TV distance:
+
+$$\lVert P_W - Pois(1)\rVert\leq b_1 + b_2 + b_3 = \frac{1}{n} + \frac{4\log_2 n + 2\epsilon/\ln 2}{n} + o(1)$$
+Now as $n\to \infty$, $b_1 \to 0$ and $b_3 \to 0$, so $\lVert P_W - Pois(1)\rVert \to 0$. 
+}
+\end{example}
+
+\begin{example}[Near Fixed Points- 2004 Q2]
+    
+\end{example}
+
+
+
+\newpage 
+\section{Approximations}
+$$1-x \leq e^{-x} \quad 1-x\geq e^{-2x} \quad \text{both for small } x?$$  
+\section{Asymptotics}
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Limit} & \textbf{Function \(f(x)\)} & \textbf{Equivalent \(g(x)\)} & \textbf{Condition} \\
+\hline
+\(x \to 0\) & \(\log(1 + x)\) & \(x\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \(\log(1 - x)\) & \(-x\) & \(x \ll 1\) \\
+\(x \to 0\) & \(e^x - 1\) & \(x\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \(\sin x\) & \(x\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \(1 - \cos x\) & \(\dfrac{x^2}{2}\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \(\tan x\) & \(x\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \(\arcsin x\) & \(x\) & \(|x| \ll 1\) \\
+\(x \to 0\) & \((1 + x)^\alpha\) & \(1 + \alpha x\) & Fixed \(\alpha\), \(|x| \ll 1\) \\
+\(x \to 0\) & \(\Gamma(1 + x)\) & \(1 - \gamma x\) & \(\gamma = 0.577\ldots\) \\
+\hline
+\(n \to \infty\) & \(n!\) & \(\sqrt{2\pi n}\,(n/e)^n\) & Stirling’s approximation \\
+\(n \to \infty\) & \(H_n = \sum_{k=1}^n \frac{1}{k}\) & \(\log n + \gamma\) & Harmonic numbers \\
+\(n \to \infty\) & \(\dbinom{2n}{n}\) & \(\dfrac{4^n}{\sqrt{\pi n}}\) & Central binomial \\
+\(n \to \infty\) & \(\left(1 + \frac{1}{n}\right)^n\) & \(e\) & Definition of \(e\) \\
+\(n \to \infty\) & \(\zeta(n)\) & \(1\) & Riemann zeta tail \\
+\hline
+\end{tabular}
+\caption{Common asymptotic equivalences: \(f(x) \sim g(x)\) means \(f(x)/g(x) \to 1\).}
+\end{table}
+
+% --------------------  Rule-of-Thumb:  Using  \(f\sim g\)  --------------------
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{|l|c|p{6.8cm}|}
+\hline
+\textbf{Operation (as $n\to\infty$ or $x\to0$)} %
+& \textbf{Safe to replace $f$ by $g$?} %
+& \textbf{Remarks} \\
+\hline
+$\displaystyle\lim f(n)$ %
+& Yes %
+& If $f\sim g$ and $\displaystyle\lim g=L\in\mathbb R\cup\{\infty\}$, then $\displaystyle\lim f=L$. \\ \hline
+
+$\displaystyle \frac{f(n)}{g(n)}$ %
+& Yes %
+& By definition $\displaystyle\frac{f}{g}\to1$. Useful for verifying asymptotic equivalence itself. \\ \hline
+
+$f(n)\,g(n)$ or $f(n)\cdot h(n)$ %
+& Yes (usually) %
+& Multiplicative errors stay small: $(fg)/(gg)=f/g\to1$ if $h\sim g$. Be sure $h$ is bounded away from $0$. \\ \hline
+
+$f(n)-g(n)$ %
+& No %
+& Only $f-g=o(g)$ is guaranteed.  The difference need \emph{not} vanish; e.g.\ $\log n+\gamma-\log n\to\gamma$. \\ \hline
+
+$\log f(n)$ %
+& Caution %
+& If $f\sim g$ and both $\to\infty$ at comparable rates, $\log f-\log g=\log(1+o(1))=o(1)$, so safe.  If $f\to C>0$, extra care needed. \\ \hline
+
+$e^{\,f(n)}$ or any non-linear analytic map %
+& Caution / No %
+& Small \emph{relative} error in exponent can balloon: $e^{f}=e^{g(1+o(1))}=e^{g}\,e^{o(g)}$.  Safe only when $g=o(1)$. \\ \hline
+
+$\displaystyle\bigl\lfloor f(n)\bigr\rfloor,\;\text{sign}\bigl(f(n)\bigr)$ %
+& No %
+& Discontinuous operations destroy the \(f/g\to1\) guarantee.  Analyze separately. \\ \hline
+\end{tabular}
+\caption{Rule of thumb for substituting \(f\sim g\) in various expressions.  
+Here \(f\sim g\) means \(\displaystyle\frac{f(n)}{g(n)}\to1\).}
+\end{table}
+
+
+
+
+\end{document}
