@@ -34,6 +34,11 @@
 \begin{document}
 \maketitle
 \section{Misc facts}
+\begin{definition}[Convexity]
+For all $0\leq t\leq 1$ and $x_1,x_2 \in X$:
+$$f(tx_1 + (1-t)x_2) \leq tf(x_1) + (1-t) f(x_2).$$
+Alternative, check the second derivative $\geq 0$
+\end{definition}
 \begin{theorem}[Jensen's Inequality]
 If $\phi$ convex, then $\E \phi(X) \geq \phi(EX)$. Eg $EX^2 \geq (EX)^2$. Inequality is strict if $\phi$ is strictly convex and $X$ is not degenerate (constant). Also conditional version holds. 
 \end{theorem}
@@ -100,7 +105,7 @@ $$\E f(T) = 0 \implies f(T) = 0 \text{ a.s}.$$
 See coaching notes-- break $h$ into positive and negative parts to show $h = 0$ as. 	
 \end{example}
 \begin{theorem}[Full rank exponential family]
-Ie if $(\eta_1,\ldots, \eta_k): \eta \in \Omega$ containsa. $k-$dimensional rectangle, then $T$ is not only sufficient, but \textbf{also complete}.
+Ie if $(\eta_1,\ldots, \eta_k): \eta \in \Omega$ contains a $k-$dimensional rectangle, then $T$ is not only sufficient, but \textbf{also complete}.
 \end{theorem}
 \begin{theorem}[Basu's Theorem]
 If $T$ is CSS and $A$ Ancillary, then $T\indep A$. 
@@ -122,8 +127,7 @@ $\delta^*$ is unbiased and for all other $\delta$, $R(\delta^*,g(\theta)) \leq R
 \end{definition}
 Note that if we have an unbiased estimator, we can Rao-Blackwellize with a sufficient statistic and still have unbiased estimator. 
 \begin{theorem}[Lehman-Scheffe]
-Main workhorse here.
-If $T$ CSS and $\delta(T)$ unbiased for $g(\theta)$, then $\delta(T)$ is unique UMVU. (Since there exists at most one unbiased estimator that's function of $T$ by completeness).\\\\
+If unbiased estimator is function of CSS, it is UMVU. (Since there exists at most one unbiased estimator that's function of $T$ by completeness).\\\\
 Alternate statement: if there exists any unbiased estimator and a CSS $T$, then there is a unique unbiased estimator that's a function of $T$, which is UMVU (UMRU for any convex loss). Unique UMVU if strict convex loss, since this makes Jensen strict. 
 
 \end{theorem}
@@ -154,7 +158,7 @@ Non parametric examples
 	\item $X_i \sim F \in \calF = \{ \text{ all distributions with density wrt Lebesgue and finite variance } \}$. $g(\theta) = E_F X_i$.
 	\begin{itemize}
 		\item Note that $\bar X$ is unbiased in the big family and is UMVU in the normal \textbf{subfamily} 
-		\item Order statistics CSS (always sufficient - complete by subfamily arg and bijection with sums of powers)
+		\item Order statistics CSS (always sufficient - complete by subfamily arg and bijection with sums of powers): $(X_{(1)}, \ldots, X_{(n)}) \iff (\sum X_i, \ldots, \sum X_i^n)$ bijection. 
 		\item So $\bar X$ is UMVU
 	\end{itemize}
 	\item $X_i$ iid symmetric about $\theta$, $E X_i = \theta$. Finite variance. 
@@ -162,9 +166,12 @@ Non parametric examples
 		\item Two subclasses: normal family, $\Unif(\theta_1, \theta_2)$ family - have different UMVUs and both are unbiased in the original class
 	\end{itemize}
 \end{enumerate}
-\begin{fact}[Subfamily UMVU Argument]
+\begin{recipe}[Subfamily UMVU Argument]
 If UMVU in subfamily and unbiased in big family, must be UMVU in big family \textbf{if} an  UMVU exists in the big family. Because the UMVU \textbf{uniquely} minimizes variance in the subfamily. 
-\end{fact}
+\begin{proof}
+	Take the big family. Take a function such that $E_\theta f(X) = 0$ for all $\theta$. Then true for subfamily. So $P_\theta (f(X) = 0)$ for all $\theta$ in the subfamily. Same null sets as big family, means that also $P_\theta (f(X) = 0)$ for the big family.
+\end{proof}
+\end{recipe}
 \begin{fact}[Completeness in subfamily]
 If $\calF_0 \subset \calF$ andthey have the same null sets, then completeness in $\calF_0$ implies completeness in $\calF$. 
 \end{fact}
@@ -211,11 +218,23 @@ If not, some other estimator would render Bayes inadmissible, which would make t
 \end{fact}
 
 \section{MRE}
+\begin{definition}[MRE]
+Equivariant condition: $$\hat \theta(x+c, u) = \hat \theta (x,u) + c$$
+and minimum risk condition amongst all equivariant estimators. 
+\end{definition}
+\begin{fact}[MRE is Unbiased]
+.... 
+\end{fact}
+\begin{fact}[Bias, variance, risk in MRE]
+Do not depend on $\theta$. Ie, 
+$$\E_\theta \hat \theta = \theta + b \text{ for all } \theta $$
+\end{fact}
 \begin{fact}[UMVU is MRE if UMVU is location equivariant]
 (In a location model)
 \myworries{Is this just with square error loss?}
 
 \end{fact}
 \section{Minimax}
+A Bayes or admissible estimator is constant risk, then it is minimax. 
 
 \end{document}
