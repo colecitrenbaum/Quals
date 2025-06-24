@@ -29,11 +29,155 @@
 \newcommand{\range}{\operatorname{range}}
 \newcommand{\row}{\operatorname{row}}
 \newcommand{\Proj}{\operatorname{Proj}}
+\newcommand{\Unif}{\operatorname{Unif}}
 
 \begin{document}
 \maketitle
+\section{Misc facts}
+\begin{theorem}[Jensen's Inequality]
+If $\phi$ convex, then $\E \phi(X) \geq \phi(EX)$. Eg $EX^2 \geq (EX)^2$. Inequality is strict if $\phi$ is strictly convex and $X$ is not degenerate (constant). Also conditional version holds. 
+\end{theorem}
+\section{Exponential Families}
+\begin{definition}[Exponential Family]
+	$$p_\theta(x) = \exp(\sum_{i=1}^s T_i(X) \eta_i(\theta) - A(\theta))h(x)$$
+	$$p_\eta(x) = \exp(\sum_{i=1}^s T_i(X) \eta_i - \tilde A(\eta)) h(x)$$
+\end{definition}
+\begin{fact}[$E[T(X)$, $Cov(T(X))$]
+$$\E[T(X)] = \grad A(\eta)$$
+$$\Cov (T_i(X), T_j(X)) = \partial_{\eta_i} \partial_{\eta_j} A(\eta)$$
+\end{fact}
+
+\subsection{All the Expo family examples}
+
+Include curved.. 
 
 
+\section{Sufficiency} 
+"Throwing away everything else besides this statistic entails no loss of info in estimating $\theta$"
+\begin{definition}[Sufficiency]
+If for all $t$, the distribution of $X|T=t$ does not depend on $\theta$.
+\end{definition}
+If you collect data $X_1,\ldots,X_n$, then throw away data except for $T=t$, then can construct $\tilde X_1,\ldots \tilde X_n$ with same distribution as $\underline{X}$ just by knowing $T$.
+
+\myworries{Make a table of good examples including $\Unif(0,\theta)$}
+\begin{theorem}[Factorization Theorem]
+$T$ sufficient for $\theta$ (or for the model) $\iff$ we can write $p_\theta(\underline{x}) = g_\theta(t(\underline{x})) h(\underline{x})$. Ie, can factor the density into a part that depends on statistic and $\theta$, and another part that depends on data but not $\theta$. 
+\begin{example}[Expo($\theta$)]
+Can write $p_\theta(\underline x) = \theta^n \exp(-\theta\sum x_i)$ so $T(X) = \sum_{i=1}^n X_i$ is sufficient.
+\end{example}
+\begin{example}[Exponential families]
+Look at the form -- $T$ is sufficient.
+\end{example}
+
+
+\end{theorem}
+\begin{definition}[Minimal sufficiency]
+For all $T'$ sufficient, $T$ is a function of $T'$.
+\end{definition}
+
+
+\begin{theorem}[Rao-Blackwell]
+If $T$ sufficient, $L$ is any convex loss, and $\delta$ estimates $g(\theta)$, define:
+
+$$\eta(T) = \E[\delta(X)|T],$$
+then using Tower property and Jensen's:
+
+$$R(\theta, \delta(X) = \E[g(\theta), \delta(X)] \geq \E [L(\theta, \eta(T)) = R(\theta, \eta(T))$$
+\end{theorem}
+\begin{definition}[Ancillary Statistic]
+Distribution of $A(X)$ does not depend on $\theta$.
+\begin{definition}[First Order Ancillary]
+If $\E_\theta A(X)$ does not depend on $\theta$. Weaker than Ancillary. 
+\end{definition}
+\end{definition}
+\section{Completeness} 
+\begin{definition}[Completeness]
+$T(X)$ complete if no non-constant function of $T$ is even 1st order ancillary, or equivalently:
+
+$$\E f(T) = 0 \implies f(T) = 0 \text{ a.s}.$$
+\end{definition}
+\begin{example}[$X_i\sim\Unif(0,\theta)$]
+See coaching notes-- break $h$ into positive and negative parts to show $h = 0$ as. 	
+\end{example}
+\begin{theorem}[Full rank exponential family]
+Ie if $(\eta_1,\ldots, \eta_k): \eta \in \Omega$ containsa. $k-$dimensional rectangle, then $T$ is not only sufficient, but \textbf{also complete}.
+\end{theorem}
+\begin{theorem}[Basu's Theorem]
+If $T$ is CSS and $A$ Ancillary, then $T\indep A$. 
+\end{theorem}
+A common strategy with Basu's theorem is to consider a submodel-- show independence in the submodel, then based on arbitrariness of submodel, show true for full model. 
+\begin{example}[Show sample mean and sample variance in $N(\mu,\sigma^2)$ are independent]
+(Assume both unknown). then in the submodel where $\sigma = \sigma_0$ known, then $\bar X$ is CSS. Can show that $\sum (X_i - \bar X)^2$ is Ancillary. So $\bar X \indep \sum (X_i - \bar X)^2$. This is true for all $\mu$, and for $\sigma = \sigma_0$ fixed. But $\sigma_0$ arbtirary, so true for all $\mu,\sigma$. 	
+\end{example}
+\myworries{Add a table here including 2 param Unif}
+\begin{enumerate}
+	\item $\Unif(0,\theta)$ : $T= X_{(n)}$
+	\item $\Unif(\theta_1, \theta_2)$: $T = (X_{(1)}, X_{(n)})$
+\end{enumerate}
+
+\section{UMVU}
+Note that we can't take existence of an unbiased estimator for granted. If $x\sim Bin(n,\theta)$. Take like $g(\theta) = \frac{1-\theta}{\theta}$ or a polynomial of degree $>n$-- no unbiased estimators. Strategy to show no unbiased estimator is just write out the expectation of an estimator.
+\begin{definition}[UMVU]
+$\delta^*$ is unbiased and for all other $\delta$, $R(\delta^*,g(\theta)) \leq R(\delta,g(\theta))$ for all $\theta$.
+\end{definition}
+Note that if we have an unbiased estimator, we can Rao-Blackwellize with a sufficient statistic and still have unbiased estimator. 
+\begin{theorem}[Lehman-Scheffe]
+Main workhorse here.
+If $T$ CSS and $\delta(T)$ unbiased for $g(\theta)$, then $\delta(T)$ is unique UMVU. (Since there exists at most one unbiased estimator that's function of $T$ by completeness).\\\\
+Alternate statement: if there exists any unbiased estimator and a CSS $T$, then there is a unique unbiased estimator that's a function of $T$, which is UMVU (UMRU for any convex loss). Unique UMVU if strict convex loss, since this makes Jensen strict. 
+
+\end{theorem}
+\begin{recipe}[UMVU with CSS]Steps:
+	\begin{enumerate}
+	\item Find a CSS
+	\item Find an unbiased estimator function of CSS. (Alternatively, find a dumb unbiased estimator and RB)
+	\item $\implies$ UMVU
+\end{enumerate}
+\end{recipe}
+Note that UMVU can be inadmissible - see James-Stein or the Poisson UMVU for $g(\theta).= \exp(-3\lambda)$ example in Lecture 5. 
+\begin{theorem}[Orthogonality Condition]
+\myworries{Add}
+\end{theorem}
+\subsection{UMVU Examples}
+\begin{enumerate}
+	\item Basic Expo Fam examples -- eg $\bar X$ in Bernouli or Normal with known variance 
+	\item Empirical CDF in $\mathcal N(\theta,1)$.
+	\begin{itemize}
+		\item CSS is $\bar X$, $\delta = \Ind[X_1 < u]$ unbiased. 
+		\item Idea to RB then add and subtract $\bar X$ since $X_1 - \bar X$ is ancillary, then apply Basu
+		\item UMVU is $\Phi(\frac{u - \bar X}{\sqrt{(n-1)/n}})$
+	\end{itemize}
+
+\end{enumerate}
+Non parametric examples
+\begin{enumerate}
+	\item $X_i \sim F \in \calF = \{ \text{ all distributions with density wrt Lebesgue and finite variance } \}$. $g(\theta) = E_F X_i$.
+	\begin{itemize}
+		\item Note that $\bar X$ is unbiased in the big family and is UMVU in the normal \textbf{subfamily} 
+		\item Order statistics CSS (always sufficient - complete by subfamily arg and bijection with sums of powers)
+		\item So $\bar X$ is UMVU
+	\end{itemize}
+	\item $X_i$ iid symmetric about $\theta$, $E X_i = \theta$. Finite variance. 
+	\begin{itemize}
+		\item Two subclasses: normal family, $\Unif(\theta_1, \theta_2)$ family - have different UMVUs and both are unbiased in the original class
+	\end{itemize}
+\end{enumerate}
+\begin{fact}[Subfamily UMVU Argument]
+If UMVU in subfamily and unbiased in big family, must be UMVU in big family \textbf{if} an  UMVU exists in the big family. Because the UMVU \textbf{uniquely} minimizes variance in the subfamily. 
+\end{fact}
+\begin{fact}[Completeness in subfamily]
+If $\calF_0 \subset \calF$ andthey have the same null sets, then completeness in $\calF_0$ implies completeness in $\calF$. 
+\end{fact}
+\begin{recipe}[Non-existence of Non-parametric UMVU]
+Find two different subclasses with different unique UMVU that are also unbiased in the big class -- no UMVU in big class.	
+\end{recipe}
+\subsection{Non-convex loss functions}
+If loss is bounded, there is no UMRU estimator. This is unbiased:
+$$\delta_\pi = \begin{cases}
+	g(\theta_0) \text{ wp } 1-\pi\\
+	\frac 1 \pi [\delta_0 (X) - g(\theta_0)] + g(\theta_0)
+\end{cases}$$
+and its risk is $\pi M$, so it could be arbitrarily small. 
 \section{James-Stein Estimator}
 Setup: $\calN(\mu,\sigma^2)$ with $\sigma^2$ known. 
 
@@ -65,7 +209,6 @@ If not, some other estimator would render Bayes inadmissible, which would make t
 \begin{fact}[Bayes is not UMVU if $r_\Lambda <\infty$]
 \myworries{Under square error loss, Bayes estimators are biased }
 \end{fact}
-\section{UMVU}
 
 \section{MRE}
 \begin{fact}[UMVU is MRE if UMVU is location equivariant]
