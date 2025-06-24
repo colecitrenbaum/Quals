@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+%\usepackage[
+%  backend=biber,
+%  style=numeric,      % plain numbers: [1]
+%  sorting=none,       % keep refs in citation order
+%  maxbibnames=99      % show all authors in bib
+%]{biblatex}
+\usepackage{booktabs}
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{300 Quals Guide}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+
+\begin{document}
+\maketitle
+
+
+\section{James-Stein Estimator}
+Setup: $\calN(\mu,\sigma^2)$ with $\sigma^2$ known. 
+
+\begin{theorem}[SURE - Stein Unbiased Risk Estimator ]
+Letting $\hat \mu(x) = x+g(x)$ for $g: \R^p \to \R^p$ almost differentiable, and assume that $\E[\sum_{i=1}^p |\partial_i g_i (X)|] <\infty$. Then:
+
+$$\E_\mu[\|\hat \mu(X) - \mu\|^2] = p\sigma^2 + \E\left[\|g(X)\|^2 + 2\sigma^2 \sum_{i=1}^p \partial_i g_i(X)\right].$$
+Proved using integration by Parts -- see Lec 17 300c.
+\end{theorem}
+\begin{fact}[UMVU is not admissible in $\calN(\mu,1)$ model]
+Because James Stein renders $X$ inadmissible. 	
+\end{fact}
+
+J-S estimator is given by:
+
+$$\hat \mu^{JS} (X) = \left ( 1-\frac{\sigma^2(p-2)}{\|X\|_2^2}\right)X,$$
+biased towards the origin. Prove that it has better risk by SURE estimator. 
+
+\section{Bayes Estimators}
+\begin{fact}[Unique Bayes is Admissible]
+Idea is that if $R(\hat \theta ' ,\theta) \leq R(\hat \theta , \theta)$ for all $\theta$, it would then be Bayes. \\ provided the prior isn't super weird (eg continuous dist with an atom) 
+
+\end{fact}
+
+\begin{fact}[Constant risk Bayes is minimax]
+If not, some other estimator would render Bayes inadmissible, which would make that estimator the Bayes estimator.
+\end{fact}
+
+\begin{fact}[Bayes is not UMVU if $r_\Lambda <\infty$]
+\myworries{Under square error loss, Bayes estimators are biased }
+\end{fact}
+\section{UMVU}
+
+\section{MRE}
+\begin{fact}[UMVU is MRE if UMVU is location equivariant]
+(In a location model)
+\myworries{Is this just with square error loss?}
+
+\end{fact}
+\section{Minimax}
+
+\end{document}
