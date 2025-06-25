@@ -1,0 +1,322 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+%\usepackage[
+%  backend=biber,
+%  style=numeric,      % plain numbers: [1]
+%  sorting=none,       % keep refs in citation order
+%  maxbibnames=99      % show all authors in bib
+%]{biblatex}
+
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{305a}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+
+\begin{document}
+\maketitle
+\section{Basic testing}
+\begin{enumerate}
+    \item Paired t-test
+Observations $A_i, B_i$ paired, then $Z_i=A_i - B_i \simiid N(\mu, \sigma^2)$, test $\calH_0 : \mu=0$. 
+
+$$t = \frac{\bar z}{s_z/\sqrt{n}} \sim t_{n-1} \quad \text {under null} \quad \text {where } \quad s_z^2 = \frac{1}{n-1} \sum_{i=1}^n (z_i- \bar z)^2.$$
+
+\item Non parametric test, eg sign test, permutation test
+
+
+$$\calH_0 \text{ is symmetric about } 0.$$
+
+\item Unpaired 
+$$t = \frac{\bar x - \bar y}{s \sqrt{1/n_1 + 1/n_2}} \quad \text {where } s^2 = \frac 1 {n_1 + n_2 -2} \sum_{i=1}^n (x_i - \bar x)^2  + (y_i -\bar y)^2 $$
+
+\end{enumerate}
+
+\section{Least Squares Basics}
+
+\begin{align}
+    \hat \beta &= \arg \min \|y - X\beta \|^2  \\
+    & \iff X\hat \beta = \operatorname{Proj}_{\operatorname{range}(X)}(y)\\
+    & \iff y - X \hat \beta \perp \operatorname{range}(X)\\
+    &\iff \langle Xv, y - \hat y\rangle =0 \quad \forall v\\
+    & \iff X^T (y-\hat y) = 0\\
+    & \iff X^TX \hat \beta = X^T y.
+\end{align}
+
+If $X$ is not full rank, then $\hat \beta$ is not necessarily unique, but $\hat y$ is. \\
+Unbiased:
+
+$$\E \hat \beta = \E (X^TX)^{-1} X^T y = \beta$$
+
+Covariance:
+
+$$\Cov \hat \beta = \sigma^2 (X^T X)^{-1} X^T X (X^TX)^{-1} = \sigma^2 (X^TX)^{-1} $$
+
+
+
+\subsection{Hat Matrix}
+Facts:
+\begin{enumerate}
+	\item $\range X = \range H$
+	\item $\range (I-H) = \range H^\perp = \ker H$ (projection onto orthogonal complement)
+	\item $H(I- H) = 0$ (orthogonality)
+	\item $X \perp I - H$, ie $X^T (I - H) =(I-H)X = 0$
+\end{enumerate}
+
+
+
+\section{OLS Residuals and Canonical Change of Basis}
+Uses:
+\begin{enumerate}
+    \item Estimate $\sigma$
+    \item Assess adequacy of model (homoskedasticity, distribution)
+\end{enumerate}
+$$\hat \sigma^2 = \frac{\|y-\hat y\|^2}{n-2},$$
+\begin{enumerate}
+	\item Columns of $X$ are orthogonal to residuals
+	\item  predictions vector is orthogonal to the residuals. 
+	\item If intercept, then residuals sum to $0$
+	\item 
+\end{enumerate}
+\subsection{Canonical Change of Basis}
+
+\section{Distributions and testing}
+\begin{fact}[Independence of $\hat \beta$ and $\hat \sigma^2$]
+    Independence of $\hat \beta$ and $\hat \sigma^2$:
+    \begin{proof}
+    	
+	$$\begin{pmatrix}
+		\hat \beta \\
+		Y - \hat Y 
+	\end{pmatrix} = \begin{pmatrix}
+		(X^TX)^{-1} X^T \\
+		I_n - H
+	\end{pmatrix}Y \sim \calN ((\beta,0)^T, \begin{pmatrix}
+		\sigma^2 (X^TX)^{-1} & 0 \\
+		0 & \sigma^2 (I - H)
+	\end{pmatrix}$$
+	    \end{proof}
+\end{fact}
+
+
+\begin{fact}[Distribution of $\hat \sigma^2$]
+$$\hat \sigma^2 = \frac{1}{n} \|y - \hat y\|^2 \sim \frac{\sigma^2}{n} \chi^2_{n-p}.$$
+Related to canonical change of basis. 
+\end{fact}
+\begin{fact}[F-Test]
+F-test. Let full model have $p = p_1 + p_2$ predictors and reduced model have $p_1$ predictors (Eg, $p_1 = 1$, $p_2 = p-1$ in the case when reduced is just intercept).
+$$\frac{\|\hat y - \hat y_{reduced} \|^2/p_2}{RSS/(n-p_1 - p_2)}\sim F_{p_2, n-p_1 - p_2}$$
+
+Note that $F_{1,n-p} = t^2_{n-p}$ and equivalent to below
+\end{fact}
+\begin{fact}[T-test]
+$$\frac{\hat \beta_i - \beta_i}{\widehat{SE} (\hat \beta_i)} \sim t_{n-p}, \quad \text{where use estimate }  \hat \sigma^2 = \frac{1}{n-p} \|y-\hat y\|^2,$$
+so in testing $\beta_j = 0$:
+$$\frac{\hat \beta_j }{\sqrt{ [(X^TX)^{-1} ]_{jj}}RSS/(n-p)}.$$
+
+More generally, for testing $\calH_0: v^T \beta = 0$:
+
+$$\frac{v^T \hat \beta_j }{\sqrt{ [v^T (X^TX)^{-1} ]v}RSS/(n-p)}\sim t_{n-p}.$$
+\end{fact}
+
+
+\begin{definition}[$R^2$]
+    $$R^2 = 1 - \frac{\|y - \hat y\|^2}{\| y - \bar y\|^2}.$$
+\end{definition}
+
+
+\section{Singular $X$}
+If $\rank(X)<p$, then $\hat y$ is unique but $\hat \beta$ \textbf{is not}- take a vector in the null space of $X$ and add to $\hat \beta$. \\
+Ways to cope:
+\begin{enumerate}
+    \item Restrict to \textbf{estimable} functions of $\beta$
+    \item Introduce \textbf{side-conditions} on $\beta$
+    \item Reparametrize (equivalent to $1$
+
+\end{enumerate}
+\subsection{Estimability}
+Eg if neither $\hat \beta_1$ nor $\hat \beta_2$ are uniquely determined, but $\hat \beta_2 - \hat \beta_1$ \textbf{is}. Q: For $c\in \R^p$, for which $c$ is $c\hat \beta$ uniquely determined?  Want:
+$$1) X\beta' = X\beta '' \implies c\beta' = c\beta'' $$
+equivalently, find $c$ s.t.
+$$X\beta = 0 \implies c\beta = 0$$
+
+\begin{definition}[Estimability]
+    $c\beta$ \textbf{estimable} if any of the following:
+    \begin{enumerate}
+        \item $c\hat \beta $ uniquely determined by $\hat y = X\hat \beta $ (even if $\hat \beta$ not unique 
+        \item $X\beta = 0 \implies c\beta = 0$
+        \item $c \in \operatorname{row}(X)$
+        \item $\exists$ $a\in \R^n$ such that $a^T X = c$
+        \item $\exists$ linear unbiased estimate of $c\beta $, ie $\exists a\in \R^n$ such that $\E_\beta (a^T y) = c\beta $
+    \end{enumerate}
+\end{definition}
+\begin{theorem}[Gauss Markov]
+    Every estimable $c\beta$ has a \textbf{unique}, unbiased, linear estimate which has minimum variance within this class. The estimate is $c\hat \beta$, where $\hat \beta$ is any OLS estimate. \\
+    (Assumes homoskedastic noise) 
+    \begin{proof}
+        (Sketch). Fix $c$ estimable. Exists some $a \in \R^n$ such that $\E a^T y  = c\beta$. Then write $a = a^* + (a- a^*)$ where $a^* = \operatorname{Proj}_{\range X}(a)$. Then $(a^*)^T X = a^TX = c$, show minimum variance:
+        
+        $$\Var (a^T y) = a^T \Cov y a = \sigma^2 \| a\|^2 = \Var [(a^*)^T y]  + \sigma^2 \|a- a^*\|^2 $$
+        
+        then show $(a^*)^T y = c\beta $ 
+    \end{proof}
+    \end{theorem}
+
+    \begin{fact}[Gauss Markov Assumptions]
+        Gauss Markov requires no distributional assumptions, just first and second moments of errors.
+    \end{fact}
+    \subsection{Side Conditions}
+    We don't want to just remove one of the features even if its linearly dependent, because then would change interpretation; eg, treatment effects. Instead of imposing $\beta_1=0$ (removing a feature), impose something like $\beta_1 + \beta_2 + \beta_3 = 0$. 
+    \begin{fact}[Estimability and Side Conditions]
+        Side conditions must be in terms of \textbf{\textit{non-}}estimable functions; ie, constrain the thing we can't estimate uniquely
+    \end{fact}
+    Let $H\in \R^{s\times p}$ set of side conditions, ie require $H\beta = 0$. 
+
+    \begin{theorem}[Side Conditions, ie when $\exists$ unique $\hat \beta$ satisfying conditions ]
+        $X\hat \beta = \hat y$, $H\beta = 0 $ has exactly one solution for any $\hat y\in \range X$ iff: 
+        \begin{enumerate}
+            \item $\row H \bigcap \row X = \emptyset $ (side conditions not in row space, ie $\vec h_i \beta$ is not estimable 
+            \item $\row H \oplus \row X = \R^p$, ie $\rank \begin{pmatrix}
+                X\\
+                H
+            \end{pmatrix} = p$
+        \end{enumerate}
+        Ie: enough conditions to span the space (part 2) , but not too many (part 1), so that we can still solve $\hat y = X\hat \beta $
+    \end{theorem}
+
+    \begin{corollary}[Side conditions make components of $\beta$ estimable]
+        If we satisfy the above, then uniqueness from the side conditions $\beta^h$ has estimable components, where $\beta = \beta^h + \beta^x$ where $\beta^h \in (\row H)^\perp   $, $\beta^x \in (\row X)^
+\perp $.\\
+\myworries{??}
+    \end{corollary}
+    One idea for incorporating constraints is let $C_0$ be constraints such that $C_0 \beta = 0$, with $C_0 \in \R^{s\times p} $ then let 
+    $$C = \begin{pmatrix}
+        C_0\\
+        C_1
+    \end{pmatrix},$$
+    so that $C\in \R^{p\times p}$ full rank.
+    Write
+    $$X\beta = XC^{-1} C \beta = X_1^* \beta_1^* \quad \text { where } \beta_1^* = C_1 \beta\in \R^s $$
+    We can \textbf{transform} a rank-deficient $X\in \R^{n\times p}$ to a full rank $X_1^* \in \R^{n\times s}$, so that all the components of $\beta_1^*$ are estimable.
+
+\section{Least Squares Computations}
+First assume $X$ full rank. Find a $Q$ orthogonal ($\{x_1,\ldots, x_p\} \mapsto \{q_1,\ldots, q_p\}$ ONB, then form $Q$ based on completing the ONB of $\R^n$).  such that:
+
+$$Q^T X = R = \begin{pmatrix}
+    \tilde R_{p\times p}\\
+    0_{n-p \times p}
+\end{pmatrix}$$
+
+Then with $Q^T  y= y^*$,
+$$\|y - X\beta \|^2 = \| Q^T y - Q^T X\beta \|^2  = \| y_1^* - \tilde R \beta \|^2 + \|y_2^*\|^2 .$$
+
+Since $X$ full rank, then $\tilde R$ is surjective, so can make the first term $0$. \\
+Ie, $X = QR$!\\ 
+If $X$ \textbf{not} full-rank, write $X = QRS^T$. $Q$ takes the $p$ columns and finds ONB. Then $S^T$ takes the resultant rows and finds a $r$ dimensional ONB. Yields:
+
+$$\|y-X\beta \|^2 = \| Q^T y - RS^T \beta\|^2 $$
+Let $Q^T y = \begin{pmatrix}
+    y_1^*\in \R^{r}&\\
+    y_2^* \in \R^{n-r}
+\end{pmatrix}$
+$$\iff \|y-X\beta\|^2 = \|y_1^* - \tilde R \beta_1^*\|^2 + \|y_2^*\|^2 $$
+Again make first term $0$ since $\rank \tilde R = r$.
+\begin{fact}[Why QR?]
+    QR decomposition is useful for the above, since if we can compute it efficiently, it's easy to solve an upper triangular system and we don't have to instantiate $X^T X$. 
+\end{fact}
+\subsection{Householder Transforms}
+\begin{definition}[Householder Transforms (HHT)]
+    Any matrix $Q = I - uu^T$ with $\|u\|_2 = 1$ is a HHT.
+\end{definition}
+\begin{fact}[Properties of HHT]
+Some properties:
+    \begin{enumerate}
+        \item Symmetric
+        \item Orthogonal
+        \item $u$ is eigen vector with evalue $-1$
+        \item All elements of $\{u\}^\perp$ are e-vectors with evalue $1$ (ie, invariant subspace)
+    \end{enumerate}
+\end{fact}
+\begin{fact}[Existence of HHT s.t $a\mapsto b$]
+    For any pair of vectors $a,b$ of same length, $\exists$ HHT that transforms $a\to b$. Namely,
+    $$u = \frac{b-a}{\|b-a\|}$$
+\end{fact}
+Our goal here is to transform $X$ via orthogonal matrix to get upper triangular $R$. \\ 
+\begin{fact}[QR Decomposition via HHT]
+    Recipe:
+    \begin{enumerate}
+    \item If necessary, permute the columns of $X$ st first $r = \rank X$ are linearly independent (Permutation matrices are orthogonal)
+        \item Let $Q_1$ be HHT that takes $x_1 \mapsto \|x_1\|e_1$
+        \item Then $Q_1 X$ has first column all 0's except first entry. 
+        \item Repeat for the submatrix that is not yet upper diagonal. 
+        \item $QX = Q_p \ldots Q_1 X = R$
+    \end{enumerate}
+\end{fact}
+\subsection{Given's Rotation}
+\subsection{Gram-Schmidt}
+\begin{fact}[Orthogonal Predictors in OLS]
+    If predictors are orthogonal:
+    $$\hat \beta_j = \frac{\langle y, x_j \rangle }{\|x_j\|^2},$$
+    since $X^T X$ is diagonal.\\
+    Note this is analogous to if we just have a single predictor $x$ and do regression through the origin. Orthogonal predictors lets us just do regression separately for each predictor. \\
+    Further, if $Q$ are orthonormal predictors, then $\hat \beta = Q^T y$.
+\end{fact}
+The idea here is to convert predictors into orthogonal predictors, solve easy OLS, then convert back. \\ 
+GS: $q_i = x_i - \sum_{k=1}^{i-1} \frac{\langle x_i, q_k\rangle }{\|q_k\|^2} q_k $, then $e_i = q_i /\|q_i\|.$ In matrix form:
+
+$$X= \tilde Q_{n\times p} \tilde R_{p \times p},$$ could complete the basis to get a full QR decomp. 
+\begin{fact}[Gram Schmidt/OLS connection]
+    If we first calculate coefficients $\hat \beta^*$ of $y$ on $\{q_j\}_{j\leq p}$, then $$\hat \beta_{OLS} = \tilde R \hat \beta^* = \tilde R Q^T y.$$
+    The idea is we can solve the easy problem in the orthogonalized coordinates, then \textbf{convert back using the upper diagonal matrix from the Gram-Schmidt process}.
+\end{fact}
+Nice trick is since $\tilde R$ has $1$ on diagonal, then for the \textit{last} OLS coefficient,
+$$\hat \beta_p = \hat \beta^*_p  = \frac{y^T q_p} {\|q_p\|^2} \quad \text{ where } q_p = x_p - \sum_{i<p} \frac{\langle x_p, q_k\rangle}{\|q_k\|^2} = x_p - \Proj_{\operatorname{span} x_{(-p)}}(x_p).$$
+In general, the coefficient for each $x_j$ is the coefficient in a simple regression of $y$ on $x_j$, but then adjusted for $x_{-j}$: we can always just reorder and get the same solution.
+\subsection{Modified Gram Schmidt}
+Better numerical stability than regular GS.
+\subsection{SVD}
+$$X = U_{n\times n} D_{n\times p} V^T_{p\times p} = U_{n\times r} D_{r\times r} V^T_{r\times p}$$
+\begin{example}[Given $\{x_i\}_{i\leq n}$, find best fitting hyperplane ]
+    $$\min_{\alpha_0,\gamma_i, V:V^T V  =I } \sum_{i=1}^n \|x_i - (\alpha_0 + V\gamma_i)\|^2 $$
+We can just solve by the 305c style PCA low rank approx 
+    $$\|X_{n\times p} - \Gamma_{n\times p} V_{p\times p}^T \|_F^2 $$
+    where $\Gamma = \begin{pmatrix}
+        \gamma_1,\ldots ,\gamma_n
+    \end{pmatrix}^T$
+\end{example}
+\begin{example}[Errors in Variables Regression with SVD]
+Model:
+$$y_i = z_i^T \beta + \epsilon_i, \quad \epsilon_i \sim N(0,\sigma^2_\epsilon) $$
+but instead of $z_i$, we actually observe $$x_{ij} = z_{ij} + e_{ij}, \quad e_{ij}\sim N(0,\sigma^2_E) $$
+$$\L = \sum_{i=1}^n \frac{y_i - z_i^T \beta}{\sigma^2_\epsilon} + \sum_{j=1}^p \sum_{i=1}^n \frac{(x_{ij} - z_{ij})^2}{\sigma^2_E.}$$
+
+If $\sigma^2_\epsilon = \sigma^2_E$, then def $X^* = [y:X]$, $B = [\beta:I]$, then minimize $\|X^* -ZB\|_F^2 $, ie just a low rank approximation. 
+\end{example}
+\subsection{Updating/Downdating LS Computations}
+\begin{fact}[Woodbury Inversion]
+    $$(A+uv^T)^{-1} = A^{-1} - A^{-1} u(I + v^T A^{-1} u)^{-1} v^T A^{-1} $$
+\end{fact}
+Suppose we've computed LS fit and want to \textbf{update} the fit using a new point. New $(X^TX)^{-1}$:
+$$(X^TX + x_{n+1}x_{n+1}^T)^{-1} $$
+Update $\hat \beta$ using Woodbury.\\\\
+Can use the same trick for downdating (ie LOO fit); $(X^TX - x_ix_i^T)^{-1}$. Idea that $X^T y = X_{(-i)}^T y_{(-i)} + x_i y_i $.
+
+\section{Model Selection (ESL Ch7)}
+\end{document}
