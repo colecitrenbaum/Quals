@@ -319,4 +319,20 @@ Update $\hat \beta$ using Woodbury.\\\\
 Can use the same trick for downdating (ie LOO fit); $(X^TX - x_ix_i^T)^{-1}$. Idea that $X^T y = X_{(-i)}^T y_{(-i)} + x_i y_i $.
 
 \section{Model Selection (ESL Ch7)}
+
+
+
+\section{Regularization (Ridge, Lasso)}
+\subsection{Ridge}
+Ridge objective:
+$$\hat \beta_{ridge} = \arg \min _\beta \frac{1}{2} \|y - X\beta\|^2 + \lambda \|\beta\|_2^2 = (X^TX + \lambda I_p )^{-1}X^T y $$
+Degrees of freedom:
+$$df = \sum_{j=1}^p \frac{\sigma^2_j}{\sigma^2_j + \lambda} \quad \text{ where } \sigma_j \text{ are singular values of } X.$$  
+\subsection{Lasso}
+
+Lasso objective: 
+$$\hat \beta_{lasso} = \arg \min _\beta \frac{1}{2} \|y - X\beta\|^2 + \lambda \|\beta\|_1$$ 
+
+
+
 \end{document}
