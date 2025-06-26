@@ -128,7 +128,7 @@ $\delta^*$ is unbiased and for all other $\delta$, $R(\delta^*,g(\theta)) \leq R
 Note that if we have an unbiased estimator, we can Rao-Blackwellize with a sufficient statistic and still have unbiased estimator. 
 \begin{theorem}[Lehman-Scheffe]
 If unbiased estimator is function of CSS, it is UMVU. (Since there exists at most one unbiased estimator that's function of $T$ by completeness).\\\\
-Alternate statement: if there exists any unbiased estimator and a CSS $T$, then there is a unique unbiased estimator that's a function of $T$, which is UMVU (UMRU for any convex loss). Unique UMVU if strict convex loss, since this makes Jensen strict. 
+Alternate statement: if there exists any unbiased estimator and a CSS $T$, then there is a unique unbiased estimator that's a function of $T$, which is UMVU (UMRU for any convex loss). Unique UMRU if strict convex loss, since this makes Jensen strict. 
 
 \end{theorem}
 \begin{recipe}[UMVU with CSS]Steps:
@@ -143,10 +143,17 @@ Note that UMVU can be inadmissible - see James-Stein or the Poisson UMVU for $g(
 Let $\hat \theta$ be an unbiased estimator with $E_P \hat\theta^2 <\infty$ if $U(X)$ is an unbiased estimator of $0$ for all $P$, then:
 
 $$\hat \theta \text { UMVU } \iff E_P [\hat \theta(X) U(X) ] = 0 \text { for all unbiased estimators of } 0 \text{ and for all P}$$
-An application is showing that the addition of UMVUs is UMVU. \\
+An application is showing that the addition of UMVUs is UMVU. Also, product of UMVUs is UMVU for its expectation. \\
 Also reasonable to try to show not UMVU. 
 \myworries{Come back to Ex 2.3 in Notes}
 \end{theorem}
+\begin{theorem}[Cramer Rao LB]
+For any $\hat \theta$ unbiased for $\theta$:
+
+$$\Var_\theta \hat \theta \succ I_\theta^{-1}$$
+when $\{P_\theta\}$ is QMD with non singular $I_\theta$. 
+\end{theorem}
+
 \subsection{UMVU Examples}
 \begin{enumerate}
 	\item Basic Expo Fam examples -- eg $\bar X$ in Bernouli or Normal with known variance 
@@ -183,6 +190,12 @@ If $\calF_0 \subset \calF$ and they have the same null sets, then completeness i
 \begin{recipe}[Non-existence of Non-parametric UMVU]
 Find two different subclasses with different unique UMVU that are also unbiased in the big class -- no UMVU in big class.	
 \end{recipe}
+If we can't use Lehman-Scheffe, try one of the following ideas:
+\begin{enumerate}
+	\item Cramer-Rao lower bound
+	\item Orthogonality condition
+	\item Subfamily arguments
+\end{enumerate}
 \subsection{Non-convex loss functions}
 If loss is bounded, there is no UMRU estimator. This is unbiased:
 $$\delta_\pi = \begin{cases}
@@ -232,7 +245,7 @@ Then there exists an MRE $\hat \theta^*(X) = \hat \theta_0(X) - v(Y)$.
 \end{recipe}
 
 Want to minimize 
-	$$\E-\theta [ \rho (\delta_0(X)- V(Y) - \theta)] = \E_0 \rho (\delta_0(X) - V(Y))$$
+	$$\E_\theta [ \rho (\delta_0(X)- V(Y) - \theta)] = \E_0 \rho (\delta_0(X) - V(Y))$$
 	Apply Tower property and minimize the inner expectation. For square error yields:
 	$$V = \E_0 [\delta_0 (X) |Y)]$$
 	So $\delta^* = \delta_0 - E_0 [\delta_0 |Y]$
@@ -265,6 +278,12 @@ In a location model, the UMVU is location equivariant. Since MRE is the best amo
 \myworries{Is this just with square error loss?}
 
 \end{fact}
+
+
+\begin{theorem}[Anderson's Lemma]
+\myworries{Review this}
+$Z\sim N(0,\Sigma)$, and $\ell$ is bowl shaped, then $\E \ell (Z) \leq \E \ell (Z+U)$ for any $U\indep Z$. 
+\end{theorem}
 
  \begin{definition}[Pitman Estimator]
 \end{definition}
