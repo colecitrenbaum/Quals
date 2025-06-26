@@ -100,7 +100,33 @@ Superposition and thinning.
 \end{fact}
 
 
+\section{Basic set theory and measure theory}
+\begin{definition}[Sigma Algebra]
+\end{definition}
+\begin{definition}[Algebra/Field]
+\end{definition}
 
+
+
+
+
+\begin{definition}[Outer measure]
+Defined by 
+\begin{enumerate}
+	\item A non-negative set function 
+	\item ......
+\end{enumerate}
+The typical outer measure is 
+\myworries{WRite this out}
+\end{definition}
+
+\begin{definition}[Measurable sets]
+$E$ is $\mu^*$ measurable if for all $B\subset \Omega$:
+
+$$\mu^* (B) = \mu^*(B\cap A) + \mu^*(B \cap A^c).$$
+\end{definition}
+
+Littlewood's principles idea. 
 
 \section{Pi-Lambda and Good Sets}
 
@@ -114,6 +140,12 @@ $L$ lambda system if
 	\item closed under complements
 	\item closed under countable disjoint unions
 \end{enumerate}
+Alternative definition:
+\begin{enumerate}
+	\item $\Omega \in L$
+	\item $A,B \in L$ and $A\subset B$ then $B\setminus A \in L$
+	\item $A_1, A_2,\ldots, \in L$ an increasing sequence of sets, then $\bigcup_i A_i \in L$
+\end{enumerate}
 \end{definition}
 
 \begin{theorem}[$\pi-\lambda$ Theorem]
@@ -122,6 +154,31 @@ Use to proof uniqueness of extension from an algebra to the sigma field.
 \end{theorem}
 \begin{example}[Quals 2017, Question 2]
 \end{example}
+
+
+\begin{theorem}[Monotone Class Theorem]
+Use def:
+\begin{definition}[Monotone Class]
+$M$ is a monotone class if 
+\begin{enumerate}
+	\item Closed under increasing unions
+	\item Closed under decreasing intersections
+\end{enumerate}
+\end{definition}
+If an algebra $A$ is contained in a monotone class $M$, then $\sigma(A) \subset \sigma(M)$.
+\end{theorem}
+\begin{theorem}[Monotone Class for functions]
+\myworries{Double check this}\\
+$M$ be a vector space of measurable functions such that 
+\begin{enumerate}
+	\item $1 \in M$
+	\item $M^+$ (positive functions in $M$) is closed under inreasing limits 
+	\item $\Ind_A \in M$ for all $A$ in a pi system generating $\calF$.
+\end{enumerate}
+Then $M$ contains all bounded measurable functions
+\end{theorem}
+
+
 
 \begin{theorem}[Independent $\pi$ systems generate independent sigma algebras]
 $$\{C_i\}_{i\in I} \text { independent} \implies \{\sigma(C_i)\} \text{ independent} $$
@@ -137,11 +194,31 @@ Check that generating pi systems are independent, ie $P(X\leq b, Y\leq a) = \pro
 $$\int_\Omega f(\omega) d\mu(\omega) = \sup \left (\sum_{i=1}^n \nu_i \mu(A_i)\right)$$
 where $\nu_i = \inf_{\omega \in A_i} f(\omega)$ and the sup is over all partitions of $\Omega$.
 \end{definition}
+\begin{theorem}[MCT]
+Note that can also do for general functions (not necessarily non negative) so long as $f_n \geq g \in L^1$.
+\end{theorem}
 \begin{theorem}[Fatou's Lemma]
 $$\int \lim \inf_n f_n d\mu \leq \lim \inf_n \int f_n d\mu $$
 \end{theorem}
 \begin{theorem}[DCT]
 If $f_n \to f$ a.e $\omega$, and there exists $g$ such that $|f_n(\omega)|\leq g(\omega)$ a.e $\omega$ and $\int gd\mu <\infty$ then exchange integral and limit. Must dominate the sequence. 
+\end{theorem}
+
+\begin{theorem}[Scheffe's Lemma]
+Is a statement about combining $L^1$ and as convergence. If $f_n \conas f\in L^1$, then:
+$$\| f_n -f\|_{L^1} \to 0 \iff \int |f_n| d\mu \to \int |f|d\mu $$
+\end{theorem}
+
+
+\begin{theorem}[Generalized DCT]
+\myworries{????}
+If $|f_n|\leq g_n$ such that $g_n \to g \in L^1$ (convergence in $L^1$) then $\int f_n d\mu \to \int fd\mu$
+\end{theorem}
+
+\begin{theorem}[Reverse Fatou]
+If $f_n \leq g \in L^1$ then :
+
+$$\lim \sup_n \int f_n d\mu \leq \int \lim \sup f_n d\mu$$
 \end{theorem}
 
 \section{Product $\sigma$-algebras}

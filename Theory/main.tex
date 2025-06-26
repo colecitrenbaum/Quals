@@ -140,7 +140,12 @@ Alternate statement: if there exists any unbiased estimator and a CSS $T$, then 
 \end{recipe}
 Note that UMVU can be inadmissible - see James-Stein or the Poisson UMVU for $g(\theta).= \exp(-3\lambda)$ example in Lecture 5. 
 \begin{theorem}[Orthogonality Condition]
-\myworries{Add}
+Let $\hat \theta$ be an unbiased estimator with $E_P \hat\theta^2 <\infty$ if $U(X)$ is an unbiased estimator of $0$ for all $P$, then:
+
+$$\hat \theta \text { UMVU } \iff E_P [\hat \theta(X) U(X) ] = 0 \text { for all unbiased estimators of } 0 \text{ and for all P}$$
+An application is showing that the addition of UMVUs is UMVU. \\
+Also reasonable to try to show not UMVU. 
+\myworries{Come back to Ex 2.3 in Notes}
 \end{theorem}
 \subsection{UMVU Examples}
 \begin{enumerate}
@@ -173,7 +178,7 @@ If UMVU in subfamily and unbiased in big family, must be UMVU in big family \tex
 \end{proof}
 \end{recipe}
 \begin{fact}[Completeness in subfamily]
-If $\calF_0 \subset \calF$ andthey have the same null sets, then completeness in $\calF_0$ implies completeness in $\calF$. 
+If $\calF_0 \subset \calF$ and they have the same null sets, then completeness in $\calF_0$ implies completeness in $\calF$. 
 \end{fact}
 \begin{recipe}[Non-existence of Non-parametric UMVU]
 Find two different subclasses with different unique UMVU that are also unbiased in the big class -- no UMVU in big class.	
@@ -184,7 +189,88 @@ $$\delta_\pi = \begin{cases}
 	g(\theta_0) \text{ wp } 1-\pi\\
 	\frac 1 \pi [\delta_0 (X) - g(\theta_0)] + g(\theta_0)
 \end{cases}$$
-and its risk is $\pi M$, so it could be arbitrarily small. 
+and its risk is $\pi M$, so it could be arbitrarily small.
+
+
+
+\section{MRE}
+Big picture-- there's an easy recipe for MRE for square error or absolute error if we pick any old $\delta_0$ equivariant function of CSS. 
+
+\begin{definition}[Location models]
+Density satisfies
+$$f_{\theta + h} (x+h) = f_\theta(x)$$
+Think: normal at its mean has same density as a shifted normal at shifted mean.\\ 
+A \textbf{location invariant loss} is $\ell(a + h,\theta + h ) = \ell(a,\theta)$ for all $a, \theta, h$. 
+\end{definition}
+Want location equivariant estimators, ie $\hat \theta(x + h) = \hat(\theta) + h$ -- if our observations all shift by some amount, our estimate of the location should also shift by that amount. 
+
+\begin{fact}[Bias, variance, risk of equivariant estimators]
+Do not depend on $\theta$. Ie, 
+$$\E_\theta \hat \theta = \theta + b \text{ for all } \theta $$
+for risk, since it's constant, we can hope to find the best among all equivariant estimators.
+\end{fact}
+
+\begin{definition}[MRE]
+Satisfies equivariance condition: $$\hat \theta(x+c, u) = \hat \theta (x,u) + c$$
+and minimum risk condition amongst all equivariant estimators. 
+\end{definition}
+\begin{definition}[Characterization of location \textbf{invariant} estimators]
+Location invariant means $U(X_1 + c,\ldots,X_n + c) = U(X)$. Characterize by:
+$U$ location invariant $\iff U = V(y_1, \ldots, y_{n-1})$ where $y_i = X_i - X_n$. 
+\end{definition}
+\begin{fact}[Characterization of location \textbf{equivariant} estimators]
+Let $\delta_0$ be \textbf{any} location equivariant estimator, eg $\delta_0 = \bar X$. 
+$$\delta \text { is location equivariant} \iff \delta(X_1,\ldots,X_n) = \delta_0(X_1,\ldots,X_n) + U(X_1,\ldots, X_n) $$ 
+where $U$ is location \textbf{invariant}. Then from invariant characterization:
+$$\iff \delta(X_1,\ldots,X_n) = \delta_0(X_1,\ldots,X_n) + V(Y_1,\ldots, Y_{n-1})$$
+\end{fact}
+
+\begin{recipe}[Finding the MRE]
+Let $X_i$ observations iid from location model and let $Y = (X_1 - X_n, \ldots, X_{n-1} - X_n)$. Let $\hat \theta_0$ be any location equivariant estimator of $\theta_0$ with finite risk. If the following is well-defined:
+$$v(y) = \arg \min _v E_0 [\ell(\hat \theta_0 (X) - v, 0) \mid Y = y]$$
+Then there exists an MRE $\hat \theta^*(X) = \hat \theta_0(X) - v(Y)$.	
+\end{recipe}
+
+Want to minimize 
+	$$\E-\theta [ \rho (\delta_0(X)- V(Y) - \theta)] = \E_0 \rho (\delta_0(X) - V(Y))$$
+	Apply Tower property and minimize the inner expectation. For square error yields:
+	$$V = \E_0 [\delta_0 (X) |Y)]$$
+	So $\delta^* = \delta_0 - E_0 [\delta_0 |Y]$
+Notice that the $Y_i$ here are ancillary so if we pick $\delta_0$ function of CSS, easy. 
+
+
+If we can make $\delta_0$ a function of CSS, then we can apply Basu
+\begin{recipe}[MRE for Square Error Loss]
+	Choose $\delta_0$ equivariant function of CSS. Then $\delta^* = \delta_0 - E_0 \delta_0$ is MRE. 
+	\begin{example}[$X_i \sim N(\theta,1)$]
+	Let $\delta_0 = \bar X$. Then $E_0 \delta_0 = 0$. So $\bar X$ is MRE.
+\end{example}
+\end{recipe}
+Note for absolute error, just do median$_{\theta=0}[\delta(X)|Y]$ instead of expectation. Ie find $m$ such that $P(X\leq m) \geq 1/2$ and $P(X\geq m) \geq 1/2$. 
+
+\begin{theorem}[Existence of MRE]
+If loss is convex and not monotone, then MRE exists by the previous theorem. If strictly convex, unique. 
+\end{theorem}
+
+
+
+
+
+\begin{fact}[MRE is Unbiased (under squared error loss)]
+Since the bias does not depend on $\theta$, just subtract off whatever bias. 
+\end{fact}
+
+\begin{fact}[UMVU is MRE if UMVU is location equivariant]
+In a location model, the UMVU is location equivariant. Since MRE is the best amongst equivariant estimators, and any competing equivariant estimators are unbiased..
+\myworries{Is this just with square error loss?}
+
+\end{fact}
+
+ \begin{definition}[Pitman Estimator]
+\end{definition}
+\begin{theorem}[Mini-convolution theorem]
+\end{theorem}
+
 \section{James-Stein Estimator}
 Setup: $\calN(\mu,\sigma^2)$ with $\sigma^2$ known. 
 
@@ -217,23 +303,6 @@ If not, some other estimator would render Bayes inadmissible, which would make t
 \myworries{Under square error loss, Bayes estimators are biased }
 \end{fact}
 
-\section{MRE}
-\begin{definition}[MRE]
-Equivariant condition: $$\hat \theta(x+c, u) = \hat \theta (x,u) + c$$
-and minimum risk condition amongst all equivariant estimators. 
-\end{definition}
-\begin{fact}[MRE is Unbiased]
-.... 
-\end{fact}
-\begin{fact}[Bias, variance, risk in MRE]
-Do not depend on $\theta$. Ie, 
-$$\E_\theta \hat \theta = \theta + b \text{ for all } \theta $$
-\end{fact}
-\begin{fact}[UMVU is MRE if UMVU is location equivariant]
-(In a location model)
-\myworries{Is this just with square error loss?}
-
-\end{fact}
 \section{Minimax}
 A Bayes or admissible estimator is constant risk, then it is minimax. 
 
