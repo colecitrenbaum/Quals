@@ -126,7 +126,11 @@ $E$ is $\mu^*$ measurable if for all $B\subset \Omega$:
 $$\mu^* (B) = \mu^*(B\cap A) + \mu^*(B \cap A^c).$$
 \end{definition}
 
-Littlewood's principles idea. 
+Write about littlewood's principles here 
+
+\begin{example}[Non-measurable sets]
+\myworries{Todo}
+\end{example}
 
 \section{Pi-Lambda and Good Sets}
 
@@ -147,7 +151,7 @@ Alternative definition:
 	\item $A_1, A_2,\ldots, \in L$ an increasing sequence of sets, then $\bigcup_i A_i \in L$
 \end{enumerate}
 \end{definition}
-
+Note that a collection is a $\sigma$-algebra $\iff$ it is both a pi system and a lambda system.  
 \begin{theorem}[$\pi-\lambda$ Theorem]
 If $P$ is a $\pi$ system and $L$ is a $\lambda$-system with $P\subset L$, then $\sigma(P)\subset L$.\\
 Use to proof uniqueness of extension from an algebra to the sigma field.
@@ -165,18 +169,19 @@ $M$ is a monotone class if
 	\item Closed under decreasing intersections
 \end{enumerate}
 \end{definition}
-If an algebra $A$ is contained in a monotone class $M$, then $\sigma(A) \subset \sigma(M)$.
+If an algebra $A$ is contained in a monotone class $M$, then $\sigma(A) \subset M$.
 \end{theorem}
 \begin{theorem}[Monotone Class for functions]
 \myworries{Double check this}\\
-$M$ be a vector space of measurable functions such that 
+$M$ be a vector space of $\R$-valued functions on $\Omega$ such that
 \begin{enumerate}
 	\item $1 \in M$
-	\item $M^+$ (positive functions in $M$) is closed under inreasing limits 
-	\item $\Ind_A \in M$ for all $A$ in a pi system generating $\calF$.
+	\item $M$ is a vector space over $\R$. Ie closed under addition and scalar mult
+	\item If $h_n\geq 0\in M$ and $h_n\uparrow h$, then $h\in M$.
 \end{enumerate}
-Then $M$ contains all bounded measurable functions
+Then if $P$ is a pi system such that $\Ind_A \in M$ for all $M\in P$, then $M$ contains all functions that are measurable with respect to $\sigma(P)$. 
 \end{theorem}
+Ie want to prove something about some functions measurable on $\sigma(P)$... 
 
 
 
@@ -186,9 +191,105 @@ $$\{C_i\}_{i\in I} \text { independent} \implies \{\sigma(C_i)\} \text{ independ
 Check that generating pi systems are independent, ie $P(X\leq b, Y\leq a) = \prod P(X\leq b) P(Y\leq a)$. 
 \end{example}
 
+\begin{definition}[Independence of (uncountable) collections of sets]
+$\{A_\alpha\}_{\alpha \in I}$ each be a collection of sets. Independent if any \textbf{finite subcollection }are mutually independent. 
+\end{definition}
+
+\end{theorem}
+\section{Extension theorems}
+\begin{theorem}[Caratheodory]
+Extend a measure on an algebra to a $\sigma$ algebra, uniquely if finite.\\ \\
+
+The important idea is make an outer measure, then prove the lemma is that the $\mu^*$ measurable sets in $\calF$ for a sigma algebra on which $\mu^*$ is countably additive, ie a bonafide measure. 
+\end{theorem}
+\section{Random variables}
+\begin{definition}[Random variable]
+$X: \Omega \to \bbS$ is measurable if:
+
+$$X^{-1}(B):= \{\omega: X(\omega) \in B\} \in \calF \quad \forall B\in \calS$$
+Fix an arbitrary set in the co-sigma algebra and check that its preimage is measurable-$\calF$. 
+\end{definition}
+\begin{recipe}[Measurability]
+If $\cal S = \sigma(\cal A)$ and $X^{-1} (A) \in \calF$ for all $A\in \calA$, then $X$ is measurable. \\\\
+Note-- nothing necessary about it being a pi system, just pick any convenient generators.
+\begin{proof}
+	Such sets form a sigma algebra and $\cal S = \sigma(\cal A)$. 
+\end{proof}
+\end{recipe}
+
+
+\begin{definition}[Characterize distribution functions of real-valued random variable]
+Dembo Theorem 1.2.37. 
+\begin{enumerate}
+	\item Non decreasing
+	\item $\lim_{x\to \infty} F(x) = 1$ and $\to -\infty$ gives $0$
+	\item $F$ right continuous  
+\end{enumerate}
+\end{definition}
+
+\section{0-1 Laws}
+\begin{definition}[Tail field]
+Defining $\calT_n = \sigma(X_r , r>n)$ and the tail sigma algebra of the process is $\calT = \cap_n \calT_n$.  
+\end{definition}
+\begin{theorem}[Kolmogorov 0-1]
+The tail sigma field is P-trivial. Dembo 1.4.10
 \end{theorem}
 
 \section{Borel Cantelli} 
+\begin{example}[Longest head runs]
+See Durrett. 
+\end{example}
+A helpful idea is splitting into blocks.\\ \\
+
+\textbf{Truncation} arguments. Want to show something about $\{X_n\}$. Consider:
+
+$$Y_n = X_n \Ind[|X_n| \leq c_n],$$
+which will then be integrable. Then prove something about $Y_n$, you can transfer this knowledge to knowledge about $X_n$ by the following idea:
+
+$$P(X_n \neq Y_n \text{ io}) =0 \text { if } \sum_{i=1}^n P(|X_n| >c_n) <\infty$$ 
+
+So if the above is zero, eventually $X_n = Y_n$, so the limiting behavior of $Y_n$ is the same as that of $X_n$. The difficulty is picking a $c_n$ such that the above holds. 
+
+\begin{theorem}[Borel Cantelli 3]
+\myworries{Not as useful but still check these}\\
+If you have a filtration $\{F_n\}$ and $A_n \in \calF_n$, then:
+\begin{enumerate}
+	\item ( analog of Borel Cantelli 1)
+	$$\sum_{k=1}^\infty P(A_k | \calF_{k-1} )(\omega) <\infty \implies \sum \Ind[\omega \in A_k\} <\infty$$ 
+	\item Analog of BC 2
+	$$\sum_k P(A_k|\calF_{k-1} )(\omega) = \infty \implies \frac{\sum \Ind[A_k (\omega)]}{\sum P(A_k |\calF_{k-1})(\omega)|} \to 1$$
+\end{enumerate}
+
+\end{theorem}
+
+\section{Modes of Convergence}
+\begin{recipe}[Proving as convergence]
+
+Some ideas:
+\begin{enumerate}
+	\item BC 1: check that $P(|X_n - X| > \epsilon \text{ i.o} ) = 0$. Consider \textit{subsequence trick} below. 
+	\item If $X_n \conprob X$, then $X_{n_k} \conas X$ for a subsequence. (Good for counter examples) 
+	\item $X_n\conprob X$ and $X_n$ is monotone (ie for all $\omega$, $X_n(\omega)$ is increasing in $n$), then $X_n \conas X$.
+	\item Continuous mapping theorem 
+	\item Skorohod's Representation. If $X_n \implies X$ weakly, then there exists a probability space and random variables $Z_n =^d X_n$ and $Z=^d X$ such that $Z_n \conas Z$. (Good for counter examples) 
+\end{enumerate}
+\end{recipe}
+
+\begin{theorem}[BC Subsequence trick]
+Sometimes $\sum P(A_n) =\infty$. 
+\begin{enumerate}
+	\item Pick a subsequence such that it's finite. 
+	\item Shows that $X_{n_k} \to X$ almost surely.
+	\item Apply interpolation or some other argument for everything in between.
+	
+\end{enumerate}
+\myworries{See Dembo notes subsequence section}
+Examples-- SLLN, Brownian LLN, LIL. \\ \\
+
+\myworries{SLLN in Persi notes and Renewal theorem in Dembo}
+
+\end{theorem}
+
 \section{Integration}
 \begin{definition}[Lebesgue Integral]
 $$\int_\Omega f(\omega) d\mu(\omega) = \sup \left (\sum_{i=1}^n \nu_i \mu(A_i)\right)$$
@@ -207,15 +308,14 @@ If $f_n \to f$ a.e $\omega$, and there exists $g$ such that $|f_n(\omega)|\leq g
 \begin{theorem}[Scheffe's Lemma]
 Is a statement about combining $L^1$ and as convergence. If $f_n \conas f\in L^1$, then:
 $$\| f_n -f\|_{L^1} \to 0 \iff \int |f_n| d\mu \to \int |f|d\mu $$
-\end{theorem}
-\begin{theorem}[Vitali Convergence Theorem]
-If $f_n$ is UI and $f_n\conprob f$, then $f\in L^1$ and $\|f_n -f\|_{L^1} \to 0$. 
+We always have that convergence in $L^1$ implies convergence of the expectations (without any a.s. convergence assumption) , but the other direction is Scheffe's contribution. 
 \end{theorem}
 
-\begin{theorem}[Generalized DCT]
-\myworries{????}
-If $|f_n|\leq g_n$ such that $g_n \to g \in L^1$ (convergence in $L^1$) then $\int f_n d\mu \to \int fd\mu$
-\end{theorem}
+
+%\begin{theorem}[Generalized DCT]
+%\myworries{????}
+%If $|f_n|\leq g_n$ such that $g_n \to g \in L^1$ (convergence in $L^1$) then $\int f_n d\mu \to \int fd\mu$
+%\end{theorem}
 
 \begin{theorem}[Reverse Fatou]
 If $f_n \leq g \in L^1$ then :
@@ -223,9 +323,58 @@ If $f_n \leq g \in L^1$ then :
 $$\lim \sup_n \int f_n d\mu \leq \int \lim \sup f_n d\mu$$
 \end{theorem}
 
-\section{Product $\sigma$-algebras}
+\begin{fact}[$L^p$ spaces nested]
+$$\|Y\|_r \leq \|Y\|_q$$
+\end{fact}
 
+\begin{fact}[$L^q$ convergence fact - Dembo 1.3.28]
+$X_n\to^{L^q} X \implies \E|X_n|^q \to \E|X_\infty|^q$ for any $q$. (Minkowski)\\\\ Also for only $q\in \N$, $\E X_n^q \to \E X_\infty^q$. (some wild algebraic shit for odd $q$).
+
+\end{fact}
+\begin{theorem}[Holder's]
+If $p,q>1$ with $1/p + 1/q = 1$ then 
+$$E|XY| \leq \|X\|_p \|Y\|_q $$
+Cauchy Schwarz is special case.
+\end{theorem}
+
+\begin{theorem}[Minkowski]
+Triangle inequality for the $\|\cdot \|_p $ norm
+\end{theorem}
+
+\begin{definition}[Uniform integrability (UI)]
+Possibly uncountable collection $\{X_\alpha: \alpha \in I\}$ is called UI if 
+
+$$\lim_{M\to\infty} \sup_{\alpha \in I} \E[|X_\alpha| \Ind[|X_\alpha | >M] = 0$$
+\end{definition}
+\begin{fact}[Dominated implies UI]
+If $|X_\alpha|\leq Y$ for integrable Y, then collection is UI. \\\\
+
+As a corollary, any finite collection of integrable rv is UI.
+\end{fact}
+
+\begin{theorem}[Vitali Convergence Theorem]
+Supposing that $X_n \conprob X$, then:
+$$\{X_n\} \text{ is UI} \iff X_n \to^{L1} X \iff X_n \text{ is integrable for all } n\leq \infty \text{ and } E|X_n| \to E|X_\infty|.$$
+\end{theorem}
+
+
+
+
+\section{Product $\sigma$-algebras}
+Existence of unique product measure of $n$ $\sigma-$ finite measures. \\\\
+
+\begin{theorem}[Kolmogorov Extension]
+Unique probability measure on $(\R^\N, \calB_c)$ with correct FDDs. 
+\end{theorem}
+
+
+
+\begin{theorem}[Fubini's]
+Conditions: $h\geq0$ or $\int |h| d\mu <\infty $ where $\mu = \mu_1 \times \mu_2$. 
+\end{theorem}
 \section{Stein's Method (Poisson)}
+
+
 
 
 \subsection{Method 1 - Dependency Graphs}
@@ -267,7 +416,20 @@ Now as $n\to \infty$, $b_1 \to 0$ and $b_3 \to 0$, so $\lVert P_W - Pois(1)\rVer
 
 \newpage 
 \section{Approximations}
+
 $$1-x \leq e^{-x} \quad 1-x\geq e^{-2x} \quad \text{both for small } x?$$  
+
+
+
+\subsection{Binomial Coeffs and Stirlings}
+$$(\frac{n}{k})^k \leq \binom{n}{k} \leq (\frac{ne}{k})^k $$
+\myworries{Stirlings}
+
+
+\section{Misc}
+\begin{definition}[Metric]
+\end{definition}
+
 
 
 \end{document}

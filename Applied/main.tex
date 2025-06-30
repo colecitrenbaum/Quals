@@ -51,6 +51,37 @@ $$t = \frac{\bar x - \bar y}{s \sqrt{1/n_1 + 1/n_2}} \quad \text {where } s^2 = 
 
 \section{Least Squares Basics}
 
+\subsection{Basic assumptions and what goes wrong}
+If suspect another feature may be important that's not included, can introduce bias.
+\begin{enumerate}
+	\item Plot residual versus new feature $\omega$
+	\item Plot residual against the residual of $\omega \sim X$, ie predict the new feature with existing features (added variable plot)
+	\item Add to regression and test goodness of fit 
+\end{enumerate}
+Another tool is \textbf{log-transforming}. 
+
+\subsection{Heteroskedasticity}
+ If we use OLS instead, we get the wrong variance estimate, but our estimate is still unbiased. Will generally make the CI too narrow if we use homoskedastic errors.\\\\
+Detection:
+\begin{enumerate}
+	\item Plot $\hat \eps_i$ versus $X_i$ if a single predictor. If structure, bad.
+	\item Plot $\hat \eps_i$ versus $\hat \eps_{i-1}$ to check for correlation
+\end{enumerate}
+See generalized least squares solution.
+\subsection{Non-normality}
+For mild non-normality, usually CLT saves the day. See Art section 16.3 for requirements.\\\\
+To detect, use QQ plot: plot order statistics $\hat \epsilon_{(i)}$ versus normal quantiles. 
+\subsection{Outliers}
+Outliers -- violate normality assumption if really far. 	\\ \\
+
+Detection, we might naively look at $|\hat \epsilon_i$ but this isn't great since all of our $\hat \epsilon_i$ are deflated in presence of outlier. Better idea is finding large $\frac{\hat \epsilon_{(-i)}}{s_i}$ where $s_i$ is standard deviation with the $i$-th left out. But issues if more than one outlier or computational issues. \\ \\ 
+See "masking", "swamping" outlier issues.\\ \\ 
+
+Another potential idea is 'least trimmed means' which only minimizes residuals of the best 80$\%$ of residuals -- non convex. 
+
+\subsection{LS Estimator derivation}
+Least squares derivation:
+
 \begin{align}
     \hat \beta &= \arg \min \|y - X\beta \|^2  \\
     & \iff X\hat \beta = \operatorname{Proj}_{\operatorname{range}(X)}(y)\\
@@ -75,7 +106,7 @@ $$\Cov \hat \beta = \sigma^2 (X^T X)^{-1} X^T X (X^TX)^{-1} = \sigma^2 (X^TX)^{-
 Facts:
 \begin{enumerate}
 	\item $\range X = \range H$
-	\item $\range (I-H) = \range H^\perp = \ker H$ (projection onto orthogonal complement)
+	\item $\range (I-H) = \range H^\perp = \ker H$ (projection onto orthogonal complement of $X$)
 	\item $H(I- H) = 0$ (orthogonality)
 	\item $X \perp I - H$, ie $X^T (I - H) =(I-H)X = 0$
 \end{enumerate}
@@ -113,7 +144,9 @@ $$\hat \sigma^2 = \frac{\|y-\hat y\|^2}{n-2},$$
 		0 & \sigma^2 (I - H)
 	\end{pmatrix}$$
 	    \end{proof}
+	    Only relies on normality of errors. We get the same result though as long as $\Cov \epsilon = \sigma^2 I$. 
 \end{fact}
+From the above we also get that $\hat y = X\hat \beta \indep \hat \epsilon = y - \hat y $. "The residuals are independent of the predictions".
 
 
 \begin{fact}[Distribution of $\hat \sigma^2$]
@@ -124,7 +157,7 @@ Related to canonical change of basis.
 F-test. Let full model have $p = p_1 + p_2$ predictors and reduced model have $p_1$ predictors (Eg, $p_1 = 1$, $p_2 = p-1$ in the case when reduced is just intercept).
 $$\frac{\|\hat y - \hat y_{reduced} \|^2/p_2}{RSS/(n-p_1 - p_2)}\sim F_{p_2, n-p_1 - p_2}$$
 
-Note that $F_{1,n-p} = t^2_{n-p}$ and equivalent to below
+Note that $F_{1,n-p} = t^2_{n-p}$ and equivalent to below. See Quals notes section 2.6 for derivation. 
 \end{fact}
 \begin{fact}[T-test]
 $$\frac{\hat \beta_i - \beta_i}{\widehat{SE} (\hat \beta_i)} \sim t_{n-p}, \quad \text{where use estimate }  \hat \sigma^2 = \frac{1}{n-p} \|y-\hat y\|^2,$$
@@ -141,7 +174,8 @@ $$\frac{v^T \hat \beta_j }{\sqrt{ [v^T (X^TX)^{-1} ]v}RSS/(n-p)}\sim t_{n-p}.$$
     $$R^2 = 1 - \frac{\|y - \hat y\|^2}{\| y - \bar y\|^2}.$$
 \end{definition}
 
-
+\section{Generalized Least Squares}
+Whitening idea to get into nice least squares world. Sec 7.2 in coaching notes. \myworries{Look back at 2013 Q 4b}
 \section{Singular $X$}
 If $\rank(X)<p$, then $\hat y$ is unique but $\hat \beta$ \textbf{is not}- take a vector in the null space of $X$ and add to $\hat \beta$. \\
 Ways to cope:

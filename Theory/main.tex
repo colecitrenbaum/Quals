@@ -47,7 +47,7 @@ If $\phi$ convex, then $\E \phi(X) \geq \phi(EX)$. Eg $EX^2 \geq (EX)^2$. Inequa
 	$$p_\theta(x) = \exp(\sum_{i=1}^s T_i(X) \eta_i(\theta) - A(\theta))h(x)$$
 	$$p_\eta(x) = \exp(\sum_{i=1}^s T_i(X) \eta_i - \tilde A(\eta)) h(x)$$
 \end{definition}
-\begin{fact}[$E[T(X)$, $Cov(T(X))$]
+\begin{fact}[Expectation and covariance of sufficient stats in exponential fam]
 $$\E[T(X)] = \grad A(\eta)$$
 $$\Cov (T_i(X), T_j(X)) = \partial_{\eta_i} \partial_{\eta_j} A(\eta)$$
 \end{fact}
@@ -309,6 +309,19 @@ $$\hat \mu^{JS} (X) = \left ( 1-\frac{\sigma^2(p-2)}{\|X\|_2^2}\right)X,$$
 biased towards the origin. Prove that it has better risk by SURE estimator. 
 
 \section{Bayes Estimators}
+Average risk over some choice of prior $\Lambda(\theta)$ on parameter space. 
+
+Want to minimize:
+
+$$\int R(\theta, \delta) d\Lambda(\theta) = \E_{(X,\Theta)} L(\Theta, \delta(X)).$$
+
+So our $P_\theta$ is $X|\Theta = \theta$. By tower property, we can minimize this by minimizing the following for almost all $x$:
+
+$$\arg \min_{\delta} \E [L(\Theta, \delta(X) \mid X= x]$$
+ie this is an integral with respect to posterior distribution. For square error: $\delta = \E[g(\Theta)\mid X]$, abs error gives $\delta = \operatorname{median} g(\Theta) |X$. See the quals notes for a list. For square error, often (?) gives a convex combination of UMVU and the prior mean. 
+\begin{theorem}[When Bayes is Unique?]
+???
+\end{theorem}
 \begin{fact}[Unique Bayes is Admissible]
 Idea is that if $R(\hat \theta ' ,\theta) \leq R(\hat \theta , \theta)$ for all $\theta$, it would then be Bayes. \\ provided the prior isn't super weird (eg continuous dist with an atom) 
 
@@ -319,10 +332,225 @@ If not, some other estimator would render Bayes inadmissible, which would make t
 \end{fact}
 
 \begin{fact}[Bayes is not UMVU if $r_\Lambda <\infty$]
-\myworries{Under square error loss, Bayes estimators are biased }
+Under square error loss, Bayes estimators are biased, unless $r_\Lambda = 0$.
 \end{fact}
+An example of an unbiased Bayes estimator would be if $X\sim Bin(n,\theta)$ and $\Lambda$ puts mass on $\{0,1\}$ only. Then there exists an estimator of $0$ risk-- $X/n$. 
 
 \section{Minimax}
-A Bayes or admissible estimator is constant risk, then it is minimax. 
+Want $\delta$ to minimize $\sup_{\theta \in \Omega} R(\theta, \delta)$. 
 
+\begin{recipe}[Minimax - Constant risk]
+	A Bayes or admissible estimator is constant risk, then it is minimax. \\\\
+	
+	So: \textbf{find a prior with constant frequentist risk. }
+	\begin{enumerate}
+		\item Hopefully conjugate prior
+		\item Find Bayes estimator 
+		\item Write the frequentist risk $R(\theta,\delta_{\Lambda} = \E_X L(\theta, \delta_{Lambda})$
+		\item Find parameters of the prior $\Lambda$ such that $R(\theta,\delta_\Lambda)$ is constant
+		\item Conclude this estimator is minimax
+	\end{enumerate}
+	If unique Bayes, unique minimax. Prior $\Lambda$ is \textit{least favorable}.
+\end{recipe}
+
+\begin{definition}[Minimax - Least favorable prior]
+$\Lambda$ least favorable if $r_\Lambda \geq r_{\Lambda'}$ for any other $\Lambda'$. \\\\
+A sequence of priors $\Lambda_m$ is least favorable if for any $\Lambda'$, $r_{\Lambda'} \leq \lim_m r_{\Lambda_m}$.
+\end{definition}
+
+\begin{recipe}[Minimax - Least favorable sequence of priors]
+If $\sup R(\theta,\delta) = r$ and have a sequence such that $r_{\Lambda_m} \to r$ then $\Lambda_m$ is least favorable and $\delta$ is minimax. 
+\begin{enumerate}
+	\item Guess some $\delta$ 
+	\item Find the sup risk 
+	\item Find a sequence of priors s.t. $r_{\Lambda_m} \to r$ 
+	\item Conclude $\delta$ minimax
+\end{enumerate}
+\end{recipe}
+\begin{example}[Normal location model minimax]
+If $X_i \simiid N(\theta,\sigma^2)$ with $\sigma$ known, then we can show that $\bar X$ is minimax by the above approach. Let $\Lambda_m = N(0,b_m^2)$ with $b_m \to \infty$ eg $b_m = m$. Note that $\sup R(\theta, \bar X_n) = \sigma^2/n$-- it's constant risk so a good candidate. 
+
+$$r_{\Lambda_m} = \E [\Var (\Theta|X)] \to r$$
+
+Conclude $\bar X$ is minimax.
+\end{example}
+
+Connection that just because an estimator is minimax doesn't mean it's admissible. $\bar X$ is UMVU, minimax, MRE.. but not admissible. 
+\begin{recipe}[Minimax in subfamily argument]
+$\delta$ minimax in $\Lambda_0$ then it is also minimax in $\Lambda$ \textbf{if} 
+$$\sup_{\theta\in \Lambda_0} R(\theta,\delta) = \sup_{\theta \in \Omega} R(\theta,\delta)$$
+Eg, $\bar X$ in $\Lambda_0 = \{\sigma^2 = b\}$ and $\Lambda = \{\sigma^2 \leq b\}$. 
+\end{recipe}
+Can extend to non parametric big family-- $\bar X$ is minimax if $X_i \simiid F$ since don't increase sup risk in the larger family. 
+
+
+\newpage
+\section{Stochastic Convergence}
+Helpful tools
+\begin{enumerate}
+	\item Don't forget Portmanteau
+	\item CLT, SLLN 
+	\item CMT
+	\item Slutsky
+\end{enumerate} 
+\begin{theorem}[CMT]
+If $g$ is continuous on a set of probability $1$
+$$X_n\to^* X \implies g(X_n) \to^* g(X)$$
+for conv in dist, prob, or as
+\end{theorem}
+\begin{theorem}[Slutsky]
+A few parts
+\begin{enumerate}
+	\item $X_n \condist c \implies X_n \conprob c$
+	\item If $\|X_n - Y_n\| \conprob 0$ then if $X_n \condist X$ we have also $Y_n \condist X$. 
+	\item If $X_n \condist X$ and $Y_n \conprob c$ then
+	$$\begin{pmatrix}
+		X_n\\Y_n 
+	\end{pmatrix}\condist \begin{pmatrix}
+		X\\c 
+	\end{pmatrix}$$
+	\end{enumerate}
+	Corrolary via Slutsky and CMT:
+	$X_n\condist X$ and $Y_n \conprob c$ gives us 
+	\begin{enumerate}
+	\item $Y_n X_n \condist cX$
+	\item $Y_n + X_n \condist c+ X$
+	\item $Y_n^{-1} X_n \condist c^{-1} X$
+	\end{enumerate}
+
+\end{theorem}
+\begin{definition}[Uniform Tightness]
+A collection $\{X_\alpha\}_{\alpha \in A}$ is uniformly tight if for all $\epsilon>0$ there exists an $M<\infty$ such that 
+
+$$P(\|X_\alpha\|>M) \leq \epsilon \quad \text{for all } \alpha \in A$$
+\end{definition}
+\begin{example}[Markov, Tightness]
+If all $X_\alpha$ have the same $\ell$-th moment, then just use Markov to prove tightness. 
+\end{example}
+In general if a collection has increasing means or something, it won't be tight, eg $X_n \sim N(n,1)$. 
+
+\begin{theorem}[Prohorov]
+Uniformly tight $\implies$ for all sequences there is a a subsequence that converges in distribution to a random variable.\\\\
+Conversely, 
+Convergence in distribution $\implies$ unifromly tight. 
+\end{theorem}
+
+
+\subsection{Big-O, Little-o}
+Non-stochastic versions, 
+$$f(x) = O(g(x)) \iff \limsup_{\eps\to 0} \frac{f(\epsilon)}{g(\eps)} < \infty$$.
+$$f(x) = o(g(x)) \iff \lim_{\eps \to 0} \frac{f(\eps)}{g(\eps)} = 0 $$
+
+\begin{definition}[Little-${o_p}$]
+$$X_n = o_p(R_n) \iff \exists Y_n \text{ such that} X_n = R_n Y_n \text{ with } Y_n \conprob 0$$
+\end{definition}
+\begin{definition}[Big $O_p$]
+$$X_n = O_p(R_n) \iff X_n = R_n Y_n \text{ where } Y_n \text{ uniformly tight}$$
+\end{definition}
+
+\begin{theorem}[Delta Method]
+Let $r_n\to \infty$ and $f$ differentiable at $\theta$. If $r_n (T_n -\theta)\condist A$ then:
+\begin{enumerate}
+	\item $$r_n(f(T_n) - f(\theta)) \condist f'_\theta A$$
+	\item $$r_n(f(t_n) - f(\theta)) - f_\theta'(r_n (T_n - \theta)) \conprob 0$$
+\end{enumerate}
+\begin{proof}
+	Main idea:
+	$$f(\theta + h) - f(\theta) = f'_\theta h + o(\|h \|) \text{ as } h\to 0$$
+	Take $h = T_n - \theta$ 
+\end{proof}
+
+\end{theorem}
+\begin{theorem}[Higher order delta method]
+\end{theorem}
+
+\section{MLE}
+\begin{definition}[M-estimators]
+$$\hat \theta_n = \arg \max_\theta \frac{1}{n} \sum_{i=1}^n m_\theta(X_i)$$
+where $m_\theta$ is some known function, eg $\ell_\theta$-- maximize log likelihood 
+
+\end{definition}
+\begin{definition}[Z-estimator]
+$$\hat \theta _n = \{\theta: n^{-1} \sum_{i=1}^n \Psi_\theta(X_i) = 0\}$$
+eg $\grad \ell_\theta = 0$. 
+\end{definition}
+\subsection{Consistency of MLE}
+Consistency of $P_n \ell_\theta \conprob P \ell_\theta $ (WLLN) is \textbf{not} enough for consistency of MLE $\hat \theta_n \conprob \theta^*$. For arbitrary sample size, $P_n \ell_\theta$ not necessarily maximized at (or near) $\theta^*$ if we converge too non-uniformly. See picture.  For consistency of MLE, need:
+\begin{enumerate}
+	\item Uniform convergence (in probability)
+	\item Well-separation 
+\end{enumerate}
+\begin{definition}[Uniform convergence]
+$M_n(\theta)$ converges uniformly to $M(\theta)$ if 
+$$\sup_{\theta} |M_n(\theta - M(\theta)| \conprob 0$$
+\end{definition}
+\begin{definition}[Well-separation]
+\myworries{definition........}\\
+eg, strong convexity. 
+\end{definition}
+Some more primitive conditions. Identifiability and a finite sample space $|\Theta|<\infty$ are enough for consistency of MLE. 
+\begin{definition}[Identifiability]
+Identifiable if for $\theta \neq \theta'$, $P_\theta \neq P_\theta'$ ie KL divergence is strictly positive. 
+\end{definition}
+\begin{example}[Example of non-identifiability]
+In my notes
+\end{example}
+
+\subsection{Asymptotic normality of the MLE}
+Under a regularity condition ("smooth, nice"), the MLE is normal.
+\begin{definition}[Smooth/Nice at $\theta$]
+See notes.. \begin{enumerate}
+	\item Hessian of log likelihood is Lipschitz near $\theta^*$ - see notes 
+	\item Bounded gradient $P_\theta^* \| \grad \ell_\theta^* \|^2 <\infty $
+\end{enumerate}
+\end{definition}
+\begin{theorem}[Asymptotic normality of MLE]
+If \begin{enumerate}
+	\item $\{P_\theta\}_{\theta \in \Theta}$ is smooth/nice at $\theta^*$
+	\item $\Theta$ open subset of $\R^d$,  
+	\item Hessian has finite mean (or alt that exchange order of differentiation wrt $\theta$ and expectation).
+	\item $\hat \theta_n$ the MLE is  consistent 
+\end{enumerate}
+Then $\sqrt{n} (\hat \theta_n - \theta) \condist N(0,\Sigma_\theta^*)$.
+\textbf{If we can also exchange order of differentiation and expectation} , $\Sigma_\theta^* = I_\theta^{-1}$. 
+\end{theorem}
+\section{Fisher Information}
+
+\begin{definition}[Fisher Information]
+Outer product of the score
+$$I_\theta = \E_{P_\theta} [\grad_\theta \ell_\theta (\grad_\theta \ell_\theta)^T]$$
+If we can exchange order of differentiation and expectation then:
+$$I_\theta = \Cov (\grad \ell_\theta) = -\E[\grad^2 \ell_\theta] $$
+\end{definition}
+Lots of information, small variance. Look at hessian to look at curvature-- if it's really peaked, we have lots of information. 
+\begin{theorem}[Cramer-Rao]
+\end{theorem}
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Distribution} & \textbf{Parameter(s)} & \textbf{Fisher information $I(\theta)$} \\
+\hline
+Bernoulli $\operatorname{Bern}(p)$                         & $p\in(0,1)$              & $\displaystyle \frac{1}{p(1-p)}$ \\[4pt]
+Binomial $\operatorname{Bin}(m,p)$ \,(fixed $m$)           & $p\in(0,1)$              & $\displaystyle \frac{m}{p(1-p)}$ \\[4pt]
+Poisson $\operatorname{Pois}(\lambda)$                     & $\lambda>0$              & $\displaystyle \frac{1}{\lambda}$ \\[6pt]
+Exponential $\operatorname{Exp}(\lambda)$                  & $\lambda>0$              & $\displaystyle \frac{1}{\lambda^{2}}$ \\[6pt]
+Gamma $\operatorname{Gamma}(\alpha,\theta)$ \,(fixed $\alpha$) & $\theta>0$          & $\displaystyle \frac{\alpha}{\theta^{2}}$ \\[6pt]
+Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\sigma^{2}$) & $\mu\in\mathbb R$        & $\displaystyle \frac{1}{\sigma^{2}}$ \\[8pt]
+Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\mu$)        & $\sigma^{2}>0$           & $\displaystyle \frac{1}{2\sigma^{4}}$ \\[10pt]
+\multicolumn{2}{|l|}{Normal $\mathcal N(\mu,\sigma^{2})$ \,(both unknown)}
+  & $\displaystyle
+    \begin{pmatrix}
+      \frac{1}{\sigma^{2}} & 0 \\[6pt]
+      0 & \frac{1}{2\sigma^{4}}
+    \end{pmatrix}$ \\[10pt]
+\hline
+\end{tabular}
+\caption{Per‐observation Fisher information for common parametric families.  
+Multiply by $n$ for a sample of size $n$.}
+\end{table}
+
+
+\begin{definition}[Asymptotic efficiency]
+\end{definition}
 \end{document}
