@@ -279,16 +279,76 @@ Some ideas:
 Sometimes $\sum P(A_n) =\infty$. 
 \begin{enumerate}
 	\item Pick a subsequence such that it's finite. 
-	\item Shows that $X_{n_k} \to X$ almost surely.
-	\item Apply interpolation or some other argument for everything in between.
+	\item Shows that $A_{n_k}$ infinitely often occurs with probability $0$.
+	\item Apply interpolation or some other argument for everything in between, ie to conclude that $A_n$ infinitely often wp $0$ also. 
 	
 \end{enumerate}
+Eg for monotone $X_n$:
+
+$$ \frac{X_n}{\E X_n} \leq \frac{X_{n_{k+1} -1}}{\E X_{n_k}}$$
+So $\limsup_k \frac{X_{n_{k+1} -1}}{\E X_{n_k}} \leq 1 \implies \limsup_n \frac{X_n}{\E X_n}\leq 1$. We can control the left hand side by controlling the right hand side along our choice of subsequence. 
+
 \myworries{See Dembo notes subsequence section}
 Examples-- SLLN, Brownian LLN, LIL. \\ \\
 
 \myworries{SLLN in Persi notes and Renewal theorem in Dembo}
 
 \end{theorem}
+
+\begin{recipe}[Proving conv in prob]
+
+Some ideas:
+\begin{enumerate}
+	\item Show almost sure convergence
+	\item Show convergence in $L^p$ for $p\geq 1$ (in $L^2$ in particular useful):
+	\begin{itemize}
+		\item Show that $\E X_n \to \mu$, $\Var X_n \to 0$, then $X_n \to \mu$ in $L^2$
+	\end{itemize}
+	\item CMT 
+	\item $X_n \condist c$ constant
+	\item Truncation tool: \textbf{Weak law for Triangular Array}. For when we don't have second moments. 
+	\end{enumerate}
+\end{recipe}
+
+\begin{theorem}[Weak law triangular array - 2.1.11 Dembo]
+\myworries{Check this}
+Suppose triangular array $\{X_{n,k}\}_{{n\in \N, k\leq n}}$ of pairwise independent rv. Define a truncated array with the same \textit{within-row} truncation:
+$$\bar X_{n,k} = X_{n,k} \Ind[|X_{n,k}| < b_n ]$$. If we have two conditions:
+
+$$\sum_{k=1}^n P(|X_{n,k}|>b_n) \to^n 0,$$
+and,
+$$b_n^{-2} \sum_{k=1}^n \Var (\bar X_{n,k}) \to 0,$$
+Then:
+
+$$b_n^{-1} (\sum_{k=1}^n X_{n,k} - a_n) \conprob 0 \quad \text{ where } a_n = \sum_{k=1}^n \E \bar X_{n,k}.$$
+
+In case of St Petersburg paradox, then show that $a_n/b_n \to 1/2$ so that we get $b_n^{-1} \sum_{k=1}^n X_k = (b_n^{-1} \sum_{k=1}^n X_{n,k}) \conprob 1/2 $. 
+
+
+
+\end{theorem}
+\begin{recipe}[Prove $L^p$ convergence]
+Ideas - see session notes 
+\begin{enumerate}
+	\item $X_n \conas X$ and $X_n$ uniformly bounded then $X_n \to^{L1} X$.
+	\item If $X_n$ uniformly bounded then $X_n\condist 0 \implies X_n \to^{L1} 0$.
+	\item If $|X_n|^p$ is UI then $X_n \condist X \implies \E |X_n|^p \to E|X|^p$ 
+	\item Scheffe's Lemma 
+\end{enumerate}
+\end{recipe}
+
+\begin{recipe}[Proving UI]
+Try
+\begin{enumerate}
+	\item Sums of UI sequence of rvs are UI
+	\item Domination: If $E\sup |X_i| < \infty$ then $\{X_i\}$ is UI
+	\item If $\{X_i\}$ is UI, then $\sup E |X_i| <\infty$ but not the converse. 
+	\item Prop 8.3.3: $X_n$ UI $\iff$ $\sup E|X_i| <\infty$ and for all $\eps$, there exists $\delta$ for all A such that $P(A) <delta$ then $\E[|X_n| \Ind[A] ] <\eps$
+	\item If $\sup \E |X_i|^r <\infty$ if $r>1$, then UI 
+	\item $X\in L^1$, then $\{\E[X|\calG]: \calG \subset \calF\}$ is UI
+	\item $L^1$ convergence implies UI
+\end{enumerate}
+\end{recipe}
 
 \section{Integration}
 \begin{definition}[Lebesgue Integral]
@@ -372,6 +432,108 @@ Unique probability measure on $(\R^\N, \calB_c)$ with correct FDDs.
 \begin{theorem}[Fubini's]
 Conditions: $h\geq0$ or $\int |h| d\mu <\infty $ where $\mu = \mu_1 \times \mu_2$. 
 \end{theorem}
+%% Weak Convergence
+\section{Weak Convergence}
+\subsection{Methods}
+\begin{enumerate}
+	\item \textbf{Direct}. Show that $F_n(x) \to F(x)$ for all continuity points.
+	\item If there's a density, try to show that $f_n(x) \to f_\infty$ and check that $f_\infty$ a valid pdf. 
+	\item If $X_n \geq 0$, show that $\int_0^\infty \exp(-\lambda x) d\mu_n (x) \to L(\lambda) = \int_0^\infty \exp(-\lambda x) d\mu_\infty (x)$. Note that $L(\lambda)$ is a Laplace transform of some $\mu$ if $L(\lambda)\downarrow 1$ as $\lambda\downarrow 0$. (Just need for positive $\lambda$. 
+	\item MGFs
+	\item Characteristic functions- show that $\phi_n(t) \to \phi(t)$ for all $t\in \R$. ($\phi$ is a characteristic function of a probability measure if $\psi(t) \to 1$ as $t\downarrow 0$. 
+	\item CLT 
+\end{enumerate}
+
+\begin{example}[Cycling of Random Number Generators (2007 Q2)]
+Similar to birthday problem. 
+\answer{
+
+\begin{align}
+	P(T>k) & = \prod_{i=1}^k (1-\frac{i}{n})\\
+	&\approx \prod \exp(-1/n)\\
+	& \approx \exp(-k^2/n).
+\end{align}
+So $P(T> x\sqrt{n}) \approx \exp(-x^2/2)$ should work.\\\\
+Need to justify this rigorously. To do so, use $|\log (1+x) - x| < Cx^2$ when $|x| <1/2$. Ie, $\log (1+x) = x + O(x^2)$. \\\\ 
+
+See lecture 1 in 310a. 
+
+}
+\end{example}
+
+%%%%% CLT %%%%%%
+\section{CLT}
+Heuristic: "not too dependent", "no few terms dominate". 
+\begin{theorem}[Lindeberg CLT]
+Suppose we have a triangular array such that:
+
+\begin{enumerate}
+	\item  for fixed $n$, $\{X_{ni}\}_{i=1}^{k_n}$ are independent (ie independence within row). 
+	\item Suppose also $\E (X_{ni}) = 0$ for all, and $\Var X_{ni} = \sigma^2_{ni} <\infty$.
+	\item Define $S_n = \sum_{i=1}^{k_n} X_{ni}$ and $s_n^2 = \sum_{i=1}^{k_n} \sigma^2_{ni}$ (sum of rows)
+	\item \textbf{Lindeberg condition} holds ie for all $\eps>0$:
+	$$\lim_{n\to \infty} \frac{1}{s_n^2} \sum_{i=1}^{k_n} \int X_{ni}^2 \Ind[ |X_{ni} | >\epsilon s_n ] dP = 0$$
+\end{enumerate}  
+
+Then:
+
+$$\frac{S_n}{s_n} \condist \calN(0,1).$$
+
+Note that if not mean zero, subtract off the means:
+
+$$\frac{S_n - \sum_{i=1}^{k_n} \mu_{kn}}{s_n} \condist N(0,1)$$
+
+\end{theorem}
+
+\begin{example}[CLT failures: too wild]
+$$X_i = \begin{cases}
+	0 \text{ wp } 1-1/i\\
+		1 \text{ wp } 1/i
+		\end{cases}$$
+		
+The issue is that some $X_i$'s  dominate-- ie the big ones.
+\end{example}
+
+\begin{example}[CLT Failures: too dependent]
+\end{example}
+
+
+\begin{recipe}[CLT for non-square integrable]
+Session 4 notes. Similar to convergence in probability strategy. \\\\
+Assume $X_{n,k} \ in L^1$ and exist $c_n$ such that 
+
+\begin{enumerate}
+	\item $\sum_{k=1}^{\ell_n} P(|X_{n,k}| > c_n) = o(1)$
+	\item Lindeberg condition satisfied for truncated $Y_{n,k} =X_{n,k} \Ind [X_{n,k} \leq c_n]$
+	\item $\sum_{k=1}^{\ell_n} (\E X_{n,k} - \E Y_{n,k}) = o(s_n)$ where $s_n^2$ sum of variances of truncated in the $n$-th row.
+\end{enumerate}
+Then $$\frac{\sum_{k=1}^{\ell_n} X_{n,k} - \E X_{n,k}}{s_n} \condist N(0,1)$$
+\end{recipe}
+\begin{theorem}[Lyapunov CLT]
+Lyapunov condition is sufficient for Lindeberg's condition. Same setup, check that:
+
+
+$$s_n^{-2-\delta} \sum_{i=1}^{k_n} \E |X_{n,k} - \E (X_{n,k})|^{2+\delta} \to 0 \quad \text{for some } \delta > 0$$
+\end{theorem}
+
+
+%%% Characteristic function %%
+
+\section{Characteristic Functions}
+\begin{definition}[Characteristic Function]
+Characteristic function is fourier transform of $\mu$. 
+
+$$\phi(t) = \E [\exp(itX)].$$
+
+
+\begin{recipe}[Characteristic Function Chaos]
+Try to get $\phi(t) \approx (1+ \frac{f(t)}{n})^n$ form so that we can use exp limit. 
+\end{recipe}
+\end{definition}
+
+
+
+
 \section{Stein's Method (Poisson)}
 
 
@@ -418,7 +580,7 @@ Now as $n\to \infty$, $b_1 \to 0$ and $b_3 \to 0$, so $\lVert P_W - Pois(1)\rVer
 \section{Approximations}
 
 $$1-x \leq e^{-x} \quad 1-x\geq e^{-2x} \quad \text{both for small } x?$$  
-
+$$\log(1+x) = x + O(x^2)) \quad \text{ for small } x$$
 
 
 \subsection{Binomial Coeffs and Stirlings}
