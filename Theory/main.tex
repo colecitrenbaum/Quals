@@ -337,7 +337,22 @@ Under square error loss, Bayes estimators are biased, unless $r_\Lambda = 0$.
 An example of an unbiased Bayes estimator would be if $X\sim Bin(n,\theta)$ and $\Lambda$ puts mass on $\{0,1\}$ only. Then there exists an estimator of $0$ risk-- $X/n$. 
 
 \section{Minimax}
-Want $\delta$ to minimize $\sup_{\theta \in \Omega} R(\theta, \delta)$. 
+Want $\delta$ to minimize $\sup_{\theta \in \Omega} R(\theta, \delta)$. \\\\
+
+Note that for any prior, the bayes risk is upper bounded by the minimax (frequentist) risk. 
+
+If $\delta'$ is our guess:
+
+$$\inf_\delta \int R(\delta, \theta) d\Pi (\theta) \leq \inf_\delta \sup_\theta R(\delta, \theta) \leq \sup_\theta R(\delta ', \theta).$$
+
+If we can find a prior such that $\delta'$ is Bayes, then 
+$\inf_\delta \int R(\delta, \theta) d\Pi (\theta) = \int R(\delta' , \theta) d\Pi(\theta)$. If this also equals the sup risk RHS, then $\delta'$ is minimax. \\ \\ 
+
+Next best thing is a sequence $\Pi_n$ such that $r_{\Lambda_n} \to \sup_\theta R(\delta ', \theta)$. Then we squeeze the above inequality by taking a limit in $n$-- so that 
+
+$$\inf_\delta \sup_\theta R(\delta, \theta) = \sup_\theta R(\delta', \theta)$$. 
+
+
 
 \begin{recipe}[Minimax - Constant risk]
 	A Bayes or admissible estimator is constant risk, then it is minimax. \\\\
@@ -346,12 +361,20 @@ Want $\delta$ to minimize $\sup_{\theta \in \Omega} R(\theta, \delta)$.
 	\begin{enumerate}
 		\item Hopefully conjugate prior
 		\item Find Bayes estimator 
-		\item Write the frequentist risk $R(\theta,\delta_{\Lambda} = \E_X L(\theta, \delta_{Lambda})$
+		\item Write the frequentist risk $R(\theta,\delta_{\Lambda}) = \E_X L(\theta, \delta_{Lambda})$
 		\item Find parameters of the prior $\Lambda$ such that $R(\theta,\delta_\Lambda)$ is constant
 		\item Conclude this estimator is minimax
 	\end{enumerate}
-	If unique Bayes, unique minimax. Prior $\Lambda$ is \textit{least favorable}.
+	If unique Bayes, unique minimax. Prior $\Lambda$ is \textit{least favorable}.\\ \\ 
+	
+	The above is most useful in case when parameter space $\Theta$ is compact. Is the supremum achieved by some $\Lambda$, making the frequenist constant, so that the inequality at beginning of section is equality. 
 \end{recipe}
+
+\begin{example}[Multinomial minimax for $p$]
+See Theory Coaching. Use conjugate prior Dirichlet. One idea is that a least favorable prior must be symmetric in $\alpha_1,\ldots, \alpha_n$. \\ \\ 
+
+Analogous to in class Binomial minimax for $p$ using Beta prior. 
+\end{example}
 
 \begin{definition}[Minimax - Least favorable prior]
 $\Lambda$ least favorable if $r_\Lambda \geq r_{\Lambda'}$ for any other $\Lambda'$. \\\\
@@ -361,8 +384,8 @@ A sequence of priors $\Lambda_m$ is least favorable if for any $\Lambda'$, $r_{\
 \begin{recipe}[Minimax - Least favorable sequence of priors]
 If $\sup R(\theta,\delta) = r$ and have a sequence such that $r_{\Lambda_m} \to r$ then $\Lambda_m$ is least favorable and $\delta$ is minimax. 
 \begin{enumerate}
-	\item Guess some $\delta$ 
-	\item Find the sup risk 
+	\item Guess some $\delta$ by looking at limit of Bayes estimator
+	\item Find the sup risk of our guess $\delta$, ie $\sup_\theta R(\delta, \theta)$.
 	\item Find a sequence of priors s.t. $r_{\Lambda_m} \to r$ 
 	\item Conclude $\delta$ minimax
 \end{enumerate}
@@ -384,6 +407,127 @@ Eg, $\bar X$ in $\Lambda_0 = \{\sigma^2 = b\}$ and $\Lambda = \{\sigma^2 \leq b\
 Can extend to non parametric big family-- $\bar X$ is minimax if $X_i \simiid F$ since don't increase sup risk in the larger family. 
 
 
+\newpage
+\section{Testing}
+Types of errors:
+\begin{enumerate}
+	\item Type 1: Reject the null when the null is true (restricted to size $\alpha$ size of test)
+	\item Type 2: Retain the null when the null is false (given by 1-power)
+\end{enumerate}
+\subsection{Simple-simple}
+
+\begin{theorem}[Neyman-Pearson (NP) Lemma]
+For simple versus simple, a MP test always exists and is given by 
+
+$$\phi(x) = \begin{cases}
+	1 \quad p_1(x) >kp_0(x)\\
+	\gamma \quad p_1(x) = kp_0(x)\\
+	0 \quad p_0(x) <kp_0(x)
+\end{cases}$$
+where constants determined by level constraint. This is just the likelihood ratio test. First find a $k$, then find the $\gamma$. \\\\ Also note that MP test must have level exactly $\alpha$ unless there exists a test with power $1$ with size $<\alpha$. \\
+\end{theorem}
+Note that non-uniqueness comes from the $=$ condition-- how to randomize. 
+\begin{fact}[NP characterizes MP tests]
+The NP is actually an if and only if statement. If MP test, then satisfies the above along with level constraint. MP test must be of this form.
+\end{fact}
+\subsection{Simple-Composite }
+A UMP test only exists if the NP test is the same for \textbf{all} alternatives! If not, have different MP tests, no UMP test! If you want to show that a UMP does not exist, show that the MP test depends on the alternative-- to show exist, does not depend. Eg, testing normal $\theta=0$ versus $\theta\neq 0$, we get different MP tests depending on which side our alternative is on. 
+
+
+
+
+ Occurs most often in a one-dimensional parametric family with monotone-likelihood ratio. 
+\begin{definition}[Monotone Likelihood Ratio (MLR)]
+If exists $T: \cal X \to \R$ statistic that likelihood ratio $p_{\theta'}/p_{\theta_0}$ is \textbf{non-decreasing} in $T$ \textit{whenever $\theta_0$ < $\theta'$. } \\\\
+Ie if we have a singleton null and for alternative $\calH_1: \theta'> \theta_0$, then we check whether there's a statistic such that likelihood ratio is increasing.  
+\end{definition}
+
+
+\begin{theorem}[UMP in MLR]
+Testing $\theta = \theta_0$ versus $\theta>\theta_0$, if there's a MLR, then the UMP test given by
+
+$$\phi(x) = \Ind[T(X) > C ] + \gamma \Ind[T(X) = C].$$
+\end{theorem}
+\begin{fact}[MLR in Exponential Families]
+Exponential families satisfy MLR! Also satisfied in non-central chi-square.
+\end{fact}
+
+
+
+\subsection{Composite-Simple}
+
+
+
+An important insight is that:
+
+$$\{ \text{tests valid for full composite null} \} \subset \{ \text{tests valid for a specific point in the null}\}.$$
+So if you can find a best test for a specific point, and it is also valid for the full null, then it is the best for the composite null. \\\\
+
+If we have a composite null, to find UMP test we put a prior on the null parameter space and reduce to a simple-simple. If the MP test in this simple-simple problem is also \textbf{valid} for the original problem null, then it is the UMP for composite-simple testing problem. Ie:
+
+$$\tilde P_0 (\cdot) = \int_{H_0} P(\cdot) d\Pi(P) \quad \text{weighted average of null measures}$$
+\begin{definition}[Least favorable prior]
+The prior with the lowest powered MP test, ie $\beta_{\Lambda} \leq \beta_{\Lambda'}$ for all $\Lambda'$ prior on $\Theta_0$. 
+\end{definition}
+
+\begin{recipe}[Composite-Simple]
+
+To find UMP test:
+\begin{enumerate}
+	\item Posit a least favorable prior
+	\item Compute the simple-simple MP test $\phi_\Pi$ wrt the simple null from the LFP
+	\item Show that $\phi_\Pi$ is \textit{valid} for the original problem, ie $\E_{\theta_0} \phi_\Pi \leq \alpha$ for all $\theta_0 \in \calH_0$.
+	\item Conclude that $\phi_\Pi$ is UMP in the original problem
+\end{enumerate}
+Unique UMP if $\phi_\Pi$ is unique in the simple-simple case.\\\\
+For least favorable prior, try to make it hard to reject. Ie, mass on the boundary. 
+\end{recipe}
+\subsection{Composite-Composite}
+UMP rarely exists in composite-composite. To check, always first fix an alternative, find MP test for composite-simple case. Then show that it does or doesn't depend on the alternative chosen. Here are the times when it does:
+
+\begin{enumerate}
+	\item One-side MLR testing: $\calH_0: \theta\leq \theta_0$, $\calH_1: \theta>\theta_0$
+	\item Bioequivalence: Test null that $\theta \notin (\theta_1,\theta_2)$. If we have a 1-param expo family, then $\phi(x) = \Ind[T\in (C_1, C_2)]$ is UMP
+	\item One sided testing of Gaussian mean, ie $\calH_0: v^T \mu = \delta$ versus $\calH_1: v^T \mu >\delta$ for fixed $v$ with $v^T \Sigma v>0$, then reject for large $v^T X$. 
+\end{enumerate}
+
+
+\subsection{Examples}
+
+\begin{example}[$X\sim N(\mu_x, \sigma^2$, $Y\sim N(\mu_y,\sigma^2)$ with $\sigma$ known]
+Want to test $\mu_y\leq \mu_x$ versus not. 
+\begin{enumerate}
+	\item Fix an alternative $\theta_x, \theta_y$. 
+	\item Put a point mass prior on average of the $\mu_x = \mu_y$ line ie $(\theta_x + \theta_y)/2$ for both
+	\item Get NP test: $\frac{Y-x}{\sqrt{2} \sigma} > z_{1-\alpha}$
+	\item Need to check that level $\alpha for original problem$. So fix a null $\mu_x,\mu_y$ such that $\mu_y\leq \mu_x$. 
+	\item Conclude that MP for testing $\calH_0$ versus $(\theta_x, \theta_y)$
+	\item Since doesn't depend on the specific alternative chosen, it's UMP
+\end{enumerate}
+\end{example}
+\begin{example}[Non-parametric - hypothesis about the cdf $\calH_0: F_{X_i} (u) \geq p_0$]
+Idea is to parametrize $P$ by conditional distributions:
+\begin{enumerate}
+	\item $p = P(X_i \leq u)$
+	\item $P^-$ Distribution of $X_i| X_i \leq u$
+	\item $P^+$ Distribution of $X_i| X_i > u$
+\end{enumerate}
+Least favorable prior will be have the same conditional distributions with a different $p$ such that in the null space. (Point mass). Becomes isomorphic to testing $Bin(n,p)$ $p \geq p_0$. 
+\end{example}
+
+Weird: we have a MP but not UMP for testing $H_0: \sigma \geq \sigma_0$ where both $\mu,\sigma$ unknown-- place point mass LFP. By contrast, testing $\sigma \leq \sigma_0$ we can't use a point mass- need a normal prior. Leads to UMP test. $\phi = \Ind[\frac{\sum_{i=1}^n (X_i - \bar X)^2 }{\sigma_0^2} > c_{n-1, 1-\alpha}]$. 
+
+\subsection{P-values}
+
+\begin{definition}[p-value]
+Given some nested rejection regions for valid test, then
+$$\hat p(X)= \inf \{\alpha: X\in R_\alpha\}.$$
+\end{definition}
+\begin{fact}[P-values are subuniform]
+P values are subuniform. If we have exact level $\alpha$ for any $\alpha$, then $\hat p$ is exactly uniform.
+\end{fact}
+%% end 300a
+%% 300b 
 \newpage
 \section{Stochastic Convergence}
 Helpful tools

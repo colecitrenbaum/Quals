@@ -3,7 +3,9 @@
 \usepackage{hw}
 \usepackage{tcolorbox}
 \usepackage[ruled,vlined]{algorithm2e}
-
+\usepackage{tabfigures}
+\usepackage{adjustbox}
+\usepackage{makecell}
 % ------------------  Bibliography  ------------------
 %\usepackage[
 %  backend=biber,
@@ -156,6 +158,104 @@ piecewise quadratic (integral of pdf) \\[6pt]
 \end{tabular}
 \caption{Common \emph{continuous} distributions.  Special-function notation follows standard texts.}
 \end{table}
+
+
+% ------------------------------------------
+% Scaling rules for common distributions
+% Requires: \usepackage{amsmath,booktabs}
+% ------------------------------------------
+\begin{table}[ht]
+\centering
+\caption{Effect of multiplying a random variable by a positive constant $c>0$}
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}c l l l p{4.8cm}@{}}
+\toprule
+$\checkmark/\times$ &
+Distribution $X$ &
+Shape-only pdf/pmf &
+Law of $cX$ &
+Notes\\
+\midrule
+$\checkmark$ & Exponential $\operatorname{Exp}(\lambda)$
+             & $\lambda e^{-\lambda x},\;x>0$
+             & $cX\sim\operatorname{Exp}(\lambda/c)$
+             & Pure scale family \\
+
+$\checkmark$ & Gamma $\Gamma(k,\theta)$
+             & $\dfrac{x^{k-1}e^{-x/\theta}}{\Gamma(k)\theta^{k}}$
+             & $cX\sim\Gamma(k,\,c\theta)$
+             & Includes $\chi^2$, Erlang \\
+
+$\checkmark$ & Weibull $\mathrm{Wei}(k,\lambda)$
+             & $\dfrac{k}{\lambda}(x/\lambda)^{k-1}e^{-(x/\lambda)^{k}}$
+             & $cX\sim\mathrm{Wei}(k,\,c\lambda)$
+             & Shape $k$ unchanged \\
+
+$\checkmark$ & Log-normal $\mathcal{LN}(\mu,\sigma^{2})$
+             & —
+             & $cX\sim\mathcal{LN}(\mu+\ln c,\sigma^{2})$
+             & Scaling shifts log-mean \\
+
+$\checkmark$ & Pareto $\mathrm{Par}(\alpha,x_{m})$
+             & $\dfrac{\alpha x_{m}^{\alpha}}{x^{\alpha+1}},\;x>x_{m}$
+             & $cX\sim\mathrm{Par}(\alpha,\,c x_{m})$
+             & Heavy-tailed example \\
+
+$\checkmark$ & Normal $\mathcal N(\mu,\sigma^{2})$
+             & —
+             & $cX\sim\mathcal N(c\mu,\,c^{2}\sigma^{2})$
+             & Location–scale family \\
+
+$\checkmark$ & Student-$t_{\nu}(0,\sigma)$
+             & —
+             & $cX\sim t_{\nu}(0,\,c\sigma)$
+             & Same d.f.\ $\nu$ \\
+
+$\checkmark$ & Cauchy $\mathrm{Cauchy}(\mu,\gamma)$
+             & —
+             & $cX\sim\mathrm{Cauchy}(c\mu,\,c\gamma)$
+             & Stable, heavy tail \\
+
+$\checkmark$ & Uniform $\mathcal U(0,\theta)$
+             & $1/\theta$
+             & $cX\sim\mathcal U(0,\,c\theta)$
+             & Classic scale \\
+
+$\checkmark$ & Inverse-Gamma …
+             & —
+             & Multiply the scale parameter by $c$
+             & Same pattern as Gamma family \\
+
+\midrule
+$\times$ & Poisson $\mathrm{Poi}(\lambda)$
+         & $\dfrac{e^{-\lambda}\lambda^{k}}{k!}$
+         & $cX$ not integer-valued $\;\Rightarrow\;$ not Poisson
+         & Closed under \emph{addition}, not scaling \\
+
+$\times$ & Binomial / Bernoulli
+         & —
+         & Support $\{0,\dots,n\}$ broken by $c$
+         & Sums, not scaling, stay in family \\
+
+$\times$ & Geometric / Negative-Binomial
+         & —
+         & Same integer-support issue
+         &  \\
+
+$\times$ & Beta $\mathrm{Beta}(\alpha,\beta)$
+         & —
+         & Lives on $(0,1)$; $cX$ usually leaves interval
+         &  \\
+
+$\times$ & Discrete uniform on $\{1,\dots,n\}$
+         & —
+         & Breaks discreteness unless $c$ integer
+         &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Useful Identities}
 \subsection{Normal}
 Conditional distributions for MVN. Relationship between conditional distributions (mean) and OLS. If mean 0, then $E[Y|Z] = \frac{EYZ}{EZ^2}Z $, ala $Z (Z^TZ)^{-1} Z^T Y $  
@@ -167,8 +267,145 @@ Conditional distributions for MVN. Relationship between conditional distribution
 If $X_i \sim Expo(\lambda)$, then:
 $$\sum_{i=1}^n X_i \sim \Gamma (n, \lambda).$$
 
+If $X_i \sim Laplace(\mu, \theta)$, then $Y_i = \frac{|X_i - \mu|}{\theta} \sim Expo(1)$. 
+
 \subsection{Uniform}
 $$U_{(k)} \sim Beta(k, n+1-k)$$
+
+\subsection{Cauchy}
+$$X \sim Cauchy \implies 1/X \sim Cauchy.$$
+\section{Conjugate Priors}
+% ----------------------------------------------------------
+% Conjugate priors (explicit densities) for n i.i.d. observations
+% ----------------------------------------------------------
+\begin{table}[htbp]
+\scriptsize
+\centering
+\setlength\tabcolsep{4pt}      % horizontal padding
+\renewcommand{\arraystretch}{1} % vertical padding
+\caption{Conjugate prior–posterior relationships after $n$ observations $\mathbf x=(x_1,\dots,x_n)$}
+\begin{adjustbox}{max width=\textwidth} % remove if you don’t need auto-shrink
+\begin{tabular}{@{}p{3.0cm} p{3.2cm} p{4.3cm} p{4.1cm}@{}}
+\toprule
+\textbf{Likelihood (parameter)} &
+\textbf{$f(x\mid\theta)$} &
+\textbf{Conjugate prior $\pi(\theta)$} &
+\textbf{Posterior hyper-parameters} \\ 
+\midrule
+\textbf{Bernoulli/Binomial $(m)$} &
+$\displaystyle\binom{m}{x}p^{x}(1-p)^{m-x}$ &
+\makecell[l]{$\mathrm{Beta}(\alpha,\beta)$\\[-2pt]
+$\displaystyle
+\pi(p)=\dfrac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}$} &
+$\alpha'=\alpha+\sum_i x_i$,\;
+$\beta'=\beta+n m-\sum_i x_i$ \\
+\midrule
+\textbf{Negative-Binomial $(r)$} &
+$\displaystyle\binom{x+r-1}{x}(1-p)^r p^{x}$ &
+same $\mathrm{Beta}(\alpha,\beta)$ &
+$\alpha'=\alpha+r n$,\;
+$\beta'=\beta+\sum_i x_i$ \\
+\midrule
+\textbf{Poisson} &
+$\displaystyle \dfrac{e^{-\lambda}\lambda^{x}}{x!}$ &
+\makecell[l]{$\mathrm{Gamma}(\alpha,\beta)$\\[-2pt]
+$\displaystyle
+\pi(\lambda)=\frac{\beta^{\alpha}}{\Gamma(\alpha)}
+\lambda^{\alpha-1}e^{-\beta\lambda}$} &
+$\alpha'=\alpha+\sum_i x_i$,\;
+$\beta'=\beta+n$ \\
+\midrule
+\textbf{Exponential (rate)} &
+$\lambda e^{-\lambda x}$ &
+same $\mathrm{Gamma}(\alpha,\beta)$ &
+$\alpha'=\alpha+n$,\;
+$\beta'=\beta+\sum_i x_i$ \\
+\midrule
+\textbf{Exponential (scale) $\theta$} &
+$\theta^{-1}e^{-x/\theta}$ &
+\makecell[l]{$\mathrm{Inv}\!\!-\!\Gamma(\alpha,\beta)$\\[-2pt]
+$\displaystyle
+\pi(\theta)=\frac{\beta^{\alpha}}{\Gamma(\alpha)}
+\theta^{-\alpha-1}e^{-\beta/\theta}$} &
+$\alpha'=\alpha+n$,\;
+$\beta'=\beta+\sum_i x_i$ \\
+\midrule
+\textbf{Gamma ($k$ known, scale)} $\theta$ &
+$\displaystyle\frac{x^{k-1}e^{-x/\theta}}{\Gamma(k)\theta^{k}}$ &
+same $\mathrm{Inv}\!\!-\!\Gamma(\alpha,\beta)$ &
+$\alpha'=\alpha+n k$,\;
+$\beta'=\beta+\sum_i x_i$ \\
+\midrule
+\textbf{Gamma ($k$ known, rate)} $\beta$ &
+$\displaystyle\frac{\beta^{k}x^{k-1}e^{-\beta x}}{\Gamma(k)}$ &
+\makecell[l]{$\mathrm{Gamma}(\alpha,\eta)$\\[-2pt]
+(hyper-rate $\eta$)} &
+$\alpha'=\alpha+n k$,\;
+$\eta'=\eta+\sum_i x_i$ \\
+\midrule
+\textbf{Gamma ($\beta$ fixed, shape)} $\alpha$ &
+$\displaystyle\frac{\beta^{\alpha}}{\Gamma(\alpha)}
+x^{\alpha-1}e^{-\beta x}$ &
+$\displaystyle\pi(\alpha)\propto
+a^{\alpha-1}\,[\Gamma(\alpha)]^{-b}$ &
+$a'=a\prod_i x_i$,\;
+$b'=b+n$ \\
+\midrule
+\textbf{Multinomial $(K)$} &
+$\displaystyle
+\frac{n!}{\prod_k x_k!}\prod_{k=1}^K p_k^{x_k}$ &
+\makecell[l]{$\mathrm{Dirichlet}(\boldsymbol\alpha)$\\[-2pt]
+$\displaystyle
+\pi(\mathbf p)=
+\frac{\Gamma(\alpha_0)}{\prod_k\Gamma(\alpha_k)}
+\prod_{k=1}^K p_k^{\alpha_k-1}$} &
+$\alpha_k'=\alpha_k+x_k,\;k=1{:}K$ \\
+\midrule
+\textbf{Normal ($\sigma^2$ known)} &
+$\displaystyle
+\frac{1}{\sqrt{2\pi\sigma^{2}}}
+e^{-\frac{(x-\mu)^2}{2\sigma^{2}}}$ &
+\makecell[l]{$\mathcal N(\mu_0,\sigma_0^{2})$\\[-2pt]
+$\displaystyle
+\pi(\mu)=\frac{1}{\sqrt{2\pi\sigma_0^{2}}}
+e^{-\frac{(\mu-\mu_0)^2}{2\sigma_0^{2}}}$} &
+$\displaystyle\sigma_n^{2}=
+(\sigma_0^{-2}+n\sigma^{-2})^{-1}$,\;
+$\displaystyle\mu'=\sigma_n^{2}
+(\mu_0\sigma_0^{-2}+n\bar x\,\sigma^{-2})$ \\
+\midrule
+\textbf{Normal ($\mu$ known)} &
+— & same $\mathrm{Inv}\!\!-\!\Gamma(\alpha,\beta)$ &
+$\alpha'=\alpha+\tfrac n2$,\;
+$\displaystyle\beta'=\beta+\tfrac12\sum_i(x_i-\mu)^2$ \\
+\midrule
+\textbf{Normal (both unknown)} &
+— &
+\makecell[l]{$\mathcal N\!\!-\!\mathrm{Inv}\!\!-\!\Gamma$\\[-2pt]
+$(\mu_0,\lambda,\alpha,\beta)$} &
+$\lambda'=\lambda+n$,\;
+$\displaystyle\mu'=\frac{\lambda\mu_0+n\bar x}{\lambda+n}$,\;
+$\alpha'=\alpha+\tfrac n2$\\[-4pt]
+& & &
+$\displaystyle\beta'=\beta+\tfrac12\sum_i(x_i-\bar x)^2
++\frac{\lambda n(\bar x-\mu_0)^2}{2(\lambda+n)}$ \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+
+\section{Identities}
+
+\subsection{Convolution}
+Discrete:
+$$P(Z=z) = \sum_{k=-\infty}^\infty P(X= k) P(Y= z-k)$$
+Continuous. CDF:
+$$H(z) \int_{-\infty}^\infty F(z-t) g(t) dt = \int_{-\infty}^\infty G(t) f(z-t) dt$$
+Density:
+$$f_Z(z) = \int_{-\infty}^\infty f_{XY} (x,z-x)dx.$$
+
+
 
 
 \end{document}

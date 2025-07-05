@@ -376,4 +376,53 @@ $\eta = g(\mu)$ where $\mu = EY$.
 
 Typical thing is $y_i \sim f_{\mu_i}$. 
 
+
+
+\section{Bootstrap}
+\subsection{Confidence intervals}
+How to construct a confidence interval, estimate standard deviation, etc but don't know much about distribution. Key idea is that we're going to resample from our dataset \textbf{with replacement}. N datapoints in the sample, then we sample N samples with replacement. 
+
+$$X_1,\ldots, X_n \simiid P_\theta, \quad \text {want to estimate } \theta.$$
+
+If I have an estimate $\hat \theta$, can I give a confidence interval for $\theta$? 
+
+\begin{enumerate}
+	\item For $b=1,\ldots, B$, sample $x_1^{(b)},\ldots, x_{n}^{(b)}$ uniformly with replacement.
+	\item Compute $\hat \theta^{(b)}$ 
+\end{enumerate}
+
+Now we have a collection $\{\hat \theta^{(b)} - \hat \theta\}$, can get quantiles of these empirical differences. Gives $\hat q_{\alpha/2} \hat q_{1-\alpha/2}$. 
+
+$$\hat C = [\hat \theta - q_{1-\alpha/2}, \hat \theta -\hat q_{\alpha/ 2}].$$
+
+Can show that empirical distribution $\hat \theta ^{(b)}- \hat \theta$ is "close" to distribution of $\hat \theta - \theta$ under some conditions on $\hat \theta$. \\\\
+
+\footnote{The "percentile" boostrap just looks at $\theta \in [\tilde q (\alpha/2), \tilde q(1-\alpha/2)]$ where $\tilde q$ is quantiles of just the bootstrapped $\hat \theta$. This interval is 
+
+$$C\in [\hat \theta + \hat q_{\alpha/2}, \hat \theta + \hat q _{1-\alpha/2}],$$
+so equal in the case of symmetric $\hat q$. }
+
+
+\subsection{Testing}
+In a composite null, parametric setup. 
+$$\calH_0: X_i \simiid P_{\theta} \text{ for some } \theta\in \Theta_0$$
+
+\begin{enumerate}
+	\item Choose test statistic $T(X_1,\ldots, X_n)$. 
+	\item Use consistent estimator $\hat \theta \conprob \theta$ under $P_\theta$. 
+	\item Sample $X_1^{(b)}, \ldots, X_n^{(b)} \simiid P_{\hat \theta}$
+	\item Compute $T^{(b)}$
+	\item Check if $T$ is in the top $\alpha$ quantile of $\{T,T^{(1)},\ldots, T^{(B)}\}$. 
+\end{enumerate}
+
+
+
+\subsection{Block bootstrap}
+Split data into $k$ blocks. Create the blocks such that any dependency happens within block. For each bootstrap sample $b$, sample $k$ blocks with replacement. Take the entire block at a time. 
+
+
+\subsection{Bootstrap for Regression}
+\myworries{Check this} ???\\ \\ 
+
+Also bootstrapped residuals which leads to no invertibility issues. 
 \end{document}
