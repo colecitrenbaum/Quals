@@ -57,7 +57,8 @@ Apply the above to "Distribution of number of fixed points"- type questions.
 \end{fact}
 
 \begin{definition}[Cycles]
-	Cycle of a permutations
+	Let $s \in S_n$ be a permutation. Then $L_i(s) = \inf \{j: s^j(i) = i\}$. Ie the first time we come back to $i$. See pg 101 Dembo remark. Durret Ex 2.2.4. Then the cycle is the collection $\{s^j(i): 1\leq j\leq L_i(s)\}$-- ie the elements of $[n]$ before we come back to $i$. \\\\
+	If $T_n = \# \text{cycles}$, $(T_n - \log n)/\sqrt{\log n} \condist \calN(0,1)$. 
 \end{definition}
 
 \begin{definition}[Descents]
@@ -295,6 +296,15 @@ Examples-- SLLN, Brownian LLN, LIL. \\ \\
 
 \end{theorem}
 
+\begin{recipe}[Proving almost sure limit is finite]
+Try:
+\begin{enumerate}
+	\item Take expectation - use MCT or something and show that finite, so random variable is finite wp 1
+	\item If $\sum_n \Var (X_n) <\infty$ and $\E X_n = 0$ (2.3.17 Dembo) (Kolmogorov 2 series theorem)
+	\item Kolmogorov 3 series
+\end{enumerate}
+\end{recipe}
+
 \begin{recipe}[Proving conv in prob]
 
 Some ideas:
@@ -304,11 +314,18 @@ Some ideas:
 	\begin{itemize}
 		\item Show that $\E X_n \to \mu$, $\Var X_n \to 0$, then $X_n \to \mu$ in $L^2$
 	\end{itemize}
+	\item Show $\Var X_n / b_n^2 \to 0$ and use Markov to get $b_n^{-1} (X_n - \E X_n)\conprob 0$ (and also in $L^2$).
 	\item CMT 
 	\item $X_n \condist c$ constant
 	\item Truncation tool: \textbf{Weak law for Triangular Array}. For when we don't have second moments. 
 	\end{enumerate}
 \end{recipe}
+
+\begin{theorem}[Coupon Collector]
+If $T_n$ is time to get all $n$ possible coupons. Then 
+
+$$T_n/(n\log n) \conprob 1$$ (and in $L^2$)-- see Dembo 2.1.8.
+\end{theorem}
 
 \begin{theorem}[Weak law triangular array - 2.1.11 Dembo]
 \myworries{Check this}
@@ -435,17 +452,17 @@ Conditions: $h\geq0$ or $\int |h| d\mu <\infty $ where $\mu = \mu_1 \times \mu_2
 %% Weak Convergence
 \section{Weak Convergence}
 \subsection{Methods}
+Main tools: 
+
 \begin{enumerate}
-	\item \textbf{Direct}. Show that $F_n(x) \to F(x)$ for all continuity points.
-	\item If there's a density, try to show that $f_n(x) \to f_\infty$ and check that $f_\infty$ a valid pdf. 
-	\item If $X_n \geq 0$, show that $\int_0^\infty \exp(-\lambda x) d\mu_n (x) \to L(\lambda) = \int_0^\infty \exp(-\lambda x) d\mu_\infty (x)$. Note that $L(\lambda)$ is a Laplace transform of some $\mu$ if $L(\lambda)\downarrow 1$ as $\lambda\downarrow 0$. (Just need for positive $\lambda$. 
-	\item MGFs
-	\item Characteristic functions- show that $\phi_n(t) \to \phi(t)$ for all $t\in \R$. ($\phi$ is a characteristic function of a probability measure if $\psi(t) \to 1$ as $t\downarrow 0$. 
-	\item CLT 
+	\item 	\textbf{\textbf{Direct}}. Show that $F_n(x) \to F(x)$ for all continuity points.
+	\item \textbf{Characteristic functions}- show that $\phi_n(t) \to \phi(t)$ for all $t\in \R$. ($\phi$ is a characteristic function of a probability measure if $\psi(t) \to 1$ as $t\downarrow 0$. 
+	\item \textbf{CLT} 
+
 \end{enumerate}
 
 \begin{example}[Cycling of Random Number Generators (2007 Q2)]
-Similar to birthday problem. 
+Similar to birthday problem - direct method. 
 \answer{
 
 \begin{align}
@@ -460,6 +477,37 @@ See lecture 1 in 310a.
 
 }
 \end{example}
+
+Backup plans
+
+\begin{enumerate}
+	\item If there's a density, try to show that $f_n(x) \to f_\infty$ and check that $f_\infty$ a valid pdf. 
+	\item If $X_n \geq 0$, show that $\int_0^\infty \exp(-\lambda x) d\mu_n (x) \to L(\lambda) = \int_0^\infty \exp(-\lambda x) d\mu_\infty (x)$. Note that $L(\lambda)$ is a Laplace transform of some $\mu$ if $L(\lambda)\downarrow 1$ as $\lambda\downarrow 0$. (Just need for positive $\lambda$. 
+	\item MGFs
+	\item Moment Method
+	\item Can you use a Prohorov argument?
+\end{enumerate}
+
+\begin{theorem}[Moment Method]
+If can show that $\int X^k \mu_n (dx) \to \int X^k \mu_\infty (dx)$ and $\mu_\infty$ is the only measure with its particular moments, then $\mu_n\condist \mu$. \\\\
+To show the second thing, the following are sufficient:
+\begin{enumerate}
+	\item Mgf exists
+	\item \myworries{Power series condition?}
+	\item Carleman's condition: $\sum_{k\geq 1} (m_{2k})^{-1/2k} <\infty$
+\end{enumerate}
+
+
+\begin{example}[(Non-)Examples defined by moments]
+Examples: Normal, poisson, exponential. \\ \\
+
+Non-examples: Log-normal
+\end{example}
+\end{theorem}
+\begin{theorem}[Convergence of type]
+If two normalizing sequences, then those sequences are basically the same up to some scaling.\\\\
+Idea is you can't change the class of limniting distribution by rescaling. 
+\end{theorem}
 
 %%%%% CLT %%%%%%
 \section{CLT}
@@ -485,6 +533,23 @@ $$\frac{S_n - \sum_{i=1}^{k_n} \mu_{kn}}{s_n} \condist N(0,1)$$
 
 \end{theorem}
 
+\begin{example}[2007 Problem 1]
+$X_k$ takes values $\pm k^a$ wp $\frac{1}{2} k^{-\alpha}$ each and $\pm 1$ wp $\frac{1}{2} (1-k^{-a})$ each. Ie Rademacher plus something big. Want to know if $S_n/c_n$ is Gaussian. \\\\
+
+For $a>1$, apply BC + CLT on iid Rademachers to get a normal limit.\\\\
+
+For $a<1$, try Lindeberg:
+
+
+$$\Var X_k \sim \frac{k^{2a}}{k^a \implies \sigma_n^2 \sim 2 \sum_{k=1}^n k^a \sim n^{a+1}$$
+
+And apply Lindeberg. \\\\
+
+For $a=1$ case use CF. 
+
+
+\end{example}
+
 \begin{example}[CLT failures: too wild]
 $$X_i = \begin{cases}
 	0 \text{ wp } 1-1/i\\
@@ -500,7 +565,7 @@ The issue is that some $X_i$'s  dominate-- ie the big ones.
 
 \begin{recipe}[CLT for non-square integrable]
 Session 4 notes. Similar to convergence in probability strategy. \\\\
-Assume $X_{n,k} \ in L^1$ and exist $c_n$ such that 
+Assume $X_{n,k} \in L^1$ and exist $c_n$ such that 
 
 \begin{enumerate}
 	\item $\sum_{k=1}^{\ell_n} P(|X_{n,k}| > c_n) = o(1)$
@@ -508,6 +573,8 @@ Assume $X_{n,k} \ in L^1$ and exist $c_n$ such that
 	\item $\sum_{k=1}^{\ell_n} (\E X_{n,k} - \E Y_{n,k}) = o(s_n)$ where $s_n^2$ sum of variances of truncated in the $n$-th row.
 \end{enumerate}
 Then $$\frac{\sum_{k=1}^{\ell_n} X_{n,k} - \E X_{n,k}}{s_n} \condist N(0,1)$$
+
+For example, see Dembo 3.1.12.
 \end{recipe}
 \begin{theorem}[Lyapunov CLT]
 Lyapunov condition is sufficient for Lindeberg's condition. Same setup, check that:
@@ -517,11 +584,38 @@ $$s_n^{-2-\delta} \sum_{i=1}^{k_n} \E |X_{n,k} - \E (X_{n,k})|^{2+\delta} \to 0 
 \end{theorem}
 
 
+\begin{theorem}[Other CLTs for dependent rvs]
+Look at Sourav/Quals notes
+\end{theorem}
+\begin{theorem}[Kolmogorov 3 Series Theorem]
+....
+\end{theorem}
+
+Some helpful CLT references:
+\begin{enumerate}
+	\item Exponential approximation for the geometric - pg 105 dembo
+	\item Normal approx to Poisson - Dembo ch 3
+	\item Normal approx to Binomial
+\end{enumerate}
+
+Some limit theorems for max of random variables (Ex 3.2.13 Dembo). The below three are the only possible type of limits for max of iid random variables. 
+\begin{enumerate}
+	\item Max of exponentials or normals is is Gumbel-type $F_\infty(y) = \exp(-e^{-y})$. (see also 3.2.14)
+	\item Frechet type $F_\infty(y) = \exp(-y^{-\alpha})$
+	\item Weibull type $F_\infty(y) = \exp(-|y|^\alpha)$
+\end{enumerate}
+A few more examples of max of rvs and limiting distributions
+
+\begin{example}[Birthday problem limiting law]
+$T_n$ is the number needed to get a match with $n$ possible birthdays (eg $n=365$), then can show that $P(n^{-1/2} T_n >s) \to \exp(-s^2/2)$ - Ex 3.2.15. See also the RNG 2007 Q2 question below. 
+\end{example}
+
 %%% Characteristic function %%
+
 
 \section{Characteristic Functions}
 \begin{definition}[Characteristic Function]
-Characteristic function is fourier transform of $\mu$. 
+Characteristic function is Fourier transform of $\mu$. 
 
 $$\phi(t) = \E [\exp(itX)].$$
 
@@ -531,6 +625,39 @@ Try to get $\phi(t) \approx (1+ \frac{f(t)}{n})^n$ form so that we can use exp l
 \end{recipe}
 \end{definition}
 
+\begin{recipe}[Characteristic Function]
+Given a triangular array, want to show weak convergence of $\sum_{k=1}^{\ell_n} X_{n,k}$. 
+\begin{enumerate}
+	\item Center the random variables if necessary
+	\item Try to justify approximation:
+	$$\log \prod_{k=1}^{\ell_n} \phi_{n,k} (t) \approx -\sum_{k=1}^{\ell_n} (1-\phi_{n,k}(t))$$
+	\item Use Lemma: Dembo 3.3.31, Chaterjee 8.10.4 which says: \\\\
+	If $a_1,\ldots, a_n$ and $b_1,\ldots b_n$ complex with maximum modulus $1$ then:
+	$$|\prod_{j=1}^n a_j - \prod_{j=1}^n b_j| \leq \sum_{j=1}^n |a_j - b_j|$$
+	Then since Taylor Approx gives $|\exp(z) - 1-z| \leq C|z|^2 $ for all small $|z|$, then 
+	$$|\prod_{k=1}^{\ell_n} \phi_{n,k} (t) - \exp\left[ -\sum_{k=1}^{\ell_n} (1-\phi_{n,k}(t)\right]| \leq \sum_{k=1}^{\ell_n} |\phi_{n,k}(t) - \exp(-[1-\phi_{n,k}(t)])| \leq C\sum_{k=1}^{\ell_n} |1-\phi_{n,k}(t)|^2 $$
+	Want to show that this goes to $0$. Which we can do by showing:
+	$$\sum_{k=1}^{\ell_n} |1-\phi_{n,k}(t)| = O_n(1) \quad \max_{k\leq \ell_n} (1-\phi_{n,k}(t)) = o_n(1)$$ 
+	So that we can show the $C\sum | \cdot |^2$ term goes to $0$.
+	\item \myworries{See tim notes..... }
+	\item ....
+	\item Apply Levy Continuity Theorem 
+\end{enumerate}
+\end{recipe}
+
+
+\begin{example}[Cauchy Examples 2017 Quals]
+If can show that 
+
+$$\sum_{k=1}^n 1-{\phi_{1/X_i}}(t_n) \to -c|t|$$
+
+Because of iid case we're good
+\end{example}
+\begin{theorem}[Levy's continuity Theorem]
+If $\phi_{\mu_n}(t) \to \phi(t)$ pointwise and $\phi$ is continuous at $t=0$, then $\mu_n$ is uniformly tight sequence and $\mu_n \implies \mu$ weakly where characteristic function of $\mu$ given by $\phi$.\\ \\
+
+Conversely, weak convergence implies convergence of characteristic functions.
+\end{theorem}
 
 
 
@@ -582,15 +709,39 @@ Now as $n\to \infty$, $b_1 \to 0$ and $b_3 \to 0$, so $\lVert P_W - Pois(1)\rVer
 $$1-x \leq e^{-x} \quad 1-x\geq e^{-2x} \quad \text{both for small } x?$$  
 $$\log(1+x) = x + O(x^2)) \quad \text{ for small } x$$
 
+$$-x-x^2 \leq \log(1-x) \leq -x \quad \text{for } x\in [0,1/2].$$
+
+
 
 \subsection{Binomial Coeffs and Stirlings}
 $$(\frac{n}{k})^k \leq \binom{n}{k} \leq (\frac{ne}{k})^k $$
 \myworries{Stirlings}
+\begin{theorem}[Stirlings]
+$$(1-\epsilon) \sqrt{2\pi} k^{k+1/2}e^{-k}\leq k! \leq (1+\epsilon) \sqrt{2\pi} k^{k+1/2}e^{-k}$$
+\end{theorem}
+
+
 
 
 \section{Misc}
 \begin{definition}[Metric]
 \end{definition}
+
+\subsection{Series convergence}
+\begin{theorem}[Root Test]
+If $S_n = \sum_{k=1}^n a_n$ then $S_n$ converges if $L = \limsup_n |a_n|^{1/n} <1$. If $=1$, no info. $>1$, diverges. 
+\end{theorem}
+
+
+\begin{theorem}[Kolmogorov's Maximal inequality]
+$Y_i$ mutually independent with $\E Y_i^2 <\infty$ and $\E Y_i = 0$, then for any $z>0$:
+
+$$z^2 P(\max_{k\leq n} |S_k| \geq z) \leq \Var (Z_n)$$
+where $S_n = \sum_{k=1}^n Y_k$.
+\end{theorem}
+\newpage
+
+
 
 
 

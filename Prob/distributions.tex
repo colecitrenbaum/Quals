@@ -271,6 +271,7 @@ If $X_i \sim Laplace(\mu, \theta)$, then $Y_i = \frac{|X_i - \mu|}{\theta} \sim 
 
 \subsection{Uniform}
 $$U_{(k)} \sim Beta(k, n+1-k)$$
+$$-\log U \sim Exp(1)$$
 
 \subsection{Cauchy}
 $$X \sim Cauchy \implies 1/X \sim Cauchy.$$
@@ -404,6 +405,47 @@ Continuous. CDF:
 $$H(z) \int_{-\infty}^\infty F(z-t) g(t) dt = \int_{-\infty}^\infty G(t) f(z-t) dt$$
 Density:
 $$f_Z(z) = \int_{-\infty}^\infty f_{XY} (x,z-x)dx.$$
+
+
+\subsection{Characteristic functions}
+% ----------------------------------------------------------
+% Characteristic functions of common distributions
+% ----------------------------------------------------------
+\begin{table}[ht]
+\centering
+\caption{Characteristic functions $\varphi_X(t)=\operatorname{E}\bigl[e^{itX}\bigr]$ of selected distributions}
+\scriptsize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}p{4cm} p{9.2cm}@{}}
+\toprule
+Distribution \ \ (common parameterizations) & Characteristic function $\displaystyle\varphi_X(t)$ \\ 
+\midrule
+Bernoulli($p$) & $1-p+pe^{\,it}$ \\ \midrule
+Binomial($n,p$) & $\bigl(1-p+pe^{\,it}\bigr)^{n}$ \\ \midrule
+Poisson($\lambda$) & $\exp\!\bigl(\lambda(e^{\,it}-1)\bigr)$ \\ \midrule
+Geometric($p$), support $\{0,1,\dots\}$ & $\dfrac{p\,e^{\,it}}{1-(1-p)e^{\,it}}, \quad |(1-p)e^{\,it}|<1$ \\ \midrule
+Negative Binomial($r,p$), failures $r$ before $r$-th success & $\displaystyle\left(\frac{p}{1-(1-p)e^{\,it}}\right)^{\!r}$ \\ \midrule
+Discrete Uniform$\{a,\dots,b\}$ & $\displaystyle
+\frac{e^{\,ita}\bigl(1-e^{\,it(b-a+1)}\bigr)}{(b-a+1)\bigl(1-e^{\,it}\bigr)}$ \\ \midrule
+Normal($\mu,\sigma^{2}$) & $\exp\!\bigl(it\mu-\tfrac{1}{2}\sigma^{2}t^{2}\bigr)$ \\ \midrule
+Exponential($\lambda$) (rate) & $\dfrac{\lambda}{\lambda-it}$ \\ \midrule
+Gamma($k,\theta$) (shape–scale) & $(1-it\theta)^{-k}$ \\ 
+\,\,\,\,\,or Gamma($\alpha,\beta$) (shape–rate) & $(1-it/\beta)^{-\alpha}$ \\ \midrule
+Chi–square($\nu$) & $(1-2it)^{-\nu/2}$ \\ \midrule
+Uniform($a,b$) & $\dfrac{e^{\,itb}-e^{\,ita}}{it\,(b-a)}$ \\ \midrule
+Laplace($\mu,b$) & $e^{\,it\mu}\,\bigl(1+b^{2}t^{2}\bigr)^{-1}$ \\ \midrule
+Cauchy($\mu,\gamma$) & $\exp\!\bigl(it\mu-\gamma|t|\bigr)$ \\ \midrule
+Logistic($\mu,s$) & $e^{\,it\mu}\,\dfrac{\pi s t}{\sinh(\pi s t)}$ \\ \midrule
+Student $t$($\nu$) & $\displaystyle
+\frac{\bigl(\sqrt{\nu}|t|\bigr)^{\nu/2}K_{\nu/2}\!\bigl(\sqrt{\nu}|t|\bigr)}
+{2^{\nu/2-1}\Gamma(\nu/2)}$ \quad($K_{\nu/2}$ = modified Bessel) \\ \midrule
+Beta($\alpha,\beta$) & ${}_{1}F_{1}\!\bigl(\alpha;\,\alpha+\beta;\,it\bigr)$ \quad (confluent hypergeometric) \\ \midrule
+Log–Normal($\mu,\sigma^{2}$) & $\exp\!\bigl(it\mu-\tfrac{1}{2}\sigma^{2}t^{2}\bigr)\,
+{}_1F_1\!\bigl(\tfrac{it}{2};\tfrac{1}{2};\tfrac{\sigma^{2}t^{2}}{2}\bigr)$ \\ \midrule
+Cauchy ($x_0$ location, $\gamma>0$ scale) & $\exp(x_0it -\gamma |t|)$\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 
 

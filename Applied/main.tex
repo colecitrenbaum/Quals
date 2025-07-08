@@ -182,9 +182,15 @@ Ways to cope:
 \begin{enumerate}
     \item Restrict to \textbf{estimable} functions of $\beta$
     \item Introduce \textbf{side-conditions} on $\beta$
-    \item Reparametrize (equivalent to $1$
+    \item Reparametrize to full rank model
 
 \end{enumerate}
+Note that any acceptable way to cope will give:
+\begin{enumerate}
+	\item The same estimates of estimable functions
+	\item The same predictions $\hat y$. As a result, $s^2 = RSS/(n-p)$ is the same. 
+\end{enumerate}
+Think about it-- not changing the column space of $X$. We project onto column space of $X$. Gives us a $\hat \beta$ that satisfies the normal equations. Rencher 12.3a (pg 309) tells us $\lambda^T \hat \beta$ is invariant under choice of $\hat \beta$ satisfying normal equations. 
 \subsection{Estimability}
 Eg if neither $\hat \beta_1$ nor $\hat \beta_2$ are uniquely determined, but $\hat \beta_2 - \hat \beta_1$ \textbf{is}. Q: For $c\in \R^p$, for which $c$ is $c\hat \beta$ uniquely determined?  Want:
 $$1) X\beta' = X\beta '' \implies c\beta' = c\beta'' $$
@@ -198,7 +204,7 @@ $$X\beta = 0 \implies c\beta = 0$$
         \item $X\beta = 0 \implies c\beta = 0$
         \item $c \in \operatorname{row}(X)$
         \item $\exists$ $a\in \R^n$ such that $a^T X = c$
-        \item $\exists$ linear unbiased estimate of $c\beta $, ie $\exists a\in \R^n$ such that $\E_\beta (a^T y) = c\beta $
+        \item $\exists$ \textbf{linear unbiased estimate} of $c\beta $, ie $\exists a\in \R^n$ such that $\E_\beta (a^T y) = c\beta $
     \end{enumerate}
 \end{definition}
 \begin{theorem}[Gauss Markov]
@@ -249,6 +255,13 @@ $$X\beta = 0 \implies c\beta = 0$$
     Write
     $$X\beta = XC^{-1} C \beta = X_1^* \beta_1^* \quad \text { where } \beta_1^* = C_1 \beta\in \R^s $$
     We can \textbf{transform} a rank-deficient $X\in \R^{n\times p}$ to a full rank $X_1^* \in \R^{n\times s}$, so that all the components of $\beta_1^*$ are estimable.
+
+
+
+\subsection{ANOVA}
+Strats: if you don't know what $\hat \alpha$ should be with certain constraint, easiest to differentiate to find optimal $\hat \alpha$. \\\\
+
+Also, can solve with a different constraint or drop the redundant column if estimating an estimable quantity if that simplifies calculations. Idea is that $\hat \beta$ is different but $c^T \hat \beta$ is the same regardless of choice if $c^T \beta$ estimable. 
 
 \section{Least Squares Computations}
 First assume $X$ full rank. Find a $Q$ orthogonal ($\{x_1,\ldots, x_p\} \mapsto \{q_1,\ldots, q_p\}$ ONB, then form $Q$ based on completing the ONB of $\R^n$).  such that:
