@@ -390,7 +390,14 @@ $\eta = g(\mu)$ where $\mu = EY$.
 Typical thing is $y_i \sim f_{\mu_i}$. 
 
 
+\section{Bayesian GLMs}
+For estimating posterior mode: gradient ascent on the joint. 
 
+\subsection{Estimating Posterior Distribution/Expectations under intractable Posterior}
+\begin{enumerate}
+	\item MCMC
+	\item VI 
+\end{enumerate}
 \section{Bootstrap}
 \subsection{Confidence intervals}
 How to construct a confidence interval, estimate standard deviation, etc but don't know much about distribution. Key idea is that we're going to resample from our dataset \textbf{with replacement}. N datapoints in the sample, then we sample N samples with replacement. 
@@ -437,5 +444,24 @@ Split data into $k$ blocks. Create the blocks such that any dependency happens w
 \subsection{Bootstrap for Regression}
 \myworries{Check this} ???\\ \\ 
 
-Also bootstrapped residuals which leads to no invertibility issues. 
+Also \textbf{bootstrapped residuals} which leads to no invertibility issues. 
+\section{EM}
+Want to know how to identify these problems and approach for solving. \\\\
+
+When to use. Scott will literally tell you to derive the E and M step. For the older ones, it doesn't tell you to. You should look for:\textbf{ Mixture models }(ie latent variable in disguise). Wishful thinking-- "if I knew x, I could calculate y", and vice versa. 
+
+\begin{example}[$X_i \sim \pi_0 N(0,1) + (1-\pi_0) N(\mu,1)$]
+We'd like to estimate $\pi_0$ and $\mu$. Our instinct is to do maximum likelihood but there's non-concavity (\myworries{??}). The natural latent variable to introduce is $z_i = \Ind[\text{ index i is a non-null}]$. Then $z_i\simiid Bern(1-\pi_0)$ and $x_i |z_i=0 \sim N(0,1)$, and $x_i | z_i=1 \sim N(\mu,1)$. 
+\end{example}
+
+\begin{recipe}[EM Recipe]
+To do
+\begin{enumerate}
+	\item Find a latent variable
+	\item Write complete log likelihood $p(x,z;\theta)$-- include latent and observed.
+	\item Probably compute posterior 
+	\item E-step: Compute expected log likelihood wrt posterior $\tilde \ell (\theta, \theta^{(t)}) = \E_{q^{(t)}} \ell(\theta;x,z)$. Ie under $q= p_{\hat \theta^{(t)}} (z|x)$.
+	\item M-step: arg max the expected log joint $\ell (\theta, \hat \theta^{(t)})$.  
+\end{enumerate}
+\end{recipe}
 \end{document}

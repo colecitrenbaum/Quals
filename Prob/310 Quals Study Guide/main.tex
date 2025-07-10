@@ -541,7 +541,7 @@ For $a>1$, apply BC + CLT on iid Rademachers to get a normal limit.\\\\
 For $a<1$, try Lindeberg:
 
 
-$$\Var X_k \sim \frac{k^{2a}}{k^a \implies \sigma_n^2 \sim 2 \sum_{k=1}^n k^a \sim n^{a+1}$$
+$$\Var X_k \sim \frac{k^{2a}}{k^a} \implies \sigma_n^2 \sim 2 \sum_{k=1}^n k^a \sim n^{a+1}$$
 
 And apply Lindeberg. \\\\
 
@@ -664,11 +664,124 @@ Conversely, weak convergence implies convergence of characteristic functions.
 \section{Stein's Method (Poisson)}
 
 
+Tool for weak convergence for Poisson approximation. Also for Gaussian approximation but we didn't cover it in class. \\\\
+\textbf{Gaussian heuristic:} sums of weakly dependent random variables of roughly the same size. \\\\
+\textbf{Poisson heuristic:} number of occurrences of rare events which are weakly dependent. \\\\
+Idea behind Stein's method:
+
+$$X \sim N(\mu,\sigma^2) \iff \forall \text{ nice } f, \E f'(X) = \E X f(X)$$
+So we define this Stein operator -- $\calA f(x) = f'(x) - xf(x)$, then $\E \mathcal A (f(X)) = 0$. Then vibes is that if $\calA f(X) \approx 0$, then $X\approx \text{Gaussian}$. Stein quantifies this. \\\\
+
+%For Poisson, the characterizing operator is $\calA f(k) = \lambda f(k+1) - kf(k)$ for all functions $\bbZ_{\geq 0} \to \R$. Stein's equation for Poisson is:
+%
+%$$\lambda f_A (n+1) - nf_A(n) = \Ind_A(n) - P(\operatorname{Pois}(\lambda) \in A),$$  
+%want a solution $f_A$. There exists bounded solution $f_A$ such that $\sup_{n\geq 1} |f_A(n+1) - f_A(n)| \leq 1 \wedge \lambda^{-1}$. Yields:
+%
+%$$d_{TV} (Y, \operatorname{Pois}(\lambda)) \leq \sup \{ |\lambda \E f(Y+1) - \E Y f(Y) |: f\text{ satisfiying above}\}$$
+
+
+
+Index set examples. The indicators should be rare. 
+\begin{enumerate}
+	\item Coupon collector: indicator that a coupon is \textbf{not} present. $|I| = n$.
+	\item ER Graph: indicator that three nodes form a triangle, $|I| = \binom{n}{3}$.
+	\item 
+\end{enumerate}
+
 
 
 \subsection{Method 1 - Dependency Graphs}
 
-\subsection{Method 2 - when dependency graph doesn't work (ie complete)}
+Define $N_i \subset I$ such that $i \in N_{i} \implies X_i \indep \{X_j: j\notin N_{i} \} $. (Ie a dependency graph - if it's not in the neighborhood, they're independent). 
+
+\[
+\left\|P_{W}-\operatorname{Poisson}(\lambda)\right\|_{\mathrm{TV}}
+\;\le\;
+\min\!\bigl(3,\lambda^{-1}\bigr)\,
+\biggl[
+   \sum_{i\in I}\sum_{j\in N_i\setminus\{i\}} p_{ij}
+   \;+\;
+   \sum_{i\in I}\sum_{j\in N_i} p_i p_j
+\biggr].
+\]
+
+\begin{recipe}[Dependency Graphs]
+If you can make a dependency graph that isn't complete, this is a good strat. 
+\begin{enumerate}
+	\item Write $W = \sum_{i\in I} X_i$ where $X_i$ are indicators of some events. 
+	\item Calculate $p_i$, $\lambda$.
+	\item How are the indicators correlated? Form a dependency graph. 
+	\item Show the bound goes to $0$. 
+\end{enumerate}
+\end{recipe}
+
+\begin{example}[Session 6- ER Graph Triangles]
+$|I| = \binom{n}{3}$
+\end{example}
+\begin{example}[Session 6 - Head Runs]
+Consider $n$ coin tosses with probability of heads $p$. $Y_n = \#$ head runs of at least $k$. Define $X_i = \Ind[ \text{exists a head run of length at least k starting at i}]$. $Y_n = \sum_{i=1}^n X_i $. 
+
+$$P(X_i = 1) = \begin{cases}
+	p^k \quad i = 1\\
+	(1-p)p^k \quad i\in [2, n-k +1]\\
+	0 \quad i> n-k+1 
+\end{cases}.$$
+
+$X_i$ and $X_j$ are independent if we look far enough away, ie whenever $|i - j| > k$ 
+
+\end{example}
+
+
+\subsection{Method 2 - Positive ASsociations}
+Suppose $Y = \sum_{i\in I} X_i$. 
+\myworries{Check this}
+
+\subsection{Method 3 - Negative Association - More useful.}
+For all $i \in I$, we can construct $\{Y^{(i)}_j : j \neq i\}$ coupled with $X_i$ such that
+\[
+  \{Y^{(i)}_j : j \neq i\} 
+  \stackrel{d}{=}
+  \{X_j : j \neq i\} \mid X_i = 1
+  \quad\text{and}\quad
+  Y^{(i)}_j \le X_j \;\; \forall\, j \neq i .
+\]
+
+In this case,
+\[
+  d_{\mathrm{TV}}\!\bigl(Y, \operatorname{Poisson}(\lambda)\bigr)
+  \;\le\;
+  \bigl(1 \wedge \lambda^{-1}\bigr)\,
+  \bigl(\lambda - \operatorname{Var}(Y)\bigr).
+\]
+
+\begin{example}[Coupon Collector]
+Number of missing coupons after many trials is approximately Poisson. \\\\
+Isomorphic to balls into bins. N bins (N coupons). Then b balls - number of trials picking a new coupon. \\\\
+
+$$X_i = \Ind[\textbf{box i empty}] \text{ are rare events}.$$
+Moreover, they're negatively associated-- if one box is empty, then the other boxes are more likely to be non-empty. 
+\end{example}
+
+\begin{example}[Baseball question - 2015, Q4 ]
+5 cards per pack, each pack has unique cards randomly. 600 total players. How many packs do we need? This is like the coupon collector problem. 
+For $p$ packs, 
+$$p_i = (1- 1/120)^p \approx \exp(-p/120).$$
+So $W\approx Pois(\lambda)$ with $\lambda = 600\exp(-p/120)$. 
+Find $p$ such that
+$$P(W = 0) = 0.95).$$\\\\
+Justifying the approximation. Negative association. Other players more likely to have been chosen if one player is missing. By exchangeability/symmetry: check that the negative association condition holds for $i=1$. Ie need to show that there exists a suitable coupling. Construct as follows. Amongst all $p$ draws, if I get a pack with player $1$ in it, resample another player to substitute out player $1$ (do it so that the pack is still distinct). Then:
+
+$$Y_{j}^{(1)} = \Ind[ \text{ player j is not in the "resampled" p packs defined above}].$$
+Since whenever we get a player $1$, we resample, it forces $Y_{j}^{(1)} \leq X_j$ for all $j\neq i$. \myworries{CHECK THIS LATER}
+
+$$\Var Y = \sum \Var X_i + 2\sum_{i<j} \Cov(X_i, X_j) = \sum p_i(1-p_i) + 2\sum (\Cov (X_i, X_j))$$
+
+So tv distance is bounded above by:
+
+$$(1\wedge \lambda^{-1} ) [\sum p_i^2 - 2\sum \Cov (X_i, X_j)]$$
+\end{example}
+
+\subsection{Other Arratia Goldstein Method}
 
 \begin{example}[Fixed Points - 310a HW8]
     Let $\sigma$ be a uniformly chosen permutation in the symmetric group $S_n$. Let $W = \#\{i : \sigma(i) = i\}$ (the number of fixed points in $\sigma$). Show that $W$ has an approximate Poisson(1) distribution by using Stein's method to get an upper bound on $\|P_W - \text{Poisson}(1)\|$. (Hint: see section 4.5 of Arratia-Goldstein-Gordon.) Give details for this specific case.
@@ -721,7 +834,9 @@ $$(1-\epsilon) \sqrt{2\pi} k^{k+1/2}e^{-k}\leq k! \leq (1+\epsilon) \sqrt{2\pi} 
 \end{theorem}
 
 
+\section{TV Distance}
 
+$$d_{TV} (P, Q) = \sup_B |P(B) - Q(B)| = \frac{1}{2} \int |p(x) - q(x)| dx = 1- \int \min\{ p(x), q(x)\} dx $$ 
 
 \section{Misc}
 \begin{definition}[Metric]

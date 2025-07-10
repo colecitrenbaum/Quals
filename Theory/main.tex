@@ -204,6 +204,17 @@ $$\delta_\pi = \begin{cases}
 \end{cases}$$
 and its risk is $\pi M$, so it could be arbitrarily small.
 
+\subsection{UMVU Tools}
+\begin{enumerate}
+	\item Find a CSS and do Lehman Scheffe
+	\begin{itemize}
+		\item Directly show CSS
+		\item Use exponential family
+	\end{itemize}
+	\item Orthogonality condition
+	\item Cramer Rao
+	\item Subfamily
+\end{enumerate}
 
 
 \section{MRE}
@@ -286,8 +297,11 @@ $Z\sim N(0,\Sigma)$, and $\ell$ is bowl shaped, then $\E \ell (Z) \leq \E \ell (
 \end{theorem}
 
  \begin{definition}[Pitman Estimator]
+ Under square error loss, we can derive MRE because it's the Pitman estimator. 
+ ...... 
 \end{definition}
 \begin{theorem}[Mini-convolution theorem]
+..... 
 \end{theorem}
 
 \section{James-Stein Estimator}
@@ -406,7 +420,39 @@ Eg, $\bar X$ in $\Lambda_0 = \{\sigma^2 = b\}$ and $\Lambda = \{\sigma^2 \leq b\
 \end{recipe}
 Can extend to non parametric big family-- $\bar X$ is minimax if $X_i \simiid F$ since don't increase sup risk in the larger family. 
 
+\begin{theorem}[Connection MRE and Minimax]
+Pg 340: If $\delta$ is the MRE under square error loss and it has finite variance, then it is minimax under square error loss. 
+\end{theorem}
+\subsection{Approximate Minimax}
+\begin{theorem}[Le Cam's Two point Lemma]
+For any $P_0 , P_1 \in P$
+$$\inf_A \sup_P R(A,P) \geq \frac{1}{2} \inf_{a} (\ell(a,P_0) + \ell(a,P_1)) (1-d_{TV} (P_0,P_1)).$$
+\end{theorem}
 
+
+\begin{recipe}[Approx Minimax]
+$X_i \simiid P_\theta$. 
+\begin{enumerate}
+	\item Fix $\theta_0, \theta_1$. Often $\theta_0$ something trivial like $0$
+	\item Bound by Le Cam's 2 Point Lemma
+	$$\frac{1}{2}  (\ell(a,P_0^n) + \ell(a,P_1^n)) (1-d_{TV} (P_0^n,P_1^n)).$$
+	\item Bound tv:
+	$$d_{TV} (P^n, Q^n) \leq n d_{TV} (P,Q)$$
+	Or use Pinsker's Inequality using KL:
+	$$d_{TV} (P^n, Q^n) \leq \sqrt{ n/2 (KL(P\| Q))}$$
+	\item Choose $\theta_1$ very close to $\theta_0$ st the infimum term is very small -- gives the minimax order, and the tv distance term is constant order. 
+\end{enumerate}
+\end{recipe}
+\begin{example}[Exponential location family]
+$X_i \simiid \theta + Exp(1)$. Q: What is order of $\inf_A \sup_\theta \E (\hat \theta - \theta)^2$, ie minimax risk? 
+
+Follow the steps and get 
+
+$$\text{ minimax risk} \leq \frac{\theta_1^2}{4} (1-n\theta_1) \geq \frac{c}{n^2}$$
+If we choose $\theta_1 = 1/(2n)$. 
+
+
+\end{example}
 \newpage
 \section{Testing}
 Types of errors:
@@ -425,6 +471,12 @@ $$\phi(x) = \begin{cases}
 	0 \quad p_0(x) <kp_0(x)
 \end{cases}$$
 where constants determined by level constraint. This is just the likelihood ratio test. First find a $k$, then find the $\gamma$. \\\\ Also note that MP test must have level exactly $\alpha$ unless there exists a test with power $1$ with size $<\alpha$. \\
+
+\begin{enumerate}
+	\item Existence of MP test of the above form that is level exactly $\alpha$. Is most powerful.
+	\item Sufficiency. If a test is of the above form, it is MP test at level
+	\item Necessary. Any MP test is of the above form unless there's a test with size $<\alpha$ with power $1$. 
+\end{enumerate}
 \end{theorem}
 Note that non-uniqueness comes from the $=$ condition-- how to randomize. 
 \begin{fact}[NP characterizes MP tests]
@@ -432,6 +484,9 @@ The NP is actually an if and only if statement. If MP test, then satisfies the a
 \end{fact}
 \subsection{Simple-Composite }
 A UMP test only exists if the NP test is the same for \textbf{all} alternatives! If not, have different MP tests, no UMP test! If you want to show that a UMP does not exist, show that the MP test depends on the alternative-- to show exist, does not depend. Eg, testing normal $\theta=0$ versus $\theta\neq 0$, we get different MP tests depending on which side our alternative is on. 
+\begin{recipe}[Simple-Composite]
+Fix an alternative, find the NP test, argue it doesn't depend on the alternative you chose.
+\end{recipe}
 
 
 
@@ -447,6 +502,9 @@ Ie if we have a singleton null and for alternative $\calH_1: \theta'> \theta_0$,
 Testing $\theta = \theta_0$ versus $\theta>\theta_0$, if there's a MLR, then the UMP test given by
 
 $$\phi(x) = \Ind[T(X) > C ] + \gamma \Ind[T(X) = C].$$
+where we choose $C$ to get $\E_{\theta_0} \phi(X) = \alpha$. \\ \\
+
+Moreover $\beta(\theta)$, the power function, is \textbf{increasing} as a function of $\theta$.  
 \end{theorem}
 \begin{fact}[MLR in Exponential Families]
 Exponential families satisfy MLR! Also satisfied in non-central chi-square.
@@ -482,11 +540,13 @@ To find UMP test:
 Unique UMP if $\phi_\Pi$ is unique in the simple-simple case.\\\\
 For least favorable prior, try to make it hard to reject. Ie, mass on the boundary. 
 \end{recipe}
+
+The idea is that for any other valid test will also be valid for the mixture null, but our test $\phi_\Pi$ is most powerful in that family. 
 \subsection{Composite-Composite}
 UMP rarely exists in composite-composite. To check, always first fix an alternative, find MP test for composite-simple case. Then show that it does or doesn't depend on the alternative chosen. Here are the times when it does:
 
 \begin{enumerate}
-	\item One-side MLR testing: $\calH_0: \theta\leq \theta_0$, $\calH_1: \theta>\theta_0$
+	\item One-side MLR testing: $\calH_0: \theta\leq \theta_0$, $\calH_1: \theta>\theta_0$. The test is the same regardless of which alternative we choose. 
 	\item Bioequivalence: Test null that $\theta \notin (\theta_1,\theta_2)$. If we have a 1-param expo family, then $\phi(x) = \Ind[T\in (C_1, C_2)]$ is UMP
 	\item One sided testing of Gaussian mean, ie $\calH_0: v^T \mu = \delta$ versus $\calH_1: v^T \mu >\delta$ for fixed $v$ with $v^T \Sigma v>0$, then reject for large $v^T X$. 
 \end{enumerate}
@@ -523,9 +583,76 @@ Weird: we have a MP but not UMP for testing $H_0: \sigma \geq \sigma_0$ where bo
 Given some nested rejection regions for valid test, then
 $$\hat p(X)= \inf \{\alpha: X\in R_\alpha\}.$$
 \end{definition}
-\begin{fact}[P-values are subuniform]
-P values are subuniform. If we have exact level $\alpha$ for any $\alpha$, then $\hat p$ is exactly uniform.
+\begin{fact}[P-values are sub-uniform]
+P values are sub-uniform. If we have exact level $\alpha$ for any $\alpha$, then $\hat p$ is exactly uniform.
 \end{fact}
+
+
+\section{UMPU}
+What we do when there's no UMP? 
+\begin{definition}[Unbiased test]
+Unbiased level $\alpha$ if 
+\begin{enumerate}
+	\item Level $\alpha$: $\E_\theta \phi \leq \alpha \quad \forall \theta\in \Omega_0$
+	\item $\E_\theta \phi \geq \alpha \quad \forall \theta \in \Omega_1$.
+\end{enumerate}
+Think -- for a specific alternative, we never have power worse than $\alpha$.
+\end{definition}
+
+Helpful that in exponential families, power function is smooth. This means that if $\beta$ is power function, and simple null $\theta_0$, then $\beta '(\theta_0) = 0$ is a minimizer.
+
+\begin{theorem}[Simple null UMPU, 1-param Expo]
+Want to test:
+
+$$\calH_0: \theta= \theta_0, \quad \calH_1: \theta \neq \theta_0.$$
+
+Given by 
+
+$$\phi(X) = \begin{cases}
+	1 & T(X) >c_1 \text{ or } T(X) <c_2\\
+	\gamma_i & T_i = c_i\\
+	0 &\text{ otherwise (between $c_1, c_2$)}
+\end{cases}.$$
+Where the constants above must satisfy level constraint and also so that:
+
+$$\E_{\theta_0}[T(X) \Phi(T(X)) ] = \alpha \E [T(X)].$$
+
+\end{theorem}
+\begin{example}[$X_i \sim N(\theta,1)$]
+If want to test $\theta = 0$ in normal location model with known variance, the equitailed test is UMPU; see above.
+\end{example}
+
+
+One unbiased proof argument is to compare to the $\phi = \alpha$ test. Our test above is the best power in the class where $\beta'(\theta_0) = 0$, therefore it must be unbiased, since it beats out the constant test.
+
+
+\begin{definition}[Similar (on boundary) test]
+If $E_\theta \phi = \alpha$ for all $\theta$ on the boundary. \\\\
+Unbiased tests are similar if power function is continuous: $\text{ unbiased tests } \subset \text{ similar tests}$.\\\\
+We find the UMP among similar tests and then show it's unbiased.
+\end{definition}
+\begin{definition}[Neyman structure]
+Let $T$ be sufficient at the boundary. Then $\phi$ has Neyman structure if $\E [\phi | T=t] = \alpha$ for all $t$. It's like conditional similarity. \\\\
+
+Equivalent to $T$ being complete and sufficient for the boundary if $\phi$ is a similar test. \\\\
+
+If $T$ is CSS, then every similar test has Neyman structure. 
+\end{definition}
+
+Idea is $\E_{\theta, \sigma} \phi (X) = \E [\E \phi | T] $, maximize the inner expectation. \\\\
+
+\begin{recipe}[UMPU in multiparameter exponential family]
+Todo
+\begin{enumerate}
+	\item Get nice form
+	\item Get parameter $\theta$ that's equivalent to testing original parameter
+	\item T is CSS at boundary 
+	\item Reject for $U > k(T)$ etc depending on side of test
+	\item $k$ is found by satisfying $P_theta (U > k(T) | T) = \alpha$ at boundary. 
+	\item Helpful to try to use Basu's theorem 
+\end{enumerate}
+\end{recipe}
+
 %% end 300a
 %% 300b 
 \newpage
