@@ -367,8 +367,40 @@ Can use the same trick for downdating (ie LOO fit); $(X^TX - x_ix_i^T)^{-1}$. Id
 
 \section{Model Selection (ESL Ch7)}
 
+\section{Cross Validation}
+Two possible goals: model selection, model accuracy. Type J question: which model to pick? 
 
+\subsection{CV for Model Selection}
+Eg tuning parameter $\lambda$. K-folds. Each data point gets assigned into one of $K$ folds without replacement. Have function $\hat f_{(-k)}$ fit on everything except for data in the kth fold. Use loss function to evaluate the the held out data. Have notion:
 
+$$\hat Err ^{(CV)} (\theta) = \sum_{i=1}^n \text{ all the left out cv errors for each fold}.$$
+Use this to pick $\theta^*$. Output a $\hat f(\cdot , \theta^*)$. 
+
+\subsection{Model Accuracy}
+I want to use model (eg Lasso with $\lambda = 0.1$)-- suppose we haven't done model selection and are just being told we're using this. I want to know how accurate this model is. Perfect world you'd have extra held out data to test on. 
+
+$$\hat ERR^{(CV)} \quad \text{as above}.$$
+is a measure of accuracy. This estimates 
+$$Err_n = \E [Err_\tau] = \E [\E [\ell(y_{n+1}, \hat f_\tau (X_{n+1})) | \tau]],$$
+where $\tau$ is the training sample. This is the expected error over all possible training dat, ie expectation over random $y,x, \tau$.
+But:
+$$\E[\hat Err^{(CV)}] > Err_n$$ 
+since we're training with not as much data. 
+
+\myworries{Caution}. Always note that CV and bootstrap sample without and with replacement! And we need them to be distinct in CV. 
+\begin{definition}[Nested CV]
+Idea is to find the best $\theta$ on each fold, so that we have $\theta_1^*,\ldots, \theta_k^*$ and get an out of sample loss with each \textit{best} one. Then average these, and this is an estimate of how we'll do if we choose the best $\theta$ then generalize to new data. 
+\end{definition}
+
+Fold sizes: LOO is less biased, but can introduce more variance. This is because our models are really similar, which leads to correlation in the error estimates, which leads to higher variance. Also, computational issues.
+
+\subsection{CV with dependent samples}
+If you have correlations you end up with smaller error estimates because there's bleed between your folds-- ie if you have the same person with different observations of them in different folds. Your model has already seen that person and so will generalize better to more data on that person. \\\\
+Or temporal data-- if know whether on June 2 in training, then that improves our out of sample prediction to June 3. \\\\
+
+Solution is to block things together ala block bootstrap. Ie make the folds dependent, dependent outside of the fold. \\\\
+
+For a single person, put all of their observations in a single fold. 
 \section{Regularization (Ridge, Lasso)}
 \subsection{Ridge}
 Ridge objective:

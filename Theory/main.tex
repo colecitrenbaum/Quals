@@ -15,7 +15,7 @@
 % ----------------------------------------------------
 
 \tcbuselibrary{breakable}
-\title{300 Quals Guide}
+\title{300a Quals Guide}
 \newcommand{\answer}[1]{%
   \begin{tcolorbox}[
     colback=gray!9.8,
@@ -119,6 +119,12 @@ A common strategy with Basu's theorem is to consider a submodel-- show independe
 	\item $\Unif(0,\theta)$ : $T= X_{(n)}$
 	\item $\Unif(\theta_1, \theta_2)$: $T = (X_{(1)}, X_{(n)})$
 \end{enumerate}
+
+
+
+
+\subsection{Epic CSS rolodex}
+
 
 \section{UMVU}
 Note that we can't take existence of an unbiased estimator for granted. If $x\sim Bin(n,\theta)$. Take like $g(\theta) = \frac{1-\theta}{\theta}$ or a polynomial of degree $>n$-- no unbiased estimators. Strategy to show no unbiased estimator is just write out the expectation of an estimator.
@@ -645,183 +651,91 @@ Idea is $\E_{\theta, \sigma} \phi (X) = \E [\E \phi | T] $, maximize the inner e
 Todo
 \begin{enumerate}
 	\item Get nice form
-	\item Get parameter $\theta$ that's equivalent to testing original parameter
-	\item T is CSS at boundary 
+	$$p_{\theta, \xi} (x) = \exp(\theta U(X) + \xi T(X) - \Psi(\theta,\xi)$$
+	\item Where parameter $\theta$ that's equivalent to testing original parameter
+	\item T is CSS at boundary. Then $U(X)|T$ does not depend on the nuisance $\xi$ on the boundary
 	\item Reject for $U > k(T)$ etc depending on side of test
-	\item $k$ is found by satisfying $P_theta (U > k(T) | T) = \alpha$ at boundary. 
+	\item $k$ is found by satisfying $P_\theta (U > k(T) | T) = \alpha$ at boundary. 
 	\item Helpful to try to use Basu's theorem 
+	\item To satisfy the orthogonality condition, hope to use symmetry.
 \end{enumerate}
 \end{recipe}
 
+\myworries{Add the recipes here}
+
+\begin{example}[Inference on Winners Example]
+
+\end{example}
+
+\section{Invariant Tests}
+Invariance-- looking for transformations of the data that don't change the testing problem at all. What is a map that takes nulls to nulls and alternatives to alternatives? 
+\begin{example}[$X_i \sim N(\theta_i, \sigma^2)$ with $\sigma$ known ]
+Test $\theta_i=0$ for all $i$ versus not. Eg linear model. An invariance is orthogonal transformation. Applying $UX$ maps nulls to nulls and alternatives to alternatives. 
+
+$$\Phi(X) = \Phi(U X)$$
+
+Test depends only on distance of $\underline X$ from the origin, ie on $T=\sum_i X_i^2$. What is the UMP if we only observe $\sum X_i^2$, instead of our full data?\\\\
+
+UMPI rejects when $\frac{\sum X_i^2}{\sigma^2} > q(1-\alpha)$ of $\chi^2_{n}$.
+\end{example}
+
+Invariance reduces the sample space, ie $(X_1, \ldots, X_n) \mapsto T(X)$. \\\\
+
+The general setup is that we have a $g$ that maps $X' = gX$. This induces a transform $\bar g$ that maps $\bar g \theta = \theta'$. We want that $\bar g(\Omega_0)\subset \Omega_0$ and $\bar g(\Omega_1) \subset \Omega_1$. Ie, the map keeps us within classes. Class $G$ of such transformations must be a \textbf{group}, ie having inverse and composition. We say that the problem is "invariant" with respect to $G$: testing based on $X$ or $gX$ is the same. 
+
+Need:
+\begin{enumerate}
+	\item Applying $g$ we don't leave our model
+	\item For any $g$ we pick, for any $\theta$ we pick, there's some $\theta'$ such that $g$ takes $\theta'$ to $\theta$. Ie, $g(X)$ under $P_\theta'$ has distribution $P_\theta$. That is, any $g$ we choose induces a surjection onto $\Theta$. 
+	\item Stay within $\calH_0$ or $\calH_1$. 
+\end{enumerate}
+
+\begin{definition}[Invariant tests]
+$$\phi(X) = \phi(gX) \quad \forall g\in G , \forall X\in S.$$
+Our test gives the same result regardless of whether we transform. The hope is that there's a UMP test among invariant tests (depends on the group you choose). 
+\end{definition}
+
+Look for-- linear regression type problems, unitary matrices, translations. 
+
+\begin{definition}[Maximal Invariant]
+Given a group of transformations $G$. Then $T$ is maximal invariant if:
+\begin{enumerate}
+	\item $T$ invariant ie $T(gX) = T(X)$ for all $g,X$. 
+	\item If $T(\underline X_1) = T(\underline X_2)$, there exists a $g$ such that $X_2 = gX_1$. 
+\end{enumerate}
+Eg, $\sum X_i^2$ is max invariant in the $N(\theta_i,\sigma^2)$ example. \\\\
+\textbf{Any invariant function (eg test) is a function of the maximal invariant. So we can consider tests that are only functions of the maximal invariant!!!! TSH 6.2.1}
+\end{definition}
+
+\begin{example}[Location Changes]
+If $g X = X + c$, then maximal invariant is:
+
+$$n = 1: \quad \text{ constant functions}.$$
+$$n>1: \quad T = Y = (Y_1,\ldots, Y_{n-1}) = (X_1 - X_n,\ldots, X_{n-1} - X_n)$$
+
+The proof is that there exists a $c = X_n' - X_n$ such that if $T(X) = T(X')$, there exists a $c = X_n' - X_n$ such that $X ' = X + c$.  \\\\
+
+Alternatively it's sometimes helpful to use $(X_1 - \bar X, \ldots, X_{n-1} - \bar{X})$. 
+\end{example}
+
+\begin{example}[Scale Changes]
+$g(X) = (cX_1,\ldots, cX_n)$, then $Y= (\frac{X_1}{X_n},\ldots, \frac{X_{n-1}}{X_n})$ is maximal invariant. $c = \frac{X_n'}{X_n}$. 
+\end{example}
+
+\begin{example}[Group of increasing functions]
+If $g(X) = (f(X_1),\ldots, f(X_n))$ for some increasing $f$, then $g$ preserves the order but not the values. \textbf{Ranks} are maximal invariant. 
+\end{example}
+
+\begin{recipe}[Find the UMPI]
+\begin{enumerate}
+	\item Reduce by sufficient stat if necessary
+	\item Find the transform group $G$ that leaves the problem invariant 
+	\item Find the maximal invariant
+	\item Test based on the maximal invariant (ie find UMP test as if this was the only thing observed.)
+\end{enumerate}	
+\end{recipe}
+
+
+
 %% end 300a
-%% 300b 
-\newpage
-\section{Stochastic Convergence}
-Helpful tools
-\begin{enumerate}
-	\item Don't forget Portmanteau
-	\item CLT, SLLN 
-	\item CMT
-	\item Slutsky
-\end{enumerate} 
-\begin{theorem}[CMT]
-If $g$ is continuous on a set of probability $1$
-$$X_n\to^* X \implies g(X_n) \to^* g(X)$$
-for conv in dist, prob, or as
-\end{theorem}
-\begin{theorem}[Slutsky]
-A few parts
-\begin{enumerate}
-	\item $X_n \condist c \implies X_n \conprob c$
-	\item If $\|X_n - Y_n\| \conprob 0$ then if $X_n \condist X$ we have also $Y_n \condist X$. 
-	\item If $X_n \condist X$ and $Y_n \conprob c$ then
-	$$\begin{pmatrix}
-		X_n\\Y_n 
-	\end{pmatrix}\condist \begin{pmatrix}
-		X\\c 
-	\end{pmatrix}$$
-	\end{enumerate}
-	Corrolary via Slutsky and CMT:
-	$X_n\condist X$ and $Y_n \conprob c$ gives us 
-	\begin{enumerate}
-	\item $Y_n X_n \condist cX$
-	\item $Y_n + X_n \condist c+ X$
-	\item $Y_n^{-1} X_n \condist c^{-1} X$
-	\end{enumerate}
-
-\end{theorem}
-\begin{definition}[Uniform Tightness]
-A collection $\{X_\alpha\}_{\alpha \in A}$ is uniformly tight if for all $\epsilon>0$ there exists an $M<\infty$ such that 
-
-$$P(\|X_\alpha\|>M) \leq \epsilon \quad \text{for all } \alpha \in A$$
-\end{definition}
-\begin{example}[Markov, Tightness]
-If all $X_\alpha$ have the same $\ell$-th moment, then just use Markov to prove tightness. 
-\end{example}
-In general if a collection has increasing means or something, it won't be tight, eg $X_n \sim N(n,1)$. 
-
-\begin{theorem}[Prohorov]
-Uniformly tight $\implies$ for all sequences there is a a subsequence that converges in distribution to a random variable.\\\\
-Conversely, 
-Convergence in distribution $\implies$ unifromly tight. 
-\end{theorem}
-
-
-\subsection{Big-O, Little-o}
-Non-stochastic versions, 
-$$f(x) = O(g(x)) \iff \limsup_{\eps\to 0} \frac{f(\epsilon)}{g(\eps)} < \infty$$.
-$$f(x) = o(g(x)) \iff \lim_{\eps \to 0} \frac{f(\eps)}{g(\eps)} = 0 $$
-
-\begin{definition}[Little-${o_p}$]
-$$X_n = o_p(R_n) \iff \exists Y_n \text{ such that} X_n = R_n Y_n \text{ with } Y_n \conprob 0$$
-\end{definition}
-\begin{definition}[Big $O_p$]
-$$X_n = O_p(R_n) \iff X_n = R_n Y_n \text{ where } Y_n \text{ uniformly tight}$$
-\end{definition}
-
-\begin{theorem}[Delta Method]
-Let $r_n\to \infty$ and $f$ differentiable at $\theta$. If $r_n (T_n -\theta)\condist A$ then:
-\begin{enumerate}
-	\item $$r_n(f(T_n) - f(\theta)) \condist f'_\theta A$$
-	\item $$r_n(f(t_n) - f(\theta)) - f_\theta'(r_n (T_n - \theta)) \conprob 0$$
-\end{enumerate}
-\begin{proof}
-	Main idea:
-	$$f(\theta + h) - f(\theta) = f'_\theta h + o(\|h \|) \text{ as } h\to 0$$
-	Take $h = T_n - \theta$ 
-\end{proof}
-
-\end{theorem}
-\begin{theorem}[Higher order delta method]
-\end{theorem}
-
-\section{MLE}
-\begin{definition}[M-estimators]
-$$\hat \theta_n = \arg \max_\theta \frac{1}{n} \sum_{i=1}^n m_\theta(X_i)$$
-where $m_\theta$ is some known function, eg $\ell_\theta$-- maximize log likelihood 
-
-\end{definition}
-\begin{definition}[Z-estimator]
-$$\hat \theta _n = \{\theta: n^{-1} \sum_{i=1}^n \Psi_\theta(X_i) = 0\}$$
-eg $\grad \ell_\theta = 0$. 
-\end{definition}
-\subsection{Consistency of MLE}
-Consistency of $P_n \ell_\theta \conprob P \ell_\theta $ (WLLN) is \textbf{not} enough for consistency of MLE $\hat \theta_n \conprob \theta^*$. For arbitrary sample size, $P_n \ell_\theta$ not necessarily maximized at (or near) $\theta^*$ if we converge too non-uniformly. See picture.  For consistency of MLE, need:
-\begin{enumerate}
-	\item Uniform convergence (in probability)
-	\item Well-separation 
-\end{enumerate}
-\begin{definition}[Uniform convergence]
-$M_n(\theta)$ converges uniformly to $M(\theta)$ if 
-$$\sup_{\theta} |M_n(\theta - M(\theta)| \conprob 0$$
-\end{definition}
-\begin{definition}[Well-separation]
-\myworries{definition........}\\
-eg, strong convexity. 
-\end{definition}
-Some more primitive conditions. Identifiability and a finite sample space $|\Theta|<\infty$ are enough for consistency of MLE. 
-\begin{definition}[Identifiability]
-Identifiable if for $\theta \neq \theta'$, $P_\theta \neq P_\theta'$ ie KL divergence is strictly positive. 
-\end{definition}
-\begin{example}[Example of non-identifiability]
-In my notes
-\end{example}
-
-\subsection{Asymptotic normality of the MLE}
-Under a regularity condition ("smooth, nice"), the MLE is normal.
-\begin{definition}[Smooth/Nice at $\theta$]
-See notes.. \begin{enumerate}
-	\item Hessian of log likelihood is Lipschitz near $\theta^*$ - see notes 
-	\item Bounded gradient $P_\theta^* \| \grad \ell_\theta^* \|^2 <\infty $
-\end{enumerate}
-\end{definition}
-\begin{theorem}[Asymptotic normality of MLE]
-If \begin{enumerate}
-	\item $\{P_\theta\}_{\theta \in \Theta}$ is smooth/nice at $\theta^*$
-	\item $\Theta$ open subset of $\R^d$,  
-	\item Hessian has finite mean (or alt that exchange order of differentiation wrt $\theta$ and expectation).
-	\item $\hat \theta_n$ the MLE is  consistent 
-\end{enumerate}
-Then $\sqrt{n} (\hat \theta_n - \theta) \condist N(0,\Sigma_\theta^*)$.
-\textbf{If we can also exchange order of differentiation and expectation} , $\Sigma_\theta^* = I_\theta^{-1}$. 
-\end{theorem}
-\section{Fisher Information}
-
-\begin{definition}[Fisher Information]
-Outer product of the score
-$$I_\theta = \E_{P_\theta} [\grad_\theta \ell_\theta (\grad_\theta \ell_\theta)^T]$$
-If we can exchange order of differentiation and expectation then:
-$$I_\theta = \Cov (\grad \ell_\theta) = -\E[\grad^2 \ell_\theta] $$
-\end{definition}
-Lots of information, small variance. Look at hessian to look at curvature-- if it's really peaked, we have lots of information. 
-\begin{theorem}[Cramer-Rao]
-\end{theorem}
-\begin{table}[ht]
-\centering
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Distribution} & \textbf{Parameter(s)} & \textbf{Fisher information $I(\theta)$} \\
-\hline
-Bernoulli $\operatorname{Bern}(p)$                         & $p\in(0,1)$              & $\displaystyle \frac{1}{p(1-p)}$ \\[4pt]
-Binomial $\operatorname{Bin}(m,p)$ \,(fixed $m$)           & $p\in(0,1)$              & $\displaystyle \frac{m}{p(1-p)}$ \\[4pt]
-Poisson $\operatorname{Pois}(\lambda)$                     & $\lambda>0$              & $\displaystyle \frac{1}{\lambda}$ \\[6pt]
-Exponential $\operatorname{Exp}(\lambda)$                  & $\lambda>0$              & $\displaystyle \frac{1}{\lambda^{2}}$ \\[6pt]
-Gamma $\operatorname{Gamma}(\alpha,\theta)$ \,(fixed $\alpha$) & $\theta>0$          & $\displaystyle \frac{\alpha}{\theta^{2}}$ \\[6pt]
-Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\sigma^{2}$) & $\mu\in\mathbb R$        & $\displaystyle \frac{1}{\sigma^{2}}$ \\[8pt]
-Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\mu$)        & $\sigma^{2}>0$           & $\displaystyle \frac{1}{2\sigma^{4}}$ \\[10pt]
-\multicolumn{2}{|l|}{Normal $\mathcal N(\mu,\sigma^{2})$ \,(both unknown)}
-  & $\displaystyle
-    \begin{pmatrix}
-      \frac{1}{\sigma^{2}} & 0 \\[6pt]
-      0 & \frac{1}{2\sigma^{4}}
-    \end{pmatrix}$ \\[10pt]
-\hline
-\end{tabular}
-\caption{Per‐observation Fisher information for common parametric families.  
-Multiply by $n$ for a sample of size $n$.}
-\end{table}
-
-
-\begin{definition}[Asymptotic efficiency]
-\end{definition}
 \end{document}

@@ -1,0 +1,432 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+%\usepackage[
+%  backend=biber,
+%  style=numeric,      % plain numbers: [1]
+%  sorting=none,       % keep refs in citation order
+%  maxbibnames=99      % show all authors in bib
+%]{biblatex}
+\usepackage{booktabs}
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{310 Quals Strategy Compendium}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+
+\begin{document}
+\maketitle
+\section{Conditional Expectation}
+\begin{definition}[Absolute continuous measures]
+We say that $\nu$ is absolutely continuous wrt $\mu$, ie $\nu \ll \mu$ if 
+$$\mu(A) = 0 \implies \nu(A) = 0$$
+\end{definition}
+
+\begin{theorem}[Radon-Nikodym Theorem]
+If $\nu \ll \mu$, both sigma finite, then there exists $f \in m\calF_+$ finite valued such that $\nu = f\mu = \int f d\mu$. 
+\\\\
+Ie existence of a density wrt dominating measure. $f$ is called the Radon-Nikodym derivative and we write $f = \frac{d\nu}{d\mu}$. 
+\end{theorem}
+We use the above to prove the existence of CE. 
+
+\begin{definition}[Conditional Expectation - CE]
+Given $X\in L^1(\Omega,\calF,P)$ and $\calG \subset \calF$, then there exists $Y\in L^1(\Omega,\calG,P)$:
+
+$$Y:=\E[X|\calG] \quad \text{such that} \quad \E[(X-Y)\Ind_G] =0  \quad \forall G\in \calG.$$
+Defined uniquely for P-almost every $\omega$.
+\end{definition}
+To check that something is a CE, use the following:
+\begin{theorem}[Check CE on $\pi$ system]
+Ex 4.1.3 Dembo. If $\calG = \sigma(P)$ and $P$ a $\pi$ system, then if the above holds for every $G\in P$, then $Y= \E[X|\calG]$.\\
+That is, we can just check for every set in a \textbf{generating $\pi$-system}.
+\end{theorem}
+
+\begin{recipe}[Prove something is CE]
+Do the following
+\begin{enumerate}
+	\item Check that $X\in L^1$.
+	\item Check that candidate $Y\in L^1$.
+	\item Show that $X$ and $Y$ integrate $\calG$-sets the same, possibly using the pi system fact.
+\end{enumerate}
+\end{recipe}
+
+A note of caution that $Y_\pm \neq \E[X_\pm |\calG]$ in general. 
+\subsection{Properties of CE}
+If $X\in L^1(\Omega,\calF,P)$:
+\begin{enumerate}
+	\item If also $X\in L^1(\Omega,\myworries{\calG},P)$, then $\E X|\calG =X$.
+	\item Drop conditioning if independent: 
+	\begin{enumerate}
+	\item if $\cal H \indep \sigma(X)$, then $\E[X|\calH] = \E X$.
+	\item If $\calH \indep \sigma(\sigma(X), \calG)$, then $\E[X|\sigma(\calH,\calG)] = \E[X|\calG]$
+	\end{enumerate}
+	\item $X\geq 0 \implies Y\geq 0$ a.s., and $X>0 \implies Y>0$ a.s.
+	\item Linearity
+	\item Monotonicity: if $X_1\leq X_2$ then $\E X_1 |\calG \leq \E X_2 |\calG$.
+	\item If $\E X|Y = Y$ and $\E Y|X = X$ then $X=Y$. 
+	\item Tower
+	\begin{enumerate}
+	\item $\E X = \E [ \E(X|\calG )]$
+	\item If $\calH\subset \calG\subset\calF$, then $\E[X|\calH] = \E[\E(X|\calG)|\calH]$. "The small one stays on the outside" 
+	\end{enumerate}
+
+	\item If $\E[X|\calG] \indep X$, then $\E X|\calG = \E X$.
+	\item Take-out: if $Y\in m\calG$, then $\E[XY|\calG] = Y \E[X|\calG]$.
+	\item Conditional Jensen
+	\item Conditional Markov, Holder
+	\item MCT, Fatou, DCT for CE
+	\item If $X_n \overset{L^q}{\to}X_\infty$, then $\E[X_n|\calG] \overset{L^q}{\to}\E[X_\infty|\calG]$ (apply Jensen)
+	\item $\{\E[X|\calH]: \calH\subset \calF \text{ is a sigma algebra}\}$ is UI. (4.2.33).
+	\item $$\Cov(X,Y) = \E[\Cov(X,Y) \mid \calG] + \Cov(\E[X|\calG] , \E[Y|\calG])$$ \myworries{check this}
+
+\end{enumerate}
+
+\subsection{CE as Orthogonal Projection}
+If $X\in L^2$, then $Y=\E[X|\calG]$ is the unique $Y\in L^2$ such that $\|X-Y\|_2 = \inf\{\|X-W\|_2: W\in L^2(\Omega,\calG,P)\}$. Ie, the conditional expectation is a projection onto the subspace with respect to the $\langle X, Y\rangle = \int XY dP$ inner product. (Since $L^2(\Omega,\calG,P)$ is a \textit{Hilbert Subspace}). \\\\There exists a unique projection in Hilbert Spaces onto subspaces, ie $\langle h- \hat h, f\rangle = 0$ where $\hat h = \Proj_{L^2(\Omega,\calG,P)} h$ and $f\in L^2(\Omega,\calF,P)$.
+\begin{theorem}[Cauchy-Schwarz in $L^2$]
+$$|\E XY| \leq \sqrt{ \E X^2 \E Y^2}$$
+\end{theorem}
+
+
+\subsection{Regular conditional probabbility distributions (RCPD)}
+\begin{theorem}[Can take conditional expectation wrt conditional density]
+If $X,Z$ have a joint density and $g(X)$ is integrable, then
+$$\E[g(X)|Z] = \int_\R g(x) f_{X|Z}(x|z)dx$$
+as in elementary probability.
+\end{theorem}
+
+\begin{definition}[RCPD (Regular conditional probability distribution)]
+Let $Y$ be $\bbS$-valued random variable then $$\hat P_{Y|\calG}(\cdot, \cdot): \calS \times \Omega \mapsto [0,1]$$
+is the RCPD of $Y$ given $\calG$ if:
+\begin{enumerate}
+	\item $\hat P_{Y|\calG}(A, \cdot)$ is a version of the CE $\E [\Ind[Y\in A |\cal G]$ for $A\in \calS$.
+	\item For any fixed $\omega$, $\hat P_{Y|\calG}(\cdot, \omega)$ is a probability measure on $(\bbS,\calS)$. 
+\end{enumerate}
+Analogue to Markov Kernel in 310a.
+\end{definition}
+\begin{theorem}[RCPD existence]
+If $X$ real and $\calG$ a $\sigma-$algebra, then RCPD exists. \\\\
+
+Also true for any $\calB$-isomorphic rv $X$. 
+\end{theorem}
+Also used to show existence of transition probability- see Ex 4.4.5.
+
+A helpful exercises 4.4.6 shows we can calculate expectations using the RCPD:
+$$\E [h(X,Y)|\calG](\omega) = \int_\R h(x, Y(\omega)) d\hat P_{X|\calG}(x,\omega)$$
+ie fix $\omega$ and integrate over $x\in \R$. 
+
+\section{Martingales}
+
+To check a martingale:
+\begin{enumerate}
+	\item $X_n$ is integrable for all $n$
+	\item Adapted
+	\item $\E[X_{n+1} |\calF_n] = X_n$ for all $n$
+\end{enumerate}
+
+Alternatively, if $X_n = \sum_{k=0}^n D_k$, then check that $\E[D_{n+1}|\calF_n] = 0$. \\\\
+
+The main tools are:
+\begin{enumerate}
+	\item Doob's Inequality
+	\item Doob's convergence theorem
+	\item $L^p$ convergence theorem
+	\item UI
+\end{enumerate}
+
+\begin{example}[Quadratic martingale]
+If $\E \xi_i = 0$ and $\Var \xi_i =\sigma^2 <\infty $ and the $\xi_i$ are independent, then
+$$S_n^2 - n\sigma^2 \quad \text{is a martingale}$$
+\end{example}
+
+\begin{example}[Exponential martingale]
+If $S_n$ random walk with independent, iid increments, 
+$$M_n = \prod_{i=1}^n \exp(\theta \xi_i)/\phi(\theta) = \exp(\theta S_n)/\phi(\theta)^n$$
+Is a special case of product martingale 
+\end{example}
+
+
+
+A predictable sequence of random variables $A_n$ gives the amount of money you'd be willing to bet at time $n$-- must be based on information from previous time points, up through $n-1$, to make the $n$-th bet. Think of $A_n$ as your $n$-th bet- given by information from time $\{1,\ldots ,n-1\}$. Can think of winnings in the following \textit{martingale transform}:
+
+$$\sum_{m=1}^n H_m (X_m - X_{m-1}) $$
+where  $H_m$ is the amount you wager between days m and m+1 $X_m$ is the stock price. So our profit is the difference in prices times the amount that we bet/number of shares we hold. 
+
+The above is known as the \textbf{martingale transform of $\{X_n\}$ by the predictable process }$\{A_n\}$. 
+
+\begin{fact}[Martingale transforms]
+MG transforms of mgs $\implies$ mg\\\\
+Mg transforms of sub/sup mgs $\implies$ sub/sup mg 
+\end{fact}
+
+
+\begin{example}[Conditions of a.s. convergence of (sub/sup) mg don't necessarily give $L^1$ convergence]
+Durrett 193 - example with $S_n$ simple random walk \textit{starting at} $S_0 = 1$., let $X_n = S_{\tau\wedge n}$ where $\tau$ is first time $S_n = 0$. Then can $X_n$ is a non-negative martingale so a.s. limit exists, must be $X_n\conas 0$. But $\E X_n =1$. So $L^1$ convergence can't occur. 
+\end{example}
+
+\begin{example}[Martingale converging as to $-\infty$]
+Construct something such that the positive event happens only finitely often.. $X_n\conas -\infty$ even though $X_n$ is a fair bet. There's a remote chance of a big reward. 
+\end{example}
+
+\begin{theorem}[Martingale with bounded increments converges or oscillates between $\pm \infty$]
+(Durrett 4.3.1) \\If $X_n$ mg with $|X_{n+1} - X_n| \leq M<\infty$, then if 
+
+$$C = \{ \lim X_n<\infty \text{ exists}\} \quad D = \{\limsup X_n =\infty, \liminf X_n =-\infty\}$$
+Then:
+$$P(C\cup D) = 1.$$
+So given a martingale, any $\omega$ in a set of prob 1 must be do one of these two things.
+\end{theorem}
+
+\begin{example}[Biased random walk]
+If positive step is $p\neq 1/2$, then 
+
+$$X_n = \left(\frac{q}{p}\right)^{S_n} \quad \textbf{is a martingale}$$
+\end{example}
+
+\begin{theorem}[Wald's Equation]
+\end{theorem}
+
+\begin{theorem}[Doob Decomposition]
+For any $\{X_n\}$ stochastic process adapted to $\{\calF_n\}$, write:
+
+$$M_n = \sum_{k=0}^{n-1} (X_{k+1} - \E(X_{k+1}|\calF_k)) \quad A_n = \sum_{k=0}^{n-1} (\E(X_{k+1}|\calF_k) - X_k)$$
+so that 
+$$X_n = X_0 + M_n +A_n,$$
+where $M_n$ is a martingale and $A_n \in m\calF_{n-1}$ ie is adapted. In summary, an adapted (discrete) stochastic process can be written as the sum of a martingale and a predictable process.\\\\
+\textbf{In the case that $X_n$ is a submartingale, $A_n$ is non-negative and increasing. 
+}\end{theorem}
+
+
+
+\begin{example}[Polya's Urn]
+(Durret section 4.3.2)\\
+Contains $r$ red and $g$ green balls-- each time we draw a ball, we replace it and add $c$ more of the same color. Let $G_n$ is $\#$ of green balls, $X_n$ is the \textit{fraction} of green balls after the $n$-th draw, ie $G_n / N_{n}$. 
+\begin{enumerate}
+	\item $X_n$ is a non-negative martingale
+	\item $X_n \conas X_\infty$ as 
+	\item If $b=g=1$, then $P(G_n = m+1) = \frac{1}{n+1}$, ie uniform on $\{1,\ldots, m+1\}$. 
+	\item $X_\infty$ then has a uniform distribution on $(0,1)$. 
+	\item In general, $X_\infty \overset{d}{=} \operatorname{Beta}(g/c,r/c)$. 
+\end{enumerate}
+Another example with limiting law is to invoke Borel Cantelli so that the minority class only happens finitely often by adding like $2^n$ balls at a time.
+\end{example}
+
+
+
+
+
+
+\begin{example}[Likelihood ratios]
+Durrett..
+\end{example}
+
+
+
+
+
+
+\subsection{Branching process}
+If $\mu = \E \xi_i^{(m)}$ where the $\xi_i^{(m)}$ are the number of offspring of the $i$-th member of the $m$-th generation, then:
+
+$$\boxed{Z_n/\mu^n \text{ is a martingale}}$$
+If $\mu < 1$ or $\mu \leq 1$ and $P(\xi_i =1)<1$, then the population dies out, ie $Z_n/\mu^n \conas 0$. 
+"If the average number of offspring is fewer than $1$, then the population dies out. For $\mu>1$, we use \textit{generating functions} and we can prove things about the limiting random variables. 
+
+\subsection{Doob's maximal inequality and $L^p$ convergence}
+Think of Doob's inequality as an improvement on Markov's for (sub)-martingales. 
+
+\begin{theorem}[Doob's Inequality]
+For submartingale $\{X_n\}$, we have:
+
+$$P(\max_{k\leq n} X_k \geq \lambda) \leq \lambda^{-1} \E X_n^+.$$
+
+
+\end{theorem}
+Kolmogorov's Maximal inequality is a special case. If $Z_n = \sum_{i=1}^n Y_i$ with $\E Y_i = 0$, $\Var Y_i <\infty$, then $Z_n$ is obviously a mg and 
+
+$$P(\max_{k\leq n} |Z_n| > \lambda) = P(\max_{k\leq n} Z_n^2 >\lambda^2) \leq \frac{1}{\lambda^2} \Var Z_n.$$
+
+\begin{theorem}[$L^p$ maximal inequality for $p>1$]
+If $\{X_n\}$ submg,
+$$\E(\max_{k\leq n} (X_n^p)_+) \leq \left(\frac{p}{p-1}\right)^p \E (X_n^+)^p.$$
+So if $\{X_n\}$ is a mg,
+$$\E(\max_{k\leq n} |X_n|)^p \leq \left(\frac{p}{p-1}\right)^p \E |X_n|^p.$$
+\end{theorem}
+
+The previous $L^p$ inequality leads to:
+
+\begin{theorem}[$L^p$ convergence theorem]
+If $X_n$ is a \textit{martingale} with $\sup \E|X_n|^p <\infty$ with $p>1$, then $X_n\conas X$ and $X_n\conLp X$.
+\begin{proof}
+	Almost sure convergence comes from the Doob's convergence theorem and Markov. $L^p$ convergence comes from $L^p$ maximal inequality, see Durrett 4.4.6. 
+\end{proof}
+Note that this theorem:
+\begin{enumerate}
+	\item Is only for martingales
+	\item Does not have a $L^1$ analog
+\end{enumerate}
+\end{theorem}
+
+
+\subsection{Square Integrable Martingales}
+
+\begin{fact}[Square Integrable martingales (Dembo Ex 5.1.8)]
+Have uncorrelated differences $D_n$. Durrett 4.4.7.
+\end{fact}
+
+Suppose that $X_n$ is an $L^2$ martingale with $X_0 = 0$. Then:
+\begin{enumerate}
+	\item $X_n^2$ is a submartingale
+	\item Apply Doob's Decomposition theorem $X_n^2 = M_n + A_n$ with $M_n$ mg and $A_n$ is a \textbf{predictable, increasing} sequence, called the \textbf{predictable compensator}. 
+	\item $\langle X \rangle_n := A_n =X_0^2 + \sum_{m=1}^n \E(X_m^2|\calF_{m-1}) - X^2_{m-1} = \sum_{m=1}^n \E((X_m - X_{m-1})^2|\calF_{m-1})$
+	\item Think of the predictable compensator as the total variance at time $n$ of the path made by $\{X_n\}$.
+\end{enumerate}
+
+\begin{theorem}[Finite predictable compensator limit means finite limit of the original martingale]
+If $\langle X \rangle_\infty<\infty$ then we have that $X_n\conas X_\infty<\infty$. \\\\
+
+Also conversely, if $|X_n - X_{n-1}| \leq C$, then $\langle X\rangle_\infty <\infty$ whenever $X_n$ has a finite limit. 
+\end{theorem}
+
+\begin{theorem}[Integrable predictable compensator limit means $\sup \E |X_n|^2 <\infty$]
+Then we can use the $L^p$ convergence theorem-- exists almost sure limit and $L^2$ convergence. 
+\begin{proof}
+	$$\E X_n^2 = \E Y_n + \E A_n = \E Y_0 + \E \langle X\rangle_n,$$
+	then take $\sup$ of both sides. 
+\end{proof}
+\end{theorem}
+
+\begin{example}[Showing $X_n/b_n \conas 0$ - Quals 2011 Q5 /Durrett 4.4.11. ]
+Trick here is to use Kronecker's Lemma and write Martingale:
+$$Y_n = \sum_{i=1}^n \frac{1}{b_i}(X_i - X_{i-1})$$
+which is a martingale transform with predictable $\frac{1}{b_m}$. 
+\end{example}
+
+
+
+
+Note that if you want to prove $X_n/f(A_n) \to 0$ for $A_n$ predictable, use Durrett 4.5.3. Very similar to the example above writing a martingale transform then using Kronecker Lemma. 
+
+\begin{theorem}[Add the above]
+\myworries{Do this}
+\end{theorem}
+
+
+
+
+\subsection{Proving convergence}
+Proving almost sure convergence. Show any of the following for submg $\{X_n\}$.
+\begin{enumerate}
+	\item $\sup_n \E(X_n)_+ <\infty$
+	\item $\E \sup_n (X_n)_+$
+	\item $\sup \E(X_n)_+^p<\infty$ some $p>1$. 
+	\item $X_n \leq a$ almost surely for all $n$
+	\item Define $\tau_M = \inf\{n: X_n >M\}$. Then look at $X_{n\wedge \tau}$ is a (sub)-martingale, bounded by $M + \sup_{n} \xi_n$. 
+\end{enumerate}
+Proving $L^p$ convergence of :
+\begin{enumerate}
+	\item For $p=1$, need $\{X_n\}$ to be UI
+	\item $p>1$ \textit{martingale}, use $L^p$ convergence theorem
+	\item (For submartingale $L^p$ convergence if $\sup_{n\geq 1} \E|X_n|^q $ for $q>p$.)
+\end{enumerate}
+\subsection{Borel Cantelli 3 }
+\begin{theorem}[Borel Cantelli BC2 version 2]
+If $B_n\in \calF_n$ sequence of events, then:
+$$\{B_n \text{ i.o.} \} = \{\sum_{n=1}^\infty P(B_n|\calF_{n-1}) =\infty\}.$$
+\begin{proof}
+	Idea is that $X_n = \sum_{m\leq n} \Ind[B_m]$ is a submartingale, apply the Doob's decomposition and then note that the martingale part $M_n$ has bounded differences:
+	
+	$$|M_n - M_{n-1}|\leq 1$$
+	so we can apply the theorem with bounded martingale differences to get that $P(C\cup D) = 1$, show that this means that the two events are the same. 
+\end{proof}
+\end{theorem}
+\begin{theorem}[Borel Cantelli 3 - Extension]
+Can generalize the previous version more. \\
+Let $B_n\in \calF_n$ and $p_n = P(B_n|\calF_{n-1})$. 
+$$\left[\frac{\sum_{m=1}^n \Ind[B_m] }{\sum_{m=1}^n p_m}\right] \Ind[\sum_{m=1}^\infty p_m = \infty] \conas 1,$$
+ie for any $\omega$ where $p_m = \infty$, then we have that not only $\{B_m \text{ i.o.} \}$ but also know what rate according to the growth of $p_m$.
+\end{theorem}
+\begin{example}[Bernard Friedman's urn. ]
+4.5.6 in Durrett. Add $a$ same type balls and $b$ balls of opposite type after each draw. Variant on Polya. Typically in the BC3 setup, you want to make the events something like $B_n = \{\text{draw a green ball at time n}\}$ or something-- adapted events. Help prove as convergence in this context. Makes it easy to calculate $p_n = P(\text{ draw a green ball } | \calF_{n-1}) = \frac{G_{n}}{G_n + R_n}$ where $G_n, R_n$ number of red and green balls. \\\\
+
+Can show that regardless of $g,r,a,b$, the proportion of green balls $g_n \to 1/2$. 
+\end{example}
+
+
+%%%%%
+
+\subsection{Levy Upwards Theorem}
+
+
+
+
+%%%%%%
+
+
+\subsection{Random Series}
+\begin{recipe}[Convergence of random series]
+\textbf{Dembo 5.3.37.} Want to show that $\sum_{n=1}^\infty X_n(\omega)$ converges. $X_n$ might not be independent. \myworries{Do we need symmetric distribution of $X_n$}
+\begin{enumerate}
+	\item Truncate if $X_n$ not in $L^2$. $Y_n = X_n \Ind[|X_n|\leq c_n]$ 
+	\item Use Borel Cantelli 3; show that $\sum P(|X_n| \geq c_n |\calF_{n-1}) <\infty $ to get that $X_n \neq Y_n$ only finitely often
+	\item Center $Y_n$; set $Z_n = Y_n - \E[Y_n |\calF_{n-1}]$ and show that $\E[Y_n |\calF_{n-1}]<\infty$.
+	\item Apply $L^2$ Mg : $\sum_{k=1}^n Z_k$ is an $L^2$ martingale. Showing $\sum \E [Z_n^2 |\calF_{n-1}]<\infty$ 
+	\item This implies that $\sum Z_k$ converges to a finite limit. 
+\end{enumerate}
+\end{recipe}
+
+The above is a more general version of Kolmogorov 3 series. 
+
+\begin{example}[2008 Q4]
+
+$Z_j = \pm j \text{ wp } c/j^2$. Want to show that $\sum_{j=1}^\infty Z_j$ converges almost surely. Problem is that $\E |Z| = \infty$. Define:
+
+$$Y_j := Z_j \Ind[|Z_j| \leq a_j] \text{ where we choose $a_j$ later}$$
+$$\tilde X_j := \sum c_j Y_j \text{ is an $L^2$ martingale}$$
+Want to show that $X_j$ converges almost surely and eventually it agrees with $Z_j$. \\\\
+Want list:
+\begin{enumerate}
+	\item $P(X_n \neq Y_n \text{ i.o}) = 0$ (Use Borel Cantelli).
+	$$\sum_{j=1}^\infty P(|Z_j| >a_j) <\infty \iff \sum_{j=1}^\infty a_j^{-1} <\infty$$
+	\item Want $\tilde X_n$ to converge. Implied if $\E \langle \tilde X_j \rangle_n = \sum_{j=1}^\infty c_j^2 \E[Y_j^2] \sim  \sum_{j=1}^\infty c_j^2 a_j <\infty$
+\end{enumerate}
+Take $a_j = c_j^{-1}$. 
+
+\end{example}
+
+
+
+
+
+\section{Technical Lemmas}
+
+\begin{theorem}[Kronecker's Lemma]
+Let $b_n>0$ st $b_n\uparrow\infty$. Then:
+
+$$\sum_{n=1}^\infty \frac{x_n}{b_n} <\infty \implies \frac{\sum_{k=1}^n x_k}{b_n} \to 0.$$
+\end{theorem}
+
+
+\begin{example}[(2011 Q5)]
+Given $X_n$ an $L^2$ mg, and $\sum \E (X_k - X_{k-1})^2 / b_k^2 <\infty$.  Want to show that $X_n/b_n \conas 0$. Show this by showing that $Y_k = (X_k - X_{k-1})/b_k \conas Y$ where $Y$ some finite limit. $Y_k$ is a martingale transform. Its predictable compensator is:
+
+$$\langle Y\rangle_n = \sum \frac{1}{b_k^2} \E[(X_k - X_{k-1})^2|\calF_{n-1}]$$
+If expectation is finite, we get via $L^p$ convergence that $X_n/b_n$ converges almost surely. 
+\end{example}
+\end{document}

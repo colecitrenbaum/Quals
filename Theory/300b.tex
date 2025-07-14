@@ -1,0 +1,587 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb}
+\usepackage{hw}
+\usepackage{tcolorbox}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% ------------------  Bibliography  ------------------
+%\usepackage[
+%  backend=biber,
+%  style=numeric,      % plain numbers: [1]
+%  sorting=none,       % keep refs in citation order
+%  maxbibnames=99      % show all authors in bib
+%]{biblatex}
+\usepackage{booktabs}
+% ----------------------------------------------------
+
+\tcbuselibrary{breakable}
+\title{300 Quals Guide}
+\newcommand{\answer}[1]{%
+  \begin{tcolorbox}[
+    colback=gray!9.8,
+    boxrule=0.5pt,
+    breakable]
+  \small #1
+  \end{tcolorbox}}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\newcommand{\simiid}{\overset{iid}\sim }
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\range}{\operatorname{range}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\Proj}{\operatorname{Proj}}
+\newcommand{\Unif}{\operatorname{Unif}}
+
+\begin{document}
+\maketitle
+%% 300b 
+\section{Stochastic Convergence}
+Helpful tools
+\begin{enumerate}
+	\item Don't forget Portmanteau
+	\item CLT, SLLN 
+	\item CMT
+	\item Slutsky
+\end{enumerate} 
+\begin{theorem}[CMT]
+If $g$ is continuous on a set of probability $1$ \textit{with respect to limiting random variable}.
+$$X_n\to^* X \implies g(X_n) \to^* g(X)$$
+for conv in dist, prob, or as.\\\\
+Note that if $X_n\to c$, then just need that $g$ is continuous at $c$ (since that's prob 1 wrt limiting).
+\end{theorem}
+\begin{theorem}[Slutsky]
+A few parts
+\begin{enumerate}
+	\item $X_n \condist c \implies X_n \conprob c$
+	\item If $\|X_n - Y_n\| \conprob 0$ then if $X_n \condist X$ we have also $Y_n \condist X$. 
+	\item If $X_n \condist X$ and $Y_n \conprob c$ then
+	$$\begin{pmatrix}
+		X_n\\Y_n 
+	\end{pmatrix}\condist \begin{pmatrix}
+		X\\c 
+	\end{pmatrix}$$
+	\end{enumerate}
+	Corrolary via Slutsky and CMT:
+	$X_n\condist X$ and $Y_n \conprob c$ gives us 
+	\begin{enumerate}
+	\item $Y_n X_n \condist cX$
+	\item $Y_n + X_n \condist c+ X$
+	\item $Y_n^{-1} X_n \condist c^{-1} X$
+	\end{enumerate}
+
+\end{theorem}
+In particular, a subcase if $Y_n = o_p(1)$ and $Z_n \condist Z$, then $Z_n + Y_n \condist Z$.  
+\begin{definition}[Uniform Tightness]
+A collection $\{X_\alpha\}_{\alpha \in A}$ is uniformly tight if for all $\epsilon>0$ there exists an $M<\infty$ such that 
+
+$$P(\|X_\alpha\|>M) \leq \epsilon \quad \text{for all } \alpha \in A$$
+\end{definition}
+\begin{example}[Markov, Tightness]
+If all $X_\alpha$ have the same $\ell$-th moment, then just use Markov to prove tightness. 
+\end{example}
+In general if a collection has increasing means or something, it won't be tight, eg $X_n \sim N(n,1)$. 
+
+\begin{theorem}[Prohorov]
+Uniformly tight $\implies$ for all sequences there is a a subsequence that converges in distribution to a random variable.\\\\
+Conversely, 
+Convergence in distribution $\implies$ unifromly tight. 
+\end{theorem}
+
+
+\subsection{Big-O, Little-o}
+Non-stochastic versions, 
+$$f(x) = O(g(x)) \iff \limsup_{\eps\to 0} \frac{f(\epsilon)}{g(\eps)} < \infty$$.
+$$f(x) = o(g(x)) \iff \lim_{\eps \to 0} \frac{f(\eps)}{g(\eps)} = 0 $$
+
+\begin{definition}[Little-${o_p}$]
+$$X_n = o_p(R_n) \iff \exists Y_n \text{ such that } X_n = R_n Y_n \text{ with } Y_n \conprob 0$$
+\end{definition}
+Analogous to how $f(n) = o(n)$ if $f(n) = n o(1)$.
+\begin{definition}[Big $O_p$]
+$$X_n = O_p(R_n) \iff X_n = R_n Y_n \text{ where } Y_n \text{ uniformly tight}$$
+\end{definition}
+
+Combining $o_p$ and $O_p$ algebra:
+\begin{enumerate}
+	\item ....
+\end{enumerate}
+
+\subsection{Delta Method}
+\begin{theorem}[Delta Method]
+Let $r_n\to \infty$ and $f$ differentiable at $\theta$. If $r_n (T_n -\theta)\condist A$ then:
+\begin{enumerate}
+	\item $$r_n(f(T_n) - f(\theta)) \condist f'_\theta A$$
+	\item $$r_n(f(t_n) - f(\theta)) - f_\theta'(r_n (T_n - \theta)) \conprob 0$$
+\end{enumerate}
+\begin{proof}
+	Main idea:
+	$$f(\theta + h) - f(\theta) = f'_\theta h + o(\|h \|) \text{ as } h\to 0$$
+	Take $h = T_n - \theta$ 
+\end{proof}
+
+
+
+\end{theorem}
+\begin{theorem}[Higher order delta method]
+\end{theorem}
+
+\begin{example}[...]
+\end{example}
+
+\section{MLE}
+\begin{definition}[M-estimators]
+$$\hat \theta_n = \arg \max_\theta \frac{1}{n} \sum_{i=1}^n m_\theta(X_i)$$
+where $m_\theta$ is some known function, eg $\ell_\theta$-- maximize log likelihood 
+
+\end{definition}
+\begin{definition}[Z-estimator]
+$$\hat \theta _n = \{\theta: n^{-1} \sum_{i=1}^n \Psi_\theta(X_i) = 0\}$$
+eg $\grad \ell_\theta = 0$. 
+\end{definition}
+\subsection{Consistency of MLE}
+Consistency of $P_n \ell_\theta \conprob P \ell_\theta $ (WLLN) for any $\theta$ fixed is \textbf{not} enough for consistency of MLE $\hat \theta_n \conprob \theta^*$. For arbitrary sample size, $P_n \ell_\theta$ not necessarily maximized at (or near) $\theta^*$ if we converge too non-uniformly. See picture.  For consistency of MLE, need:
+\begin{enumerate}
+	\item Uniform convergence (in probability) ie 
+	$$\sup_{\theta \in \Theta} |P_n \ell (\theta) - P \ell(\theta)| = o_p(1)$$
+	\item Well-separation 
+\end{enumerate}
+\begin{definition}[Uniform convergence]
+$M_n(\theta)$ converges uniformly to $M(\theta)$ if 
+$$\sup_{\theta} |M_n(\theta - M(\theta)| \conprob 0$$
+\end{definition}
+\begin{definition}[Well-separation]
+\myworries{definition........}\\
+eg, strong convexity. 
+\end{definition}
+Some more primitive conditions. Identifiability and a finite sample space $|\Theta|<\infty$ are enough for consistency of MLE. 
+\begin{definition}[Identifiability]
+Identifiable if for $\theta \neq \theta'$, $P_\theta \neq P_\theta'$ ie KL divergence is strictly positive. 
+\end{definition}
+\begin{example}[Example of non-identifiability]
+In my notes
+\end{example}
+
+\subsection{Asymptotic normality of the MLE}
+Under a regularity condition ("smooth, nice"), the MLE is normal.
+\begin{definition}[Smooth/Nice at $\theta$]
+See notes.. \begin{enumerate}
+	\item Hessian of log likelihood is Lipschitz near $\theta^*$ - see notes 
+	\item Bounded gradient $P_\theta^* \| \grad \ell_\theta^* \|^2 <\infty $
+\end{enumerate}
+\end{definition}
+\begin{theorem}[Asymptotic normality of MLE]
+If \begin{enumerate}
+	\item $\{P_\theta\}_{\theta \in \Theta}$ is smooth/nice at $\theta^*$
+	\item $\Theta$ open subset of $\R^d$,  
+	\item Hessian has finite mean (or alt that exchange order of differentiation wrt $\theta$ and expectation).
+	\item $\hat \theta_n$ the MLE is  consistent 
+\end{enumerate}
+Then $\sqrt{n} (\hat \theta_n - \theta) \condist N(0,\Sigma_\theta^*)$.
+\textbf{If we can also exchange order of differentiation and expectation} , $\Sigma_\theta^* = I_\theta^{-1}$. 
+\end{theorem}
+\section{Fisher Information}
+
+\begin{definition}[Fisher Information]
+Outer product of the score
+$$I_\theta = \E_{P_\theta} [\grad_\theta \ell_\theta (\grad_\theta \ell_\theta)^T]$$
+If we can exchange order of differentiation and expectation then:
+$$I_\theta = \Cov (\grad \ell_\theta) = -\E[\grad^2 \ell_\theta] $$
+\end{definition}
+Lots of information, small variance. Look at hessian to look at curvature-- if it's really peaked, we have lots of information. 
+\begin{theorem}[Cramer-Rao]
+If $\delta_n$ is unbiased for $\theta\in\R^p$, then 
+
+$$\Cov_\theta(\delta_n) = \E_\theta[(\theta-\delta_n)(\theta-\delta_n)^T] \succeq \frac{1}{n} I_\theta^{-1}$$
+\end{theorem}
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Distribution} & \textbf{Parameter(s)} & \textbf{Fisher information $I(\theta)$} \\
+\hline
+Bernoulli $\operatorname{Bern}(p)$                         & $p\in(0,1)$              & $\displaystyle \frac{1}{p(1-p)}$ \\[4pt]
+Binomial $\operatorname{Bin}(m,p)$ \,(fixed $m$)           & $p\in(0,1)$              & $\displaystyle \frac{m}{p(1-p)}$ \\[4pt]
+Poisson $\operatorname{Pois}(\lambda)$                     & $\lambda>0$              & $\displaystyle \frac{1}{\lambda}$ \\[6pt]
+Exponential $\operatorname{Exp}(\lambda)$                  & $\lambda>0$              & $\displaystyle \frac{1}{\lambda^{2}}$ \\[6pt]
+Gamma $\operatorname{Gamma}(\alpha,\theta)$ \,(fixed $\alpha$) & $\theta>0$          & $\displaystyle \frac{\alpha}{\theta^{2}}$ \\[6pt]
+Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\sigma^{2}$) & $\mu\in\mathbb R$        & $\displaystyle \frac{1}{\sigma^{2}}$ \\[8pt]
+Normal $\mathcal N(\mu,\sigma^{2})$ \,(known $\mu$)        & $\sigma^{2}>0$           & $\displaystyle \frac{1}{2\sigma^{4}}$ \\[10pt]
+\multicolumn{2}{|l|}{Normal $\mathcal N(\mu,\sigma^{2})$ \,(both unknown)}
+  & $\displaystyle
+    \begin{pmatrix}
+      \frac{1}{\sigma^{2}} & 0 \\[6pt]
+      0 & \frac{1}{2\sigma^{4}}
+    \end{pmatrix}$ \\[10pt]
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{definition}[Asymptotic efficiency]
+$T_n$ is efficient \textit{for $\theta$} if 
+
+$$\sqrt{n} (T_n - \theta) \condist \calN(0, I_\theta^{-1})$$
+\end{definition}
+\section{Efficiency}
+Efficient estimators:
+\begin{enumerate}
+	\item MLE for nice families
+	\item MoM estimator in some exponential families
+	\item One-step estimator from the homework
+\end{enumerate}
+
+
+\section{Asymptotic hypothesis testing}
+\begin{definition}[Uniform asymptotic level]
+The more interesting level to look at. 
+
+$$\limsup_n \sup_{\theta_0 \in \Theta_0} P_{\theta_0} (\text{Test $T_n$ rejects null})$$
+
+Intuitively, the limit of the typical "size" of the test.
+\end{definition}
+\begin{definition}[Pointwise asymptotic level]
+$$\sup_{\theta_0 \in \Theta_0} \limsup_n P_{\theta_0}(T_n \text{ rejects null} ) $$
+Pointwise limit, then take sup. 
+\end{definition}
+
+
+\section{Contiguity}
+Beginning discussion of optimality of an estimator. Want to build tools to zoom in on the interesting scale. The motivation is that if we fix $\theta' \neq \theta^*$, if our estimator is asymptotically normal for example, we can eventually tell these two apart. Ie, we can eventually reject $\calH_0: \theta = \theta'$. Ie if $\|\theta' - \theta^*\| \geq \delta$, we have:
+
+$$\lim_n P_{\theta^*} (\| \hat \theta_n - \theta'\| \geq 0.9 \delta ) =1$$
+
+Conversely, if $\|\theta' - \theta^*\| = o(1/\sqrt{n})$, it will be impossible to distinguish $\theta'$ and $\theta^*$. 
+\begin{example}[See HW 4 example pointwise versus uniform level $\alpha$...]
+
+\end{example}
+
+This motivates $\theta_n = \theta_0 + h/\sqrt{n}$ where $\|h\| = O(1)$ and testing:
+
+$$\calH_0: \theta^* = \theta_0 \quad \text{vs} \quad \calH_1: \theta^* = \theta_n$$
+
+Want to know the power of a test at this scale and \myworries{How good $\hat \theta_n$ can be if it must be good under $\theta_0$ and under $\theta_n$ to rule out adversarial examples like Hodge's?}
+
+\begin{definition}[Contiguity]
+Let $P_n, Q_n$ be sequences of probability measures on the same sample space for each $n$. $Q_n \triangleleft P_n$ means $Q_n$ is contiguous wrt $P_n$ if for any sequence of events $A_n$:
+
+$$P_n(A_n) \to 0 \implies Q_n(A_n) \to 0.$$
+
+Mutually contiguous makes the above $\iff$. 
+\end{definition}
+
+\begin{example}[Example of $P_n \triangleleft Q_n$ but not $Q_n\triangleleft P_n$]
+Just let $Q_n = N(0,1), P_n = |N(0,1)|$ works since $P_n \ll Q_n$.  
+\end{example}
+
+\subsection{Le Cam's Lemmas}
+Let $P_n, Q_n$ be dominated by $\mu_n$ such that have densities $p_n, q_n$. Define $L_n$ likelihood ratio. 
+
+\begin{theorem}[Le Cam 1]
+The following are equivalent:
+
+\begin{enumerate}
+	\item $Q_n \triangleleft P_n$
+	\item If $\frac{1}{L_n} \underset{Q_n}{\condist} U$ on a subsequence, then $P(U>0) = 1$
+	\item If $L_n \underset{P_n}{\condist} L$ on a subsequence, then $\E L = 1$.
+	\item If $T_n \underset{P_n}{\conprob} 0$, then $T_n \underset{Q_n}{\conprob} 0$
+\end{enumerate}
+Main idea is that the limiting behavior of the likelihood ratio determines whether we have contiguity. 
+\end{theorem}
+
+\begin{example}[Contiguity of the log likelihood]
+If $\log L_n \underset{Q_n}{\condist} N(\mu,\sigma^2)$, then by CMT and condition 2 of the above we get that $Q_n \triangleleft P_n$. If also $\mu=-\frac{1}{2} \sigma^2$, we get $P_n \triangleleft Q_n$. \\\\
+
+We have this exact situation if $P_\theta$ allows under some "niceness" --then the log likelihood ratio of $X_1,\ldots,X_n \simiid P_{\theta_0}$ looking at the log likelihood ratio of the local alternative versus null. So the local alternative measure and the $P_{\theta_0}$ measure are mutually contiguous in the iid case. 
+\end{example}
+
+
+\begin{theorem}[Le Cam's Third]
+If $Q_n \triangleleft P_n$ and $(X_n, L_n) \underset{P_n}{\condist} (X,L)$ then:
+$$(X_n, L_n)\underset{Q_n}{\condist} W \quad \text{where } (X,L)\overset{D}{=}M \text{ and } dW(x,\ell) = \ell dM(x,\ell)$$
+
+\myworries{Other stuff..}
+\end{theorem}
+
+\begin{theorem}[The actual useful Le Cam Corrollary]
+If 
+$$(X_n, \log L_n) \underset{P_n}{\condist} (X,Z) \sim N\left(\begin{pmatrix}
+	\mu\\
+	\frac{-1}{2} \sigma^2
+\end{pmatrix},
+\begin{pmatrix}
+	\Sigma & \tau \\
+	\tau^T & \sigma^2
+\end{pmatrix}\right),$$
+
+then we have 
+
+$$X_n \underset{Q_n}\condist N(\mu + \tau, \Sigma).$$
+
+
+\textit{"If we know the limiting distribution of $X_n$ and the likelihood ratio under $P_{\theta_0}$, then we know that $X_n$ is also normal under the local alternative. We can transfer information from $P_{\theta_0}$ to $P_{\theta_0 + \frac{1}{\sqrt{n}}} h$."}
+\end{theorem}
+
+The point of the above is that we want to understand the power of tests in the local regime-- to do so we need to be able to analyze the limiting distribution of some statistic under the local alternative. 
+
+\section{Tail bounds, Subexponential R.V.s}
+First tools are Markov and its relatives. To get the best bound of this sort, if the mgf exists:
+
+$$P[(X-\mu)\geq t] \leq \frac{\E [\exp(\lambda(X-\mu))]}{\exp(\lambda t)}, \quad \text{then optimize over } \lambda$$
+We can classify r.v.s interms of their mgfs, leading to subgaussian definition. For a normal rv, 
+
+$$\E[\exp(\lambda X)] = \exp(\mu\lambda + \sigma^2 \lambda^2/ 2).$$
+
+Note that $\inf_{\lambda\geq 0} \log \E [\exp(\lambda (X-\mu)] - \lambda t = -\frac{t^2}{2\sigma^2}$, so we get 
+
+$$\boxed{P(X-\mu\geq t) \leq \exp(-\frac{t^2}{2\sigma^2})} \quad \text{ for } X\sim N(\mu,\sigma^2)$$
+
+\begin{definition}[Sub-gaussian rv]
+$X$ is subgaussian if there exists $\sigma$ such that:
+
+$$\E[\exp(\lambda(X-\mu))] \leq \exp(\sigma^2 \lambda^2/2) \quad \forall \lambda\in\R,$$
+compare to the mgf of normal-- asking that the mgf be bounded by that of normal with some $\sigma^2$. 
+\end{definition}
+
+Combined with the Chernoff bound:
+
+\begin{theorem}[Sub-gaussian concentration inequality]
+If $X$ is $\sigma$-sub-gaussian:
+$$P(|X-\mu|\geq t) \leq 2\exp(-\frac{t^2}{2\sigma^2}).$$
+
+
+\end{theorem}
+\begin{example}[Bounded rvs]
+If $\supp (X) \subseteq [a,b]$, then $X$ is $\frac{b-a}{2}$ subgaussian.
+\end{example}
+
+\begin{fact}[Subgaussianity preserved by linear ops]
+$X_1, X_2$ are $\sigma_1, \sigma_2$ subgaussian, then $X_1 + X_2$ is $\sqrt{ \sigma_1^2 + \sigma_2^2 }$ sub Guassian. 
+
+
+\end{fact}
+An immediate consequence of the above:
+\begin{theorem}[Hoeffding Bound on concentration of sums of subgaussian rvs]
+If $X_i$ are independent with mean $\mu_i$ and subgaussian parameter $\sigma_i$, then for all $t\geq 0$:
+
+$$P(\sum_{i=1}^n (X_i - \mu_i) \geq t) \leq \exp(-\frac{t^2}{2\sum_{i=1}^n \sigma_i^2}).$$
+If $X_i \in [a,b]$ for all $i$, then the rhs is $\exp(-\frac{2t^2}{n(b-a)^2})$.
+\end{theorem}
+\begin{fact}[Many faces of sub-Gaussians]
+See HW and Wainwright 2.6.
+\begin{enumerate}
+	\item $X$ $\sigma$-subgaussian then $cX$ is $|c|\sigma-$ subgaussian. 
+	\item Converse of the chernoff bound: if $P(|X-\E X|\geq t) \leq 2\exp(-\frac{1}{2\sigma^2} t^2)$ for all $t\geq 0$, then $X$ is $C\sigma$-subgaussian.
+	\item If $X$ is $\sigma$ subgaussian, then $X^2$ is $(C_1 \sigma^2, C_2 \sigma^2)$ subexponential. 
+\end{enumerate}
+\end{fact}
+
+\begin{definition}[Sub-exponential random variable]
+A relaxation of sub-gaussian. $X$ is $\sigma,\alpha$ sub-exponential if:
+
+$$\E[\exp(\lambda(X-\mu))] \leq \exp(\sigma^2 \lambda^2/2) \quad \forall |\lambda|<\frac{1}{\alpha}.$$
+Ie subgaussian bound, but only for small enough $\lambda$. \\
+
+Subgaussian $\implies$ subexponential but not the converse. \\\\
+\end{definition}
+
+\begin{fact}[Many faces of sub-exponential..]
+
+\end{fact}
+
+\begin{example}[$\chi^2_n$ Subexponential]
+with parameters $(2\sqrt{n},4)$. But not subgaussian! 
+
+\end{example}
+Just as with sub-gaussian, sum of sub-exponential random variables is subexponential. 
+\begin{theorem}[Sub-exponential concentration]
+..
+\end{theorem}
+
+
+
+\subsection{Martingale Bounds (AH)}
+Important example is sum of iid random variables of mean $0$. 
+
+\begin{theorem}[Martingale Concentration Inequality (Azuma Hoeffding)]
+If $Y_0,\ldots,$ is a martingale sequence with conditional martingale differences $(Y_{i+1} - Y_i)|\calF_i$ $\sigma_{i+1}$-subgaussian, then for all $t>0$:
+
+$$\boxed{P(|Y_n - Y_0| >t) \leq 2\exp(-t^2/(2\sum_{i=1}^n \sigma_i^2))}$$
+The hypothesis is the same as 
+
+$$\E[\exp(\lambda D_k)|\calF_{k-1}] \leq \exp(\lambda^2 \sigma_k^2 / 2)$$
+ie differences are conditionally subgaussian. 
+
+\end{theorem}
+
+And there's a version for subexponential increments as well. 
+
+
+\begin{definition}[Bounded differences property]
+If $x, x'$ only differ in coordinate $k$, 
+$$|g(x) - g(x') | \leq L_k.$$ 
+\end{definition}
+
+\begin{theorem}[Bounded differences inequality]
+If $f$ satisfies bounded differences, and $\underline X$ has independent components, then
+
+$$P(|f(X) - \E[f(X)]|\geq t) \leq 2\exp(-\frac{2t^2}{\sum_{k=1}^n L_k^2}).$$
+The idea is to use a Doob martingale $Y_k = \E[f(X) | X_1,\ldots,X_k]$ and Azuma Hoeffding (ie in the case of bounded random variables-- the random variable $D_k = Y_k - Y_{k-1}$ is in an interval of length $L_k$. Apply AH for bounded mg differences-  Wainwright 2.20). 
+\end{theorem}
+
+\section{Uniform LLN}
+Why do we care about uniform convergence of the empirical CDF? Suppose we have a functional $\gamma$ that maps $F \mapsto \gamma(F)$. For example, $\gamma_g (F) = \E_F g(X)$ is a functional. Another example is quantile functional. If we can show that $\gamma$ is continuous with respect to the sup norm, then for any $\epsilon$, there exists a $\delta$ such that:
+
+$$P(|\gamma(\hat F_n) - \gamma(F)| > \epsilon) \leq P(\sup_{\theta} |\hat F_n - F| >\delta) \to 0.$$
+
+So uniform convergence of the empirical CDF gives us consistency of our estimator $\gamma(\hat F_n)$ for $\gamma(F)$.  If we have almost sure convergence as below, then also:
+
+$$1= P(\sup_{\theta} |\hat F_n(\theta) - F(\theta)| \to 0) \leq P(\lim \gamma(\hat F_n) = \gamma(F)),$$
+so we get almost sure convergence of our estimator.
+
+\begin{theorem}[Glivenko-Cantelli]
+$$\sup_{\theta \in \Theta} |\hat F_n (\theta) - F(\theta)| \conas 0$$
+\end{theorem}
+
+\subsection{ULLN for General Function Classes}
+Back up and try to understand ULLN for more general setup. Define:
+
+$$\| P_n - P\|_{\calF} := \sup_{f\in \calF} \left|\frac{1}{n} \sum_{i=1}^n f(X_i) - \E[f(X)]\right|.$$
+
+Similarity to empirical cdf setup with $f_\theta(X_i) = \Ind[X_i \leq \theta]$, $\calF = \{f_\theta , \theta\in \R\}$. We know from LLN that for each $f$, $P_nf \conprob Pf$, but when can we say more that $\|P_n - P\|_\calF \conprob 0$, ie uniform convergence? 
+
+\begin{definition}[Glivenko-Cantelli Class]
+$\calF$ is a GC class if $\|P_n - P\|_\calF \conprob 0$. \\\\Eg class of indicators is a Glivenko-Cantelli class. 
+\end{definition}
+If $\hat \theta_n$ minimizes the empirical risk, ie:
+
+$$\hat \theta_n = \argmin_\theta L_n(\theta) = \argmin_\theta n^{-1} \sum_{i=1}^n L_\theta(X_i)$$
+
+eg find me the best $\hat \beta$ to minimize $L_n (\beta) = n^{-1} \|X\beta - y\|^2$. 
+\begin{definition}[Excess Risk]
+
+With $L(\theta) = \E_{\theta^*} [L_\theta(X)]$, 
+$$\text{excess risk} = L(\hat \theta_n) - L(\theta^*) = \E_{\theta^*} L(\hat \theta_n , X) - \E_{\theta^*} L(\theta^*,X)$$
+
+ie \textit{in expectation}, how much worse is our estimator at the task than the true value? (Or if the true value is not in the class we're considering, how much worse is our estimator than the best in class value?) 
+\end{definition}
+
+\begin{example}[MLE]
+If we take $L_\theta(x) = -\ell_\theta(x)$, then whether or not $\calF = \{\ell_\theta: \theta\in \Theta\}$ is Glivenko-Cantelli tells us whether or not we have uniform convergence, a necessary condition for consistency of MLE. \\\\
+
+The excess risk in this case is: $\E_{\theta^*} [\frac{\log p_{\theta^*}}{\log p_{\hat \theta_n}}] = KL(p(\theta^*)\|p(\hat \theta_n))$. 
+\end{example}
+
+Other reasonable loss functions:
+\begin{enumerate}
+	\item Binary classification: $L_f(X,Y) = \Ind[f(X) \neq Y]$. 
+	\item Linear regression: $L_\beta (X,Y) = \|Y-X\beta\|^2$
+\end{enumerate}
+
+\begin{fact}[Controlling excess risk]
+How do we control excess risk? By \textit{controlling the generalization gap}, ie
+
+$$\sup_{\theta\in\Theta} |L_n (\theta) - L(\theta)| = o_p(1) \implies L(\hat \theta_n) \conprob L(\theta^*),$$
+ie the excess risk going to $0$ in probability. That is, $\E_{\theta^*} [L(\hat \theta_n, X)] \conprob \E_{\theta^*} [L(\theta^* ,X)]$. \\\\Furthermore,
+
+$$\text{excess risk} = L(\hat \theta_n) - L(\theta^*) \leq 2\|P_n -P\|_{\calL(\Omega_0)}.$$
+
+So we control the rhs to control the excess risk. 
+
+ 
+\end{fact}
+
+Thus what we want is a ULLN for the class $\calL(\Omega_0) = \{x\mapsto L_\theta(X), \theta\in \Omega_0\}$ since this will give us excess risk $o_p(1)$. So we start to introduce tools to get ULLN (ie bound the probability of extreme values of $\|P_n f - Pf\|_\calF$ to then get bounds on excess risk when we choose $\calF$ as above, ie $f(X) = L_\theta(X)$. 
+
+\section{Rademacher Complexity}
+Think of Rademacher Complexity of answering: "how well can our class $f$ correlate with random signs $\epsilon_i$? If we can always find an $f$ that correlates strongly, then our class of functions must be really big. If our class is smaller, then it's easier to bound Rademacher complexity. 
+
+\begin{definition}[Empirical Rademacher Complexity]
+$$\calR(\calF, x) = \E_\epsilon \sup_{f\in\calF} \left| n^{-1} \sum_{i=1}^n \epsilon_i f(x_i)\right| \quad \text{ where $x$ is fixed, expectation is over random signs only} $$
+\end{definition}
+\begin{definition}[Rademacher Complexity]
+The expectation of the empirical rademacher complexity.
+$$\calR_n(\calF):=\E_X [\calR(\calF, X)] = \E_{X,\epsilon} \sup_{f\in\calF} \left| n^{-1} \sum_{i=1}^n \epsilon_i f(X_i)\right| $$
+\end{definition}
+
+We show that controlling the Rademacher Complexity uniformly controls the generalization gap, $\|P_n f - Pf\|_\calF$, which controls the excess risk. 
+
+\begin{theorem}[$b$-uniformly bounded class (Wainwright Prop 4.11)]
+Any $n\geq 1$, $\delta\geq 0$, $b$-uniformly bounded class $\calF$:
+
+$$\|P_n - P\|_\calF \leq 2\calR_n(\calF) + \delta, \hspace{1cm} \text{ w.p. } \geq 1-\exp(-\frac{n\delta^2}{2b^2}).$$
+That is, controlling the $\calR_n$ allows us to get a bound on the probability of an extreme deviation of $\|P_n -P\|_\calF$. 
+\begin{proof}
+	Uses the bounded differences method applied to $G(x) = \sup_f \left|n^{-1} \sum_{i=1}^n \bar f(x_i)\right|$, so that deviations from $\E[\|P_n - P\|_\calF]$ happen with probability $\geq 1-\exp(-\frac{n\delta^2}{2b^2})$. \\\\Then we show that $\E[\|P_n - P\|_\calF] \leq 2\calR_n(\calF)$ via symmetrization and arguing that $\epsilon (f(X_i) - f(Y_i)) \overset{d}{=} f(X_i) - f(Y_i)$. 
+\end{proof}
+\end{theorem}
+
+\begin{theorem}[Matching lower bound (Wainwright 4.12)]
+For same setup as previous theorem,
+
+$$P_n -P\|_\calF \geq \frac{1}{2} \calR_n(\calF) - \frac{1}{2\sqrt{n}} \sup_f |\E[f]| -\delta.$$
+\end{theorem}
+
+from this we can conclude that Rademacher Complexity necessarily must go to $0$ to get $\|P_n -P\|_\calF = o_p(1)$. Necessary and sufficient!\\\\
+Tools to bound the Rademacher Complexity:
+\begin{enumerate}
+	\item Union bound (eg finite function classes)
+	\item Polynomial discrimination (eg Glivenko-Cantelli result)
+	\begin{enumerate}
+	\item Directly as in Glivenko-Cantelli
+	\item VC Dimension
+	\end{enumerate}
+	\item Metric entropy
+	\item \myworries{Todo this later after reviewing}
+\end{enumerate}
+
+\subsection{Polynomial Discrimination}
+First define:
+
+\begin{definition}[$\calF(x_1,\ldots,x_n)$]
+$$\calF(x_1,\ldots,x_n) = \{(f(x_1),\ldots,f(x_n)): f\in \calF\}$$
+ie, what points in $\R^n$ can you hit with the functions in your class and the data you're given. 
+\end{definition}
+
+The cardinality $|\calF(x)|$ provides a "sample dependent" idea of the complexity of $\calF$. This cardinality only is helpful when it's finite.  Eg, if $\calF$ is a collection of classifiers $x\mapsto \{0,1\}$, then $|\calF(x_1,\ldots,x_n)|\leq 2^n$. This is the case with $\calF = \{\Ind[x<\theta]: \theta\in \R\}$, ie the setup for Glivenko Cantelli. 
+
+\begin{definition}[Polynomial discrimination]
+$\calF$ has polynomial discrimination of order $\nu\geq 1$ if: for all $n\in \Z^+$, sample $x_1,\ldots,x_n$ of $n$ points, we have $$|\calF(x_1,\ldots,x_n)| \leq (n+1)^\nu$$.
+\end{definition}
+To show polynomial discrimination directly:
+\begin{enumerate}
+	\item Let $n$ be arbitrary. 
+	\item Let $x_1,\ldots,x_n \in \calX$ be arbitrary samples. 
+	\item Show the bound.
+\end{enumerate}
+
+
+\begin{theorem}[Polynomial discrimination controls rademacher complexity]
+$$\calR(\calF(x)) \leq 4 \sup_{f\in \calF} \sqrt{\frac{\sum_{i=1}^n f^2(x_i)}{n}} \sqrt{\frac{\nu \log(n+1)}{n}}$$
+where the LHS is the \textit{empirical} Rademacher complexity (ie a random variable).\\\\
+
+As a corrolary, if we can get a bound on $\E_X[\sup_{f\in \calF} \sqrt{\frac{\sum_{i=1}^n f^2(x_i)}{n}} ]$, ie if the function class is uniformly $b$-bounded, then:
+
+$$\calR_n(\calF) \leq 2b \sqrt{\frac{\nu \log (n+1)}{n}} \quad \forall n\geq 1.$$
+\end{theorem}
+
+\begin{fact}[Polynomial discrimination $\implies $ Glivenko Cantelli]
+Any function class with polynomial discrimination is Glivenko-Cantelli, ie $\|P_n f - Pf\|_\calF = o_p(1)$. 
+\end{fact}
+
+\begin{example}[Polynomial discrimination of indicators of half-intervals]
+$$\calF = \{ \Ind[x<\theta] : \theta\in\R\}.$$
+
+Then
+$$|\calF(x_1,\ldots,x_n)| \leq n+1$$
+Which means that we have polynomial complexity of order $\nu=1$. As a result:
+
+$$P(\|\hat F_n - F\|_\infty \geq 8\sqrt{\frac{\log(n+1)}{n} \delta } ) \leq \exp(-n\delta^2/2) \quad \forall \delta\geq 0,$$
+and $\|\calF_n - F\|_\infty \conas 0$ with a Borel-Cantelli. 
+
+
+\end{example}
+
+\section{VC Dimension}
+In the Glivenko-Cantelli case, we can directly calculate the Polynomial Discrimination. But it's not always so easy-- VC dimension provides another method for \textit{binary functions}.
+\end{document}
+
+
